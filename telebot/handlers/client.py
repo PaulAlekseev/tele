@@ -8,4 +8,4 @@ async def answer(message: types.Message):
 
 
 def register_handlers_client(db: Dispatcher):
-    db.register_message_handler(answer, content_types=['document'])
+    db.register_message_handler(answer)
