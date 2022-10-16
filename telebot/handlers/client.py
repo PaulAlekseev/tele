@@ -8,7 +8,6 @@ async def answer(message: types.Message):
     await bot.send_message(message.from_user.id, 'shut yo bitch ass')
     await bot.send_message(message.from_user.id, 'You should end your live NOW')
     add.delay(message.text)
-
     await message.delete()
 
 
