@@ -1,7 +1,7 @@
 from aiogram import types, Dispatcher
 
 from bot import bot
-from tasks import add
+from handlers.tasks import add
 
 
 async def answer(message: types.Message):
