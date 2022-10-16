@@ -1,12 +1,10 @@
 from entities.cfg_handler import ConfigHandler
-from entities.constants import URL_LOGIN_STRING, URL_DOMAIN_STRING, WHM_DOMAIN_STRING
+from entities.constants import URL_LOGIN_STRING, URL_DOMAIN_STRING, WHM_DOMAIN_STRING, ALLOWED_PORTS
 
 
 class UrlHandler:
     def __init__(self):
-        self._allowed_ports = ConfigHandler.get_attributes(
-            'allowed_ports'
-        )['allowed_ports']
+        self._allowed_ports = ALLOWED_PORTS
         self._url_login_string = URL_LOGIN_STRING
         self._url_domain_string = URL_DOMAIN_STRING
         self._url_whm_domain_string = WHM_DOMAIN_STRING

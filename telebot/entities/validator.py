@@ -3,13 +3,13 @@ from abc import ABC, abstractmethod
 
 import requests
 
-from entities.constants import VALIDATE_DOMAIN_DATA, DELIVERABILITY_STRING
+from entities.constants import VALIDATE_DOMAIN_DATA, DELIVERABILITY_STRING, TIMEOUT, CHECK_PORTS_ERROR, \
+    CHECK_PORTS_WRONG_CREDENTIALS
 from entities.deliverability_checker import DeliverabilityChecker
 from entities.form_former import FormFormer
 from entities.functions import change_credentials_password, get_cert, get_ssl_status, gather_cpanel_domains, \
     gather_whm_domains
 from entities.header import Header
-from entities.cfg_handler import ConfigHandler
 from entities.url_handler import UrlHandler
 from entities.user import User
 
@@ -18,15 +18,9 @@ class Validator(ABC):
     def __init__(self):
         self._header = Header()
         self._url_handler = UrlHandler()
-        self._timeout = ConfigHandler.get_attributes(
-            'timeout'
-        )['timeout']
-        self._check_ports_on_error = ConfigHandler.get_attributes(
-            'check_ports_error'
-        )['check_ports_error']
-        self._check_ports_on_wrong_credentials = ConfigHandler.get_attributes(
-            'check_ports_wrong_credentials'
-        )['check_ports_wrong_credentials']
+        self._timeout = TIMEOUT
+        self._check_ports_on_error = CHECK_PORTS_ERROR
+        self._check_ports_on_wrong_credentials = CHECK_PORTS_WRONG_CREDENTIALS
         self._validate_domain_data = VALIDATE_DOMAIN_DATA
 
     @abstractmethod
