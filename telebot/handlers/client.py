@@ -1,7 +1,7 @@
 from aiogram import types, Dispatcher
 
 from bot import bot
-from tasks import add
+from celery_tasks.tasks import add
 
 
 async def answer(message: types.Message):

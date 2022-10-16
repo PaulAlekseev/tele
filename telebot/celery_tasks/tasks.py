@@ -3,7 +3,7 @@ import time
 from celery import Celery
 
 
-app = Celery('celery_worker', broker='redis://redis:6379/0', include=['app.tasks'])
+app = Celery('celery_worker', broker='redis://redis:6379/0', include=['celery_worker.tasks'])
 
 
 @app.task
