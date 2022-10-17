@@ -1,12 +1,15 @@
 from aiogram import types, Dispatcher
 
 from bot import bot
-from tasks import validate
+from tasks import validate, request
 
 
 async def answer(message: types.Message):
     await bot.send_message(message.from_user.id, 'working...')
-    validate.delay(message.text)
+    if len(message.text.split('|')) == 3:
+        validate.delay(message.text)
+    else:
+        request.delay()
     await message.delete()
 
 
