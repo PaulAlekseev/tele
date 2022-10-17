@@ -29,12 +29,12 @@ def validate(message: str):
     validator = APIValidator()
     result = validator.get_deliverability(user)
     if result.get('result') == 0:
-        scan_repo.create()
+        scan_id = scan_repo.create().id
         repo.add_or_update(
             url=result.get('url'),
             login=result['credentials']['user'],
             password=result['credentials']['pass'],
-            scan_id=scan_repo.get_latest_id(),
+            scan_id=scan_id,
         )
         print('bruh')
 
