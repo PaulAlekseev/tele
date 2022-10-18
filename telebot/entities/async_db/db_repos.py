@@ -1,3 +1,4 @@
+from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from entities.async_db.db_tables import Credential
@@ -10,5 +11,5 @@ class AIOCredentialRepo:
         self.db_session = db_session
 
     async def get_all_credentials(self):
-        credentials = await self.db_session.query(self.model)
-        return credentials.all()
+        credentials = await self.db_session.execute(select(self.model)).all()
+        return credentials
