@@ -15,7 +15,7 @@ async def answer(message: types.Message):
     await message.delete()
 
 
-async def db_answer():
+async def db_answer(message: types.Message):
     await bot.send_message('bruh')
     async with async_session() as session:
         async with session.begin():
