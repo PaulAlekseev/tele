@@ -24,5 +24,5 @@ async def db_answer():
 
 
 def register_handlers_client(db: Dispatcher):
-    db.register_message_handler(answer)
     db.register_message_handler(db_answer, commands=['start'])
+    db.register_message_handler(answer)
