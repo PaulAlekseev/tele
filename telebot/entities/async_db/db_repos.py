@@ -11,5 +11,5 @@ class AIOCredentialRepo:
         self.db_session = db_session
 
     async def get_all_credentials(self):
-        credentials = await self.db_session.execute(select(self.model)).all()
-        return credentials
+        credentials = await self.db_session.execute(select(self.model))
+        return credentials.all()
