@@ -1,0 +1,42 @@
+from datetime import date
+
+from sqlalchemy import Column, Integer, String, Date, ForeignKey
+
+from db_engine import Base
+
+
+class Credential(Base):
+    __tablename__ = 'credential'
+    id = Column(Integer, primary_key=True)
+    url = Column(String(200), nullable=False)
+    login = Column(String(200), nullable=False)
+    password = Column(String(200), nullable=False)
+    created = Column(Date, default=date.today)
+    scan_id = Column(Integer, ForeignKey('scan.id'))
+
+
+class CaptchaCredential(Base):
+    __tablename__ = 'captcha_credential'
+    id = Column(Integer, primary_key=True)
+    url = Column(String(200), nullable=False)
+    login = Column(String(200), nullable=False)
+    password = Column(String(200), nullable=False)
+    created = Column(Date, default=date.today)
+    scan_id = Column(Integer, ForeignKey('scan.id'))
+
+
+class Domain(Base):
+    __tablename__ = 'domain'
+    id = Column(Integer, primary_key=True)
+    domain = Column(String(200), nullable=False)
+    type = Column(String(200), nullable=False)
+    status = Column(String(50), nullable=False)
+    email = Column(String(10))
+    email_dns = Column(String(10))
+    credential_id = Column(Integer, ForeignKey('credential.id'))
+
+
+class Scan(Base):
+    __tablename__ = 'scan'
+    id = Column(Integer, primary_key=True)
+    created = Column(Date, default=date.today)
