@@ -2,7 +2,7 @@ from datetime import date
 
 from sqlalchemy import Column, Integer, String, Date, ForeignKey
 
-from db_engine import Base
+from entities.async_db.db_engine import Base
 
 
 class Credential(Base):
