@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from telebot.entities.async_db.db_tables import Credential
+from entities.async_db.db_tables import Credential
 
 
 class AIOCredentialRepo:
