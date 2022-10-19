@@ -20,7 +20,7 @@ async def db_answer(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             credentials_repo = AIOCredentialRepo(session)
-            await bot.send_message(message.from_user.id, await credentials_repo.get_all_credentials())
+            await bot.send_message(message.from_user.id, [ item.url for item in await credentials_repo.get_all_credentials()])
 
 
 def register_handlers_client(db: Dispatcher):
