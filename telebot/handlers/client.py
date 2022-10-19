@@ -16,7 +16,6 @@ async def answer(message: types.Message):
 
 
 async def db_answer(message: types.Message):
-    await bot.send_message(message.from_user.id, 'bruh')
     async with async_session() as session:
         async with session.begin():
             credentials_repo = AIOCredentialRepo(session)
