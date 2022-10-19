@@ -14,5 +14,5 @@ class AIOCredentialRepo:
         credentials = await self.db_session.execute(select(self.model))
         return credentials.all()
 
-    async def get_last_scan(self):
-        credentials = await self.db_session.execute()
+    # async def get_last_scan(self):
+    #     credentials = await self.db_session.execute()
