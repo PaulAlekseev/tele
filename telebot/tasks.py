@@ -38,15 +38,17 @@ def validate(message: str, user_id):
             password=result['credentials']['pass'],
             scan_id=scan_id,
         )
-    sync_send_message(user_id, message_splited[0] + ' done!')
+    sync_send_message(message=message_splited[0] + ' done!', chat_id=user_id)
 
 
-async def send_message(message, user_id):
-    await bot.send_message(user_id, message)
+async def send_message(message, chat_id):
+    print('message', message)
+    print('chat_id', chat_id)
+    await bot.send_message(chat_id=chat_id, text=message)
 
 
-def sync_send_message(message, id):
-    asyncio.run(send_message(message, id))
+def sync_send_message(message, chat_id):
+    asyncio.run(send_message(chat_id=chat_id, message=message))
 
 
 @app.task
