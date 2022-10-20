@@ -1,5 +1,6 @@
 import time
 
+from bot import bot
 from celery_app import app
 from entities.db.db_repos import CredentialsRepository, ScanRepository
 from entities.user import User
@@ -14,7 +15,7 @@ def add(message: str):
 
 
 @app.task
-def validate(message: str):
+def validate(message: str, user_id):
     repo = CredentialsRepository()
     scan_repo = ScanRepository()
     message_splited = message.split('|')
@@ -37,6 +38,7 @@ def validate(message: str):
             scan_id=scan_id,
         )
         print('bruh')
+    bot.send_message(user_id, 'bruh')
 
 
 @app.task

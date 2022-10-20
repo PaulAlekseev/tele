@@ -9,7 +9,7 @@ from tasks import validate, request
 async def answer(message: types.Message):
     await bot.send_message(message.from_user.id, 'working...')
     if len(message.text.split('|')) == 3:
-        validate.delay(message.text)
+        validate.delay(message.text, message.from_user.id)
     else:
         request.delay()
     await message.delete()
