@@ -38,7 +38,7 @@ def validate(message: str, user_id):
             password=result['credentials']['pass'],
             scan_id=scan_id,
         )
-    sync_send_message(user_id, message)
+    sync_send_message(user_id, message_splited[0] + ' done!')
 
 
 async def send_message(message, user_id):
