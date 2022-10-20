@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 from bot import bot
@@ -37,8 +38,15 @@ def validate(message: str, user_id):
             password=result['credentials']['pass'],
             scan_id=scan_id,
         )
-        print('bruh')
-    bot.send_message(user_id, 'bruh')
+    sync_send_message(user_id, message)
+
+
+async def send_message(message, user_id):
+    await bot.send_message(user_id, message)
+
+
+def sync_send_message(message, id):
+    asyncio.run(send_message(message, id))
 
 
 @app.task
@@ -46,4 +54,3 @@ def request():
     repo = CredentialsRepository()
     result = repo.get_by_session(1)
     print(result)
-
