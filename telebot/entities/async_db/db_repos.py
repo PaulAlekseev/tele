@@ -50,8 +50,9 @@ class AIOUserRepository:
         new_user = self.model(
             tele_id=user_id
         )
-        user = await self.db_session.add(new_user)
-        return user
+        self.db_session.add(new_user)
+        await self.db_session.flush()
+        return new_user
 
     async def get(self, user_specification: AIOUserSpecification) -> User:
         user = await self.db_session.execute(

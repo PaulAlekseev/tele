@@ -36,7 +36,9 @@ async def get_user(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             user_repo = AIOUserRepository(session)
-            user = await user_repo.get(user_specification=AIOUserTeleIdSpecification(message.from_user.id))
+            user = await user_repo.get(
+                user_specification=AIOUserTeleIdSpecification(message.from_user.id)
+            )
             await bot.send_message(message.from_user.id, user.id)
 
 
