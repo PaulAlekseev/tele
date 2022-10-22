@@ -28,7 +28,7 @@ class AIOScanRepo:
     async def get_with(self, scan_specification: AIOScanSpecification):
         credentials = await self.db_session.execute(
             select(self.model).filter(
-                scan_specification.is_satisfied()
+                *scan_specification.is_satisfied()
             )
         ).all()
         return credentials
