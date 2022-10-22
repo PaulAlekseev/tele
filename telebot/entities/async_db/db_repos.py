@@ -25,6 +25,13 @@ class AIOScanRepo:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
+    async def create(self, user_id: int):
+        new_scan = self.model(
+            user_id=user_id,
+        )
+        scan = await self.db_session.add(new_scan)
+        return scan
+
     async def get_with(self, scan_specification: AIOScanSpecification):
         credentials = await self.db_session.execute(
             select(self.model).filter(
