@@ -15,7 +15,6 @@ async def answer(message: types.Message):
         validate.delay(message.text, message.from_user.id)
     else:
         request.delay()
-    await message.delete()
 
 
 async def db_answer(message: types.Message):
@@ -25,7 +24,7 @@ async def db_answer(message: types.Message):
             scan_repo = AIOScanRepo(session)
             scan_result = await scan_repo.get_with(AIOScanDateUserSpecification(0, datetime.date.today()))
             await bot.send_message(message.from_user.id, [(item.url, item.login, item.password) for item in (await credentials_repo.get_all_credentials())[0]])
-            print(scan_result)
+            await bot.send_message(message.from_user.id, scan_result)
 
 
 def register_handlers_client(db: Dispatcher):
