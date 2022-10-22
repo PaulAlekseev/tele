@@ -4,7 +4,7 @@ from aiogram import types, Dispatcher
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo
+from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo, AIOUserRepository
 from entities.async_db.db_specifications import AIOScanDateUserSpecification
 from tasks import validate, request
 
@@ -12,7 +12,11 @@ from tasks import validate, request
 async def answer(message: types.Message):
     await bot.send_message(message.from_user.id, 'working...')
     if len(message.text.split('|')) == 3:
-        validate.delay(message.text, message.from_user.id)
+        async with async_session() as session:
+            async with session.begin():
+                user_repo = AIOUserRepository(session)
+                user = await user_repo.create(message.from_user.id)
+        validate.delay(message.text, user.id)
     else:
         request.delay()
 

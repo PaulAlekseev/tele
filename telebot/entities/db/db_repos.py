@@ -119,6 +119,13 @@ class ScanRepository:
             scan = session.query(self.model.id, func.max(self.model.id)).first()[0]
         return scan
 
+    def get_by_user_id(self, user_id: id):
+        with Session(bind=engine) as session:
+            scan = session.query(self.model).filter(
+                self.model.user_id == user_id
+            )
+        return scan
+
 
 class DomainRepository:
     model = Domain

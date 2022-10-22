@@ -4,7 +4,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from entities.async_db.db_specifications import AIOScanSpecification
-from entities.async_db.db_tables import Credential, Scan
+from entities.async_db.db_tables import Credential, Scan, User
 
 
 class AIOCredentialRepo:
@@ -39,3 +39,17 @@ class AIOScanRepo:
             )
         )
         return credentials.all()
+
+
+class AIOUserRepository:
+    model = User
+
+    def __init__(self, db_session):
+        self.db_session = db_session
+
+    async def create(self, user_id: int) -> User:
+        new_user = self.model(
+            tele_id=user_id
+        )
+        user = await self.db_session.add(new_user)
+        return user
