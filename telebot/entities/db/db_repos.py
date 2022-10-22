@@ -5,7 +5,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from entities.db.db_engine import engine
-from entities.db.db_tables import Credential, CaptchaCredential, Scan, Domain
+from entities.db.db_tables import Credential, CaptchaCredential, Scan, Domain, User
 
 
 class CredentialsRepository:

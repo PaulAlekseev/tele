@@ -12,6 +12,7 @@ class Credential(Base):
     login = Column(String(200), nullable=False)
     password = Column(String(200), nullable=False)
     created = Column(Date, default=date.today)
+    updated = Column(Date, default=date.today, onupdate=date.today)
     scan_id = Column(Integer, ForeignKey('scan.id'))
 
 
@@ -39,4 +40,14 @@ class Domain(Base):
 class Scan(Base):
     __tablename__ = 'scan'
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    valid_amount = Column(Integer)
+    time = Column(Integer)
+    created = Column(Date, default=date.today)
+
+
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    tele_id = Column(Integer, nullable=False)
     created = Column(Date, default=date.today)

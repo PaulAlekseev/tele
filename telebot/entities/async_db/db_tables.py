@@ -1,8 +1,8 @@
+from sqlalchemy import String, Integer, Column, Date, ForeignKey
+from sqlalchemy.orm import declarative_base
 from datetime import date
 
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
-
-from entities.async_db.db_engine import Base
+Base = declarative_base()
 
 
 class Credential(Base):
@@ -39,4 +39,14 @@ class Domain(Base):
 class Scan(Base):
     __tablename__ = 'scan'
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    valid_amount = Column(Integer)
+    time = Column(Integer)
+    created = Column(Date, default=date.today)
+
+
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    tele_id = Column(Integer, nullable=False)
     created = Column(Date, default=date.today)

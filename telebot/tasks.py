@@ -42,8 +42,6 @@ def validate(message: str, user_id):
 
 
 async def send_message(message, chat_id):
-    print('message', message)
-    print('chat_id', chat_id)
     await bot.send_message(chat_id=chat_id, text=message)
 
 
