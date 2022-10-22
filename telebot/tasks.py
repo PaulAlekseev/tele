@@ -31,7 +31,7 @@ def validate(message: str, user_id):
     validator = APIValidator()
     result = validator.get_deliverability(user)
     if result.get('result') == 0:
-        scan_id = scan_repo.create().id
+        scan_id = scan_repo.create(user_id).id
         repo.add_or_update(
             url=result.get('url'),
             login=result['credentials']['user'],

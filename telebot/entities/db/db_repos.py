@@ -103,8 +103,10 @@ class CaptchaCredentialsRepository:
 class ScanRepository:
     model = Scan
 
-    def create(self):
-        scan = self.model()
+    def create(self, user_id):
+        scan = self.model(
+            user_id=user_id
+        )
         with Session(bind=engine) as session:
             session.add(scan)
             session.commit()
