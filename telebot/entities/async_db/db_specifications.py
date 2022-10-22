@@ -19,7 +19,4 @@ class AIOScanDateUserSpecification(AIOScanSpecification):
         self._scan_date = scan_date
 
     def is_satisfied(self):
-        return (
-            self.model.user_id == self._user_id,
-            self.model.created == self._scan_date,
-        )
+        return self.model.user_id == self._user_id, self.model.created == self._scan_date
