@@ -23,7 +23,7 @@ async def db_answer(message: types.Message):
         async with session.begin():
             credentials_repo = AIOCredentialRepo(session)
             scan_repo = AIOScanRepo(session)
-            scan_result = scan_repo.get_with(AIOScanDateUserSpecification(0, datetime.date.today()))
+            scan_result = await scan_repo.get_with(AIOScanDateUserSpecification(0, datetime.date.today()))
             await bot.send_message(message.from_user.id, [(item.url, item.login, item.password) for item in (await credentials_repo.get_all_credentials())[0]])
             print(scan_result)
 
