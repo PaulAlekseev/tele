@@ -30,5 +30,5 @@ class AIOScanRepo:
             select(self.model).filter(
                 *scan_specification.is_satisfied()
             )
-        ).all()
-        return credentials
+        )
+        return credentials.all()
