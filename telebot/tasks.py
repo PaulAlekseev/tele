@@ -82,10 +82,10 @@ def validate(scan_id: int, user_id):
     credentials_repo = CredentialsRepository()
     scan.valid_amount = len(credentials_repo.get_by_session(scan_id))
     scan.time = int(time.time() - time_start)
-    scan_repo.update(scan)
+    final_scan = scan_repo.update(scan)
 
     # Messaging user
-    sync_send_message(message=f"Your scan {scan_id} is completed with {scan.valid_amount} valid credentials and in {scan.time} seconds", chat_id=user_id)
+    sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials and in {final_scan.time} seconds", chat_id=user_id)
 
 
 
