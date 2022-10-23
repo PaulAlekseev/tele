@@ -24,7 +24,7 @@ def validate(scan_id: int, user_id):
     scan_repo = ScanRepository()
     scan = scan_repo.get(
         ScanIdSpecification(scan_id=scan_id)
-    )
+    )[0]
 
     sync_send_message(message=f"""Scan file id: {scan.file_id}
 Scan file path: {scan.file_path}
