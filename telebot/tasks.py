@@ -8,6 +8,7 @@ from bot import bot
 from celery_app import app
 from entities.async_db.db_specifications import ScanIdSpecification
 from entities.db.db_repos import CredentialsRepository, ScanRepository
+from entities.functions import get_file_credentials
 
 
 @app.task
@@ -23,7 +24,9 @@ def validate(scan_id: int, user_id):
     # Getting data from document
     scan_repo = ScanRepository()
     scan = scan_repo.get_by_id(scan_id=scan_id)[0]
-    sync_send_message(message=scan, chat_id=user_id)
+    file_result = get_file_credentials(file_path=scan.file_path, file_id=scan.file_id)
+    if file_result['status'] == 0:
+        sync_send_message(message=file_result['credentials'], chat_id=user_id)
 
     sync_send_message(message=f"""Scan file id: {scan.file_id}
 Scan file path: {scan.file_path}

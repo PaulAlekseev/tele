@@ -20,3 +20,4 @@ VALIDATOR = 'API'
 CHECK_PORTS_WRONG_CREDENTIALS = False
 RESTRICTED_CPANEL_DOMAINS = ('sub_domains',)
 RESTRICTED_WHM_DOMAINS = ('sub',)
+FILE_API_URL = 'https://api.telegram.org/file/bot'

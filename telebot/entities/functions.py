@@ -1,5 +1,7 @@
+import os
 from datetime import datetime
 
+import requests
 from OpenSSL import SSL
 from cryptography import x509
 from cryptography.x509 import Certificate
@@ -7,7 +9,7 @@ from cryptography.x509.oid import NameOID
 import idna
 from socket import socket
 
-from entities.constants import RESTRICTED_CPANEL_DOMAINS, RESTRICTED_WHM_DOMAINS
+from entities.constants import RESTRICTED_CPANEL_DOMAINS, RESTRICTED_WHM_DOMAINS, FILE_API_URL
 from entities.db.db_repos import CredentialsRepository, DomainRepository
 from entities.user import User
 from .validator import APIValidator
@@ -100,6 +102,33 @@ def gather_whm_domains(data: dict):
         return result
     except Exception:
         return None
+
+
+def create_file_url(file_path: str) -> str:
+    return f"{FILE_API_URL}{os.getenv('BOT_TOKEN')}/{file_path}"
+
+
+def get_file_credentials(file_path: str, file_id: str) -> dict:
+    result = {
+        'result': 1,
+        'credentials': [],
+        'amount': 0,
+    }
+    data = {
+        'file_id': file_id,
+    }
+    try:
+        response = requests.get(create_file_url(file_path), data=data)
+        if len(response.text) > 0:
+            for item in response.text.split('\n'):
+                result_item = item.strip().split('|')
+                if len(result_item) == 3:
+                    result['credentials'].append(result_item)
+        result['status'] = 0
+        result['amount'] = len(result['credentials'])
+    except Exception:
+        pass
+    return result
 
 
 def validate(data, scan_id):
