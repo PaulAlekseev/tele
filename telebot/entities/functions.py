@@ -109,8 +109,10 @@ def validate_credentials(data, scan_id, validator):
             password=result['credentials']['password'],
             scan_id=scan_id
         )
+        print('bruh what the frick1111111111111111111111111111111')
         domain_repo = DomainRepository()
         domain_repo.add_or_update(result, credentials.id)
+        print('bruh what the frick2222222222222222222222222222222')
         print('---------------------------------------')
     # except Exception:
     #     pass
