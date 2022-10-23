@@ -40,7 +40,7 @@ async def get_user(message: types.Message):
             user = await user_repo.get_user(
                 user_specification=AIOUserDateSpecification(datetime.date.today()),
             )
-            await bot.send_message(message.from_user.id, [(item.id, item.created, ) for item in user])
+            await bot.send_message(message.from_user.id, [(item.id, item.user_id, item.created, ) for item in user])
 #
 #
 # async def create_user(message: types.Message):
