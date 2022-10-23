@@ -6,7 +6,6 @@ import time
 from bot import bot
 from celery_app import app
 from entities.db.db_repos import CredentialsRepository, ScanRepository
-from entities.functions import get_file_credentials
 
 
 @app.task

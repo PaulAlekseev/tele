@@ -1,7 +1,6 @@
 import datetime
 import sqlalchemy
 from sqlalchemy import func, desc
-
 from sqlalchemy.orm import Session
 
 from entities.async_db.db_specifications import ScanSpecification
