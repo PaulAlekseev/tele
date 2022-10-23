@@ -101,9 +101,9 @@ def gather_whm_domains(data: dict):
         return None
 
 
-def validate(data: dict) -> dict:
-    user = User(data)
-    data = APIValidator().get_deliverability(user)
-    if data.get('result') == 0:
+# def validate(data: dict) -> dict:
+#     user = User(data)
+#     data = APIValidator().get_deliverability(user)
+#     if data.get('result') == 0:
 
 
