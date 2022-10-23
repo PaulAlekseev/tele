@@ -78,7 +78,7 @@ def validate(scan_id: int, user_id):
     scan_repo.update(scan)
 
     # Messaging user
-    sync_send_message(message=f"Your scan {scan_id} is completed", chat_id=user_id)
+    sync_send_message(message=f"Your scan {scan_id} is completed with {scan.valid_amount} valid credentials and in {scan.time} seconds", chat_id=user_id)
 
 
 
