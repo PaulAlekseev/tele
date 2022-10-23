@@ -30,6 +30,7 @@ class AIOScanRepo:
             file_id=file_id,
             file_path=file_path
         )
+        print(new_scan)
         scan = await self.db_session.add(new_scan)
         return scan
 
