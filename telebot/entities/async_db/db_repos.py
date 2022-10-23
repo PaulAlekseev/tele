@@ -60,4 +60,4 @@ class AIOUserRepository:
                 user_specification.is_satisfied()
             )
         )
-        return user.first()
+        return user.all()
