@@ -23,19 +23,17 @@ class CredentialsRepository:
                     self.model.login == login,
                     self.model.password == password,
                 ).one()
-                print('CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
             except sqlalchemy.orm.exc.NoResultFound:
-                print('CUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU')
                 credentials = self.model(
                     url=url,
                     login=login,
                     password=password,
                     scan_id=scan_id,
                 )
-                session.add()
             self._save_object(session, credentials)
             session.refresh(credentials)
             session.expunge(credentials)
+            print('EXITING THE THING LOL XD')
             return credentials
 
     def get_by_date(self, requested_date: datetime.date):
