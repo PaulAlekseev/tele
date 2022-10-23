@@ -57,7 +57,7 @@ class AIOUserRepository:
     async def get_user(self, user_specification: AIOUserSpecification) -> User:
         user = await self.db_session.execute(
             select(self.model).filter(
-                item for item in user_specification.is_satisfied()
+                user_specification.is_satisfied()
             )
         )
         return user.first()
