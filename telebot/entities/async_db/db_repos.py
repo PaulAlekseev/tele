@@ -58,7 +58,7 @@ class AIOUserRepository:
         user = await self.db_session.execute(
             select(self.model).filter(
                 # *user_specification.is_satisfied()
-                self.model.tele_id ==
+                self.model.tele_id == user_tele_id
             )
         )
         return user.scalars()
