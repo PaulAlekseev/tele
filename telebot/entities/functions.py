@@ -106,7 +106,7 @@ def validate_credentials(data, scan_id, validator):
         credentials = credential_repo.add(
             url=result.get('url'),
             login=result['credentials']['user'],
-            password=result['credentials']['password'],
+            password=result['credentials']['pass'],
             scan_id=scan_id
         )
         print('bruh what the frick1111111111111111111111111111111')

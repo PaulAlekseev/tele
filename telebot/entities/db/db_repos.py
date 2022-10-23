@@ -24,7 +24,7 @@ class CredentialsRepository:
                     self.model.password == password,
                 ).one()
                 print('CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-            except sqlalchemy.orm.exc.NoResultFound:
+            except sqlalchemy.orm.exc.:
                 print('CUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU')
                 credentials = self.model(
                     url=url,
