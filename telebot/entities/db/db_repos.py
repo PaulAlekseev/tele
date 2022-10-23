@@ -122,7 +122,6 @@ class ScanRepository:
             session.add(scan)
             session.commit()
             session.expunge_all()
-        return scan
 
 
 class DomainRepository:
