@@ -104,10 +104,10 @@ class CaptchaCredentialsRepository:
 class ScanRepository:
     model = Scan
 
-    def get(self, scan_specification: ScanSpecification):
+    def get_by_id(self, scan_id):
         with Session(bind=engine) as session:
             scan = session.query(self.model).filter(
-                scan_specification.is_satisfied()
+                self.model.id == scan_id
             ).all()
         return scan
 
