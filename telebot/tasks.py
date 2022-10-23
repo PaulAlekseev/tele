@@ -8,9 +8,6 @@ from bot import bot
 from celery_app import app
 from entities.async_db.db_specifications import ScanIdSpecification
 from entities.db.db_repos import CredentialsRepository, ScanRepository
-from entities.db.db_tables import Scan
-from entities.user import User
-from entities.validator import APIValidator
 
 
 @app.task

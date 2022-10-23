@@ -10,7 +10,7 @@ from socket import socket
 from entities.constants import RESTRICTED_CPANEL_DOMAINS, RESTRICTED_WHM_DOMAINS
 from entities.db.db_repos import CredentialsRepository, DomainRepository
 from entities.user import User
-from entities.validator import APIValidator
+from .validator import APIValidator
 
 
 def change_credentials_password(credentials: dict) -> dict:
