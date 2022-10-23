@@ -9,16 +9,16 @@ from entities.async_db.db_specifications import AIOScanDateUserSpecification, AI
 from tasks import validate, request
 
 
-async def answer(message: types.Message):
-    await bot.send_message(message.from_user.id, 'working...')
-    if len(message.text.split('|')) == 3:
-        async with async_session() as session:
-            async with session.begin():
-                user_repo = AIOUserRepository(session)
-                user = await user_repo.create(message.from_user.id)
-        validate.delay(message.text, user.id)
-    else:
-        request.delay()
+# async def answer(message: types.Message):
+#     await bot.send_message(message.from_user.id, 'working...')
+#     if len(message.text.split('|')) == 3:
+#         async with async_session() as session:
+#             async with session.begin():
+#                 user_repo = AIOUserRepository(session)
+#                 user = await user_repo.create(message.from_user.id)
+#         validate.delay(message.text, user.id)
+#     else:
+#         request.delay()
 
 
 async def db_answer(message: types.Message):
@@ -51,8 +51,17 @@ async def create_user(message: types.Message):
             await bot.send_message(message.from_user.id, user.id)
 
 
+async def document(message: types.Message):
+    file_url = await bot.get_file_url(message)
+    file_id = (await bot.get_file()).file_id
+    await bot.send_message(message.from_user.id, file_url)
+    await bot.send_message(message.from_user.id, file_id)
+
+
 def register_handlers_client(db: Dispatcher):
     db.register_message_handler(db_answer, commands=['start'])
     db.register_message_handler(get_user, commands=['get'])
     db.register_message_handler(create_user, commands=['create'])
-    db.register_message_handler(answer)
+    db.register_message_handler(document, content_types=['document'])
+    # db.register_message_handler(answer)
+
