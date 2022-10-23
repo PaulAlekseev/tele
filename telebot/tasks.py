@@ -4,6 +4,7 @@ import time
 from bot import bot
 from celery_app import app
 from entities.db.db_repos import CredentialsRepository, ScanRepository
+from entities.db.db_tables import Scan
 from entities.user import User
 from entities.validator import APIValidator
 
@@ -16,9 +17,8 @@ def add(message: str):
 
 
 @app.task
-def validate():
-    scan_repo = ScanRepository()
-    new_scan = scan_repo.get_latest()
+def validate(new_scan: Scan):
+    time.sleep(10)
     print(new_scan.id)
     # sync_send_message(message=message_splited[0] + ' done!', chat_id=user_id)
 
