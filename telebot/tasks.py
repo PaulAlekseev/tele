@@ -43,7 +43,7 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
                         'url': result_item[0],
                         'credentials': {
                             'user': result_item[1],
-                            'pass': result_item[0],
+                            'pass': result_item[2],
                         }
                     })
         result['status'] = 0
