@@ -1,4 +1,3 @@
-from abc import ABC
 from datetime import date
 
 from entities.async_db.db_tables import Scan, User
@@ -32,3 +31,11 @@ class AIOUserTeleIdSpecification(AIOUserSpecification):
 
     def is_satisfied(self):
         return self.model.tele_id.__eq__(self._user_tele_id)
+
+
+class AIOUserDateSpecification(AIOUserSpecification):
+    def __init__(self, _date: date):
+        self._date = _date
+
+    def is_satisfied(self):
+        return self.model.created.__eq__(self._date)
