@@ -5,7 +5,8 @@ from aiogram import types, Dispatcher
 from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo, AIOUserRepository
-from entities.async_db.db_specifications import AIOScanDateUserSpecification, AIOUserTeleIdSpecification
+from entities.async_db.db_specifications import AIOScanDateUserSpecification, AIOUserTeleIdSpecification, \
+    AIOUserSpecification, AIOUserDateSpecification
 from tasks import validate, request
 
 
@@ -37,7 +38,7 @@ async def get_user(message: types.Message):
         async with session.begin():
             user_repo = AIOUserRepository(session)
             user = await user_repo.get_user(
-                user_specification=AIOUserTeleIdSpecification(message.from_user.id),
+                user_specification=AIOUserDateSpecification(datetime.date.today()),
             )
             await bot.send_message(message.from_user.id, [(item.id, item.created, ) for item in user])
 #
