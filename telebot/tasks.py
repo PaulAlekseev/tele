@@ -8,7 +8,7 @@ from bot import bot
 from celery_app import app
 from entities.async_db.db_specifications import ScanIdSpecification
 from entities.db.db_repos import CredentialsRepository, ScanRepository
-from entities.functions import get_file_credentials
+from .entities.functions import get_file_credentials
 
 
 @app.task
