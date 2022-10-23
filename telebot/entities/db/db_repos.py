@@ -119,7 +119,6 @@ class ScanRepository:
 
     def update(self, scan: Scan) -> Scan:
         with Session(bind=engine) as session:
-            scan_result = scan
             session.add(scan_result)
             session.commit()
             session.expunge_all()

@@ -73,7 +73,10 @@ async def get_scans(message: types.Message):
                     user_id=user.id,
                     scan_date=datetime.date.today())
             )
-            await bot.send_message(message.from_user.id, scans)
+            await bot.send_message(message.from_user.id, [
+                (item.id, item.valid_amount, item.time, item.created)
+                for item in scans
+            ])
 
 
 async def trigger_scan(message: types.Message):
