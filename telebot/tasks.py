@@ -61,6 +61,7 @@ def validate(scan_id: int, user_id):
         return 0
     else:
         result = file_result['credentials']
+    sync_send_message(message=f"Scanning started", chat_id=user_id)
 
     # Scanning for data
     cpu_count = multiprocessing.cpu_count()
@@ -74,6 +75,7 @@ def validate(scan_id: int, user_id):
                 validator=APIValidator()
             )
 
+    sync_send_message(message=f"Last thing", chat_id=user_id)
     # Getting result
     scan = scan_repo.get_by_id(scan_id=scan_id)[0]
     scan.validated = True
