@@ -17,10 +17,11 @@ def add(message: str):
 
 
 @app.task
-def validate(scan_id: int):
+def validate(scan_id: int, user_id):
+    sync_send_message(message=f"Your scan {scan_id}, has been started", chat_id=user_id)
     time.sleep(10)
     print(scan_id)
-    # sync_send_message(message=message_splited[0] + ' done!', chat_id=user_id)
+    sync_send_message(message=f"Your scan {scan_id}, has been completed", chat_id=user_id)
 
 
 async def send_message(message, chat_id):

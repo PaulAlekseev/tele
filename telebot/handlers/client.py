@@ -57,9 +57,9 @@ async def start_scan(message: types.Message):
                 file_path=file.file_path,
                 file_id=file.file_id,
             )
-    validate.delay(scan)
+    validate.delay(scan.id, message.from_user.id)
     await bot.send_message(message.from_user.id, 'Your scan has been successfully created')
-    await bot.send_message(message.from_user.id, scan)
+    await bot.send_message(message.from_user.id, scan.id)
 
 
 async def get_scans(message: types.Message):
