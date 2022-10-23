@@ -74,6 +74,7 @@ def validate(scan_id: int, user_id):
                 scan_id=scan_id,
                 validator=APIValidator()
             )
+        sync_send_message(message=f"In executor", chat_id=user_id)
         executor.shutdown(wait=True)
 
     sync_send_message(message=f"Last thing", chat_id=user_id)
