@@ -17,24 +17,24 @@ class CredentialsRepository:
 
     def add(self, url, login, password, scan_id):
         with Session(bind=engine) as session:
-            try:
-                credentials = session.query(self.model).filter(
-                    self.model.url == url,
-                    self.model.login == login,
-                    self.model.password == password,
-                ).one()
-            except sqlalchemy.orm.exc.NoResultFound:
-                print('CUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU')
-                credentials = self.model(
-                    url=url,
-                    login=login,
-                    password=password,
-                    scan_id=scan_id,
-                )
-                session.add()
-            self._save_object(session, credentials)
-            session.refresh(credentials)
-            session.expunge(credentials)
+            # try:
+            credentials = session.query(self.model).filter(
+                self.model.url == url,
+                self.model.login == login,
+                self.model.password == password,
+            ).one()
+            # except sqlalchemy.orm.exc.NoResultFound:
+            #     print('CUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU')
+            #     credentials = self.model(
+            #         url=url,
+            #         login=login,
+            #         password=password,
+            #         scan_id=scan_id,
+            #     )
+            #     session.add()
+            # self._save_object(session, credentials)
+            # session.refresh(credentials)
+            # session.expunge(credentials)
             return credentials
 
     def get_by_date(self, requested_date: datetime.date):
