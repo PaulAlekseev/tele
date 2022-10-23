@@ -81,6 +81,7 @@ def validate(scan_id: int, user_id):
     scan.validated = True
     credentials_repo = CredentialsRepository()
     scan.valid_amount = len(credentials_repo.get_by_session(scan_id))
+    print(scan.valid_amount)
     scan.time = int(time.time() - time_start)
     scan_repo.update(scan)
     final_scan = scan_repo.get_by_id(scan_id=scan_id)[0]
