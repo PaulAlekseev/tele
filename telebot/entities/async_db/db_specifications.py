@@ -31,4 +31,4 @@ class AIOUserTeleIdSpecification(AIOUserSpecification):
         self._user_tele_id = user_tele_id
 
     def is_satisfied(self):
-        return self.model.tele_id == self._user_tele_id
+        return self.model.tele_id.__eq__(self._user_tele_id)
