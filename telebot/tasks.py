@@ -22,7 +22,7 @@ def validate(scan_id: int, user_id):
     sync_send_message(message=f"Your scan {scan_id}, has been started", chat_id=user_id)
     # Getting data from document
     scan_repo = ScanRepository()
-    scan = scan_repo.get(
+    scan = scan_repo.get_by_id(
         ScanIdSpecification(scan_id=scan_id)
     )
     sync_send_message(message=scan, chat_id=user_id)
