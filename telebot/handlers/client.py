@@ -52,7 +52,7 @@ async def create_user(message: types.Message):
 
 
 async def document(message: types.Message):
-    file = bot.get_file_url(message.document)
+    file = bot.get_file_url(message.document.file_id)
     await bot.send_message(message.from_user.id, file)
 
 
