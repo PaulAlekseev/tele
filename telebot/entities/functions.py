@@ -9,18 +9,10 @@ from cryptography.x509.oid import NameOID
 import idna
 from socket import socket
 
-from entities.constants import RESTRICTED_CPANEL_DOMAINS, RESTRICTED_WHM_DOMAINS, FILE_API_URL
+from entities.constants import RESTRICTED_CPANEL_DOMAINS, RESTRICTED_WHM_DOMAINS
 from entities.db.db_repos import CredentialsRepository, DomainRepository
 from entities.user import User
 from .validator import APIValidator
-
-
-def change_credentials_password(credentials: dict) -> dict:
-    new_credentials = credentials.copy()
-    new_credentials.update({
-        'pass': credentials['pass'] + '1'
-    })
-    return new_credentials
 
 
 def get_common_name(cert):
