@@ -52,8 +52,9 @@ async def create_user(message: types.Message):
 
 
 async def document(message: types.Message):
-    file = bot.get_file_url(message.document.file_id)
-    await bot.send_message(message.from_user.id, file)
+    file = await bot.get_file(message.document.file_id)
+    await bot.send_message(message.from_user.id, file.file_path)
+    await bot.send_message(message.from_user.id, file.file_id)
 
 
 def register_handlers_client(db: Dispatcher):
