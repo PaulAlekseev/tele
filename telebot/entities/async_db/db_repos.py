@@ -1,9 +1,7 @@
-import datetime
-
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from entities.async_db.db_specifications import AIOScanSpecification, AIOUserSpecification
+from entities.async_db.db_specifications import ScanSpecification, UserSpecification
 from entities.async_db.db_tables import Credential, Scan, User
 
 
@@ -34,7 +32,7 @@ class AIOScanRepo:
         await self.db_session.flush()
         return new_scan
 
-    async def get_with(self, scan_specification: AIOScanSpecification):
+    async def get_with(self, scan_specification: ScanSpecification):
         credentials = await self.db_session.execute(
             select(self.model).filter(
                 *scan_specification.is_satisfied()
@@ -57,7 +55,7 @@ class AIOUserRepository:
         await self.db_session.flush()
         return new_user
 
-    async def get_user(self, user_specification: AIOUserSpecification) -> User:
+    async def get_user(self, user_specification: UserSpecification) -> User:
         user = await self.db_session.execute(
             select(self.model).filter(
                 user_specification.is_satisfied()

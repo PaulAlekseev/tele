@@ -8,15 +8,15 @@ class Specification:
         pass
 
 
-class AIOScanSpecification(Specification):
+class ScanSpecification(Specification):
     model = Scan
 
 
-class AIOUserSpecification(Specification):
+class UserSpecification(Specification):
     model = User
 
 
-class AIOScanDateUserSpecification(AIOScanSpecification):
+class ScanDateUserSpecification(ScanSpecification):
     def __init__(self, user_id: int, scan_date: date):
         self._user_id = user_id
         self._scan_date = scan_date
@@ -25,7 +25,7 @@ class AIOScanDateUserSpecification(AIOScanSpecification):
         return self.model.user_id == self._user_id, self.model.created == self._scan_date
 
 
-class AIOUserTeleIdSpecification(AIOUserSpecification):
+class UserTeleIdSpecification(UserSpecification):
     def __init__(self, user_tele_id: int):
         self._user_tele_id = user_tele_id
 
@@ -33,7 +33,7 @@ class AIOUserTeleIdSpecification(AIOUserSpecification):
         return self.model.tele_id.__eq__(self._user_tele_id)
 
 
-class AIOUserDateSpecification(AIOUserSpecification):
+class UserDateSpecification(UserSpecification):
     def __init__(self, _date: date):
         self._date = _date
 

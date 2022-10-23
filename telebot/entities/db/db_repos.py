@@ -1,9 +1,10 @@
 import datetime
 import sqlalchemy
-from sqlalchemy import func
+from sqlalchemy import func, desc
 
 from sqlalchemy.orm import Session
 
+from entities.async_db.db_specifications import ScanSpecification
 from entities.db.db_engine import engine
 from entities.db.db_tables import Credential, CaptchaCredential, Scan, Domain, User
 
@@ -103,27 +104,18 @@ class CaptchaCredentialsRepository:
 class ScanRepository:
     model = Scan
 
-    def create(self, user_id):
-        scan = self.model(
-            user_id=user_id
-        )
-        with Session(bind=engine) as session:
-            session.add(scan)
-            session.commit()
-            session.refresh(scan)
-            session.expunge(scan)
-        return scan
-
-    def get_latest_id(self):
-        with Session(bind=engine) as session:
-            scan = session.query(self.model.id, func.max(self.model.id)).first()[0]
-        return scan
-
-    def get_by_user_id(self, user_id: id):
+    def get(self, scan_specification: ScanSpecification):
         with Session(bind=engine) as session:
             scan = session.query(self.model).filter(
-                self.model.user_id == user_id
+                scan_specification.is_satisfied()
             )
+        return scan
+
+    def get_latest(self) -> Scan:
+        with Session(bind=engine) as session:
+            scan = session.query(self.model).order_by(
+                desc('created')
+            ).first()
         return scan
 
 

@@ -5,8 +5,8 @@ from aiogram import types, Dispatcher
 from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo, AIOUserRepository
-from entities.async_db.db_specifications import AIOScanDateUserSpecification, AIOUserTeleIdSpecification, \
-    AIOUserSpecification, AIOUserDateSpecification
+from entities.async_db.db_specifications import ScanDateUserSpecification, UserTeleIdSpecification, \
+    UserSpecification, UserDateSpecification
 from tasks import validate, request
 
 
@@ -15,7 +15,7 @@ from tasks import validate, request
 #     if len(message.text.split('|')) == 3:
 #         async with async_session() as session:
 #             async with session.begin():
-#                 user_repo = AIOUserRepository(session)
+#                 user_repo = UserRepository(session)
 #                 user = await user_repo.create(message.from_user.id)
 #         validate.delay(message.text, user.id)
 #     else:
@@ -38,7 +38,7 @@ async def get_user(message: types.Message):
         async with session.begin():
             user_repo = AIOUserRepository(session)
             user = await user_repo.get_user(
-                user_specification=AIOUserDateSpecification(datetime.date.today()),
+                user_specification=UserDateSpecification(datetime.date.today()),
             )
             await bot.send_message(message.from_user.id, user)
 
@@ -49,7 +49,7 @@ async def start_scan(message: types.Message):
             scan_repo = AIOScanRepo(session)
             user_repo = AIOUserRepository(session)
             file = await bot.get_file(message.document.file_id)
-            user = await user_repo.get_user(AIOUserTeleIdSpecification(
+            user = await user_repo.get_user(UserTeleIdSpecification(
                 user_tele_id=message.from_user.id
             ))
             scan = await scan_repo.create(
@@ -66,13 +66,17 @@ async def get_scans(message: types.Message):
         async with session.begin():
             scan_repo = AIOScanRepo(session)
             user_repo = AIOUserRepository(session)
-            user = await user_repo.get_user(AIOUserTeleIdSpecification(message.from_user.id))
+            user = await user_repo.get_user(UserTeleIdSpecification(message.from_user.id))
             scans = await scan_repo.get_with(
-                AIOScanDateUserSpecification(
+                ScanDateUserSpecification(
                     user_id=user.id,
                     scan_date=datetime.date.today())
             )
             await bot.send_message(message.from_user.id, scans)
+
+
+async def trigger_scan(message: types.Message):
+    validate()
 
 
 # async def create_user(message: types.Message):

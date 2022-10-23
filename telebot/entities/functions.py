@@ -8,6 +8,8 @@ import idna
 from socket import socket
 
 from entities.constants import RESTRICTED_CPANEL_DOMAINS, RESTRICTED_WHM_DOMAINS
+from entities.user import User
+from entities.validator import APIValidator
 
 
 def change_credentials_password(credentials: dict) -> dict:
@@ -97,3 +99,11 @@ def gather_whm_domains(data: dict):
         return result
     except Exception:
         return None
+
+
+def validate(data: dict) -> dict:
+    user = User(data)
+    data = APIValidator().get_deliverability(user)
+    if data.get('result') == 0:
+
+

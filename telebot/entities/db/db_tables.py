@@ -56,4 +56,3 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     tele_id = Column(Integer, nullable=False)
     created = Column(Date, default=date.today)
-
