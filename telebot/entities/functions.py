@@ -108,29 +108,6 @@ def create_file_url(file_path: str) -> str:
     return f"{FILE_API_URL}{os.getenv('BOT_TOKEN')}/{file_path}"
 
 
-def get_file_credentials(file_path: str, file_id: str) -> dict:
-    result = {
-        'result': 1,
-        'credentials': [],
-        'amount': 0,
-    }
-    data = {
-        'file_id': file_id,
-    }
-    try:
-        response = requests.get(create_file_url(file_path), data=data)
-        if len(response.text) > 0:
-            for item in response.text.split('\n'):
-                result_item = item.strip().split('|')
-                if len(result_item) == 3:
-                    result['credentials'].append(result_item)
-        result['status'] = 0
-        result['amount'] = len(result['credentials'])
-    except Exception:
-        pass
-    return result
-
-
 def validate(data, scan_id):
     try:
         user = User(data)

@@ -15,6 +15,29 @@ def add(message: str):
     print('bruh')
 
 
+def get_file_credentials(file_path: str, file_id: str) -> dict:
+    result = {
+        'result': 1,
+        'credentials': [],
+        'amount': 0,
+    }
+    data = {
+        'file_id': file_id,
+    }
+    try:
+        response = requests.get(create_file_url(file_path), data=data)
+        if len(response.text) > 0:
+            for item in response.text.split('\n'):
+                result_item = item.strip().split('|')
+                if len(result_item) == 3:
+                    result['credentials'].append(result_item)
+        result['status'] = 0
+        result['amount'] = len(result['credentials'])
+    except Exception:
+        pass
+    return result
+
+
 @app.task
 def validate(scan_id: int, user_id):
     sync_send_message(message=f"Your scan {scan_id}, has been started", chat_id=user_id)
