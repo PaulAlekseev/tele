@@ -39,7 +39,13 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
             for item in response.text.split('\n'):
                 result_item = item.strip().split('|')
                 if len(result_item) == 3:
-                    result['credentials'].append(result_item)
+                    result['credentials'].append({
+                        'url': result_item[0]
+                        'credentials':{
+                            'user': result_item[1],
+                            'pass': result_item[0],
+                        }
+                    })
         result['status'] = 0
         result['amount'] = len(result['credentials'])
     except Exception:
