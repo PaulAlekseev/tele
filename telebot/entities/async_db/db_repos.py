@@ -30,9 +30,9 @@ class AIOScanRepo:
             file_id=file_id,
             file_path=file_path
         )
-        scan = self.db_session.add(new_scan)
+        self.db_session.add(new_scan)
         await self.db_session.flush()
-        return scan
+        return new_scan
 
     async def get_with(self, scan_specification: AIOScanSpecification):
         credentials = await self.db_session.execute(
@@ -53,9 +53,9 @@ class AIOUserRepository:
         new_user = self.model(
             tele_id=user_id
         )
-        user = self.db_session.add(new_user)
+        self.db_session.add(new_user)
         await self.db_session.flush()
-        return user
+        return new_user
 
     async def get_user(self, user_specification: AIOUserSpecification) -> User:
         user = await self.db_session.execute(
