@@ -17,9 +17,9 @@ def add(message: str):
 
 
 @app.task
-def validate(new_scan: Scan):
+def validate(scan_id: int):
     time.sleep(10)
-    print(new_scan.id)
+    print(scan_id)
     # sync_send_message(message=message_splited[0] + ' done!', chat_id=user_id)
 
 
