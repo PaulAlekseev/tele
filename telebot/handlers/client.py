@@ -40,7 +40,7 @@ async def get_user(message: types.Message):
                 user_specification=AIOUserTeleIdSpecification(message.from_user.id),
                 user_tele_id=message.from_user.id
             )
-            await bot.send_message(message.from_user.id, str(user))
+            await bot.send_message(message.from_user.id, str(user.created))
 
 
 async def create_user(message: types.Message):

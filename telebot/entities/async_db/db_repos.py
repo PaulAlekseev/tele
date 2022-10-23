@@ -61,4 +61,4 @@ class AIOUserRepository:
                 self.model.tele_id == user_tele_id
             )
         )
-        return user.scalars()
+        return user.first()
