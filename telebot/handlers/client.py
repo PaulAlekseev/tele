@@ -40,7 +40,7 @@ async def get_user(message: types.Message):
             user = await user_repo.get_user(
                 user_specification=AIOUserDateSpecification(datetime.date.today()),
             )
-            await bot.send_message(message.from_user.id, [(item.id, item.tele_id, item.created,) for item in user])
+            await bot.send_message(message.from_user.id, (user.id, user.created, user.tele_id))
 
 
 async def start_scan(message: types.Message):
@@ -65,8 +65,12 @@ async def get_scans(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             scan_repo = AIOScanRepo(session)
+            user_repo = AIOUserRepository(session)
+            user = await user_repo.get_user(AIOUserTeleIdSpecification(message.from_user.id))
             scans = await scan_repo.get_with(
-                AIOScanDateUserSpecification(message.from_user.id, datetime.date.today())
+                AIOScanDateUserSpecification(
+                    user_id=user.id,
+                    scan_date=datetime.date.today())
             )
             await bot.send_message(message.from_user.id, [(item.id, item.file_id, item.file_path,) for item in scans])
 
