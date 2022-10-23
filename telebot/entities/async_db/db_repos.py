@@ -56,7 +56,7 @@ class AIOUserRepository:
         await self.db_session.flush()
         return new_user
 
-    async def get_user(self, user_specification: AIOUserSpecification) -> User:
+    async def get_user(self, user_specification: AIOUserSpecification) -> list:
         user = await self.db_session.execute(
             select(self.model).filter(
                 user_specification.is_satisfied()
