@@ -76,7 +76,7 @@ async def get_scans(message: types.Message):
 
 
 async def trigger_scan(message: types.Message):
-    validate()
+    validate.delay()
 
 
 # async def create_user(message: types.Message):
