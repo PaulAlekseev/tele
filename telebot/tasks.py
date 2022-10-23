@@ -1,8 +1,11 @@
 import asyncio
+import multiprocessing
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 from bot import bot
 from celery_app import app
+from entities.async_db.db_specifications import ScanIdSpecification
 from entities.db.db_repos import CredentialsRepository, ScanRepository
 from entities.db.db_tables import Scan
 from entities.user import User
@@ -19,9 +22,19 @@ def add(message: str):
 @app.task
 def validate(scan_id: int, user_id):
     sync_send_message(message=f"Your scan {scan_id}, has been started", chat_id=user_id)
-    time.sleep(10)
-    print(scan_id)
-    sync_send_message(message=f"Your scan {scan_id}, has been completed", chat_id=user_id)
+    # Getting data from document
+    scan_repo = ScanRepository()
+    scan = scan_repo.get(
+        ScanIdSpecification(scan_id=scan_id)
+    )
+
+    sync_send_message(message=f"""Scan file id: {scan.file_id}
+Scan file path: {scan.file_path}
+""", chat_id=user_id)
+
+    # cpu_count = multiprocessing.cpu_count()
+    # with ThreadPoolExecutor(max_workers=cpu_count-2 if cpu_count>3 else cpu_count) as executor:
+    #     for item in
 
 
 async def send_message(message, chat_id):

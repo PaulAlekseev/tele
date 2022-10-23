@@ -16,7 +16,7 @@ class CredentialsRepository:
         session.add(obj)
         session.commit()
 
-    def add_or_update(self, url, login, password, scan_id):
+    def add(self, url, login, password, scan_id):
         with Session(bind=engine) as session:
             try:
                 credentials = session.query(self.model).filter(
@@ -122,13 +122,13 @@ class ScanRepository:
 class DomainRepository:
     model = Domain
 
-    def add_once(self, domains_data: dict, credentials_id: int):
+    def add_or_update(self, data: dict, credentials_id: int):
         with Session(bind=engine) as session:
             credentials = session.query(self.model).filter(
                 self.model.credential_id == credentials_id
             ).first()
-            if not credentials and domains_data.get('domains'):
-                for item in domains_data['domains'].values():
+            if not credentials and data.get('domains'):
+                for item in data['domains'].values():
                     email = item.get('email')
                     if not isinstance(email, bool):
                         email = 'No Info'
@@ -145,15 +145,18 @@ class DomainRepository:
                             email_dns = 'Valid'
                         else:
                             email_dns = 'Not Valid'
-                    session.add(self.model(
+                    result_model = self.model(
                         domain=item['domain'],
                         type=item['type'],
                         status=item['ssl_status'],
                         email=email,
                         email_dns=email_dns,
                         credential_id=credentials_id,
-                    ))
-                session.commit()
+                    )
+                    if credentials:
+                        result_model.id = credentials
+                    session.add(result_model)
+                    session.commit()
 
 
 class CredentialDomainRepository:

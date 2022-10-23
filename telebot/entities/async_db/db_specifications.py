@@ -16,6 +16,14 @@ class UserSpecification(Specification):
     model = User
 
 
+class ScanIdSpecification(ScanSpecification):
+    def __init__(self, scan_id: int):
+        self._scan_id = scan_id
+
+    def is_satisfied(self):
+        return self.model.id == self._scan_id
+
+
 class ScanDateUserSpecification(ScanSpecification):
     def __init__(self, user_id: int, scan_date: date):
         self._user_id = user_id
