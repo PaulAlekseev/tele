@@ -54,10 +54,11 @@ class AIOUserRepository:
         await self.db_session.flush()
         return new_user
 
-    async def get_user(self, user_specification: AIOUserSpecification) -> User:
+    async def get_user(self, user_specification: AIOUserSpecification, user_tele_id) -> User:
         user = await self.db_session.execute(
             select(self.model).filter(
-                *user_specification.is_satisfied()
+                # *user_specification.is_satisfied()
+                self.model.tele_id ==
             )
         )
         return user.scalars()
