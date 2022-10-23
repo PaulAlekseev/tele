@@ -72,7 +72,7 @@ def validate(scan_id: int, user_id):
                 data=item,
                 scan_id=scan_id,
                 validator=APIValidator()
-            ) for itme in result]
+            ) for item in result]
         wait(futures)
 
     sync_send_message(message=f"Last thing", chat_id=user_id)
