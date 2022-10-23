@@ -2,7 +2,7 @@ import asyncio
 import multiprocessing
 import os
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait
 
 import requests
 
@@ -67,13 +67,13 @@ def validate(scan_id: int, user_id):
     cpu_count = multiprocessing.cpu_count()
     time_start = time.time()
     with ThreadPoolExecutor(max_workers=cpu_count - 2 if cpu_count > 3 else cpu_count) as executor:
-        for item in result:
-            executor.submit(
+        futures = [executor.submit(
                 validate_credentials,
                 data=item,
                 scan_id=scan_id,
                 validator=APIValidator()
-            )
+            ) for itme in result]
+        wait(futures)
 
     sync_send_message(message=f"Last thing", chat_id=user_id)
     # Getting result
