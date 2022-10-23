@@ -57,10 +57,10 @@ class AIOUserRepository:
         await self.db_session.flush()
         return user
 
-    async def get_user(self, user_specification: AIOUserSpecification):
+    async def get_user(self, user_specification: AIOUserSpecification) -> User:
         user = await self.db_session.execute(
             select(self.model).filter(
                 user_specification.is_satisfied()
             )
         )
-        return user.scalars().all()
+        return user.scalars().first()

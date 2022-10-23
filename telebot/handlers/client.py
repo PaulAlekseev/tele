@@ -47,9 +47,13 @@ async def start_scan(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             scan_repo = AIOScanRepo(session)
+            user_repo = AIOUserRepository(session)
             file = await bot.get_file(message.document.file_id)
+            user = await user_repo.get_user(AIOUserTeleIdSpecification(
+                user_tele_id=message.from_user.id
+            ))
             scan = await scan_repo.create(
-                user_id=message.from_user.id,
+                user_id=user.id,
                 file_path=file.file_path,
                 file_id=file.file_id,
             )
