@@ -104,10 +104,6 @@ def gather_whm_domains(data: dict):
         return None
 
 
-def create_file_url(file_path: str) -> str:
-    return f"{FILE_API_URL}{os.getenv('BOT_TOKEN')}/{file_path}"
-
-
 def validate(data, scan_id):
     try:
         user = User(data)

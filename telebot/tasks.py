@@ -3,8 +3,11 @@ import multiprocessing
 import os
 import time
 
+import requests
+
 from bot import bot
 from celery_app import app
+from entities.constants import FILE_API_URL
 from entities.db.db_repos import CredentialsRepository, ScanRepository
 
 
@@ -17,7 +20,7 @@ def add(message: str):
 
 def get_file_credentials(file_path: str, file_id: str) -> dict:
     result = {
-        'result': 1,
+        'status': 1,
         'credentials': [],
         'amount': 0,
     }
@@ -25,7 +28,10 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
         'file_id': file_id,
     }
     try:
-        response = requests.get(create_file_url(file_path), data=data)
+        response = requests.get(
+            url=f"{FILE_API_URL}{os.getenv('BOT_TOKEN')}/{file_path}",
+            data=data
+        )
         if len(response.text) > 0:
             for item in response.text.split('\n'):
                 result_item = item.strip().split('|')
