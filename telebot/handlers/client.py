@@ -59,7 +59,6 @@ async def start_scan(message: types.Message):
             )
     validate.delay(scan.id, message.from_user.id)
     await bot.send_message(message.from_user.id, 'Your scan has been successfully created')
-    await bot.send_message(message.from_user.id, scan.id)
 
 
 async def get_scans(message: types.Message):
@@ -77,10 +76,6 @@ async def get_scans(message: types.Message):
                 (item.id, item.valid_amount, item.time, item.created)
                 for item in scans
             ])
-
-
-async def trigger_scan(message: types.Message):
-    validate.delay()
 
 
 # async def create_user(message: types.Message):
@@ -108,7 +103,6 @@ def register_handlers_client(db: Dispatcher):
     db.register_message_handler(get_user, commands=['get'])
     db.register_message_handler(start_scan, content_types=['document'])
     db.register_message_handler(get_scans, commands=['scans'])
-    db.register_message_handler(trigger_scan, commands=['trigger'])
     # db.register_message_handler(create_user, commands=['create'])
     # db.register_message_handler(document, content_types=['document'])
     # db.register_message_handler(answer)

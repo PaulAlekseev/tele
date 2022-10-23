@@ -33,7 +33,6 @@ class CredentialsRepository:
             self._save_object(session, credentials)
             session.refresh(credentials)
             session.expunge(credentials)
-            print('EXITING THE THING LOL XD')
             return credentials
 
     def get_by_date(self, requested_date: datetime.date):
