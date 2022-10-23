@@ -108,7 +108,7 @@ class ScanRepository:
         with Session(bind=engine) as session:
             scan = session.query(self.model).filter(
                 scan_specification.is_satisfied()
-            )
+            ).all()
         return scan
 
     def get_latest(self) -> Scan:
