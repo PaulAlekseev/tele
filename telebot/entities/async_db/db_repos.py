@@ -24,9 +24,11 @@ class AIOScanRepo:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    async def create(self, user_id: int):
+    async def create(self, user_id: int, file_id: str, file_path):
         new_scan = self.model(
             user_id=user_id,
+            file_id=file_id,
+            file_path=file_path
         )
         scan = await self.db_session.add(new_scan)
         return scan
@@ -37,7 +39,7 @@ class AIOScanRepo:
                 *scan_specification.is_satisfied()
             )
         )
-        return credentials.all()
+        return credentials.scalars().all()
 
 
 class AIOUserRepository:

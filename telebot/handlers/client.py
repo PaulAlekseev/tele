@@ -57,6 +57,11 @@ async def document(message: types.Message):
     await bot.send_message(message.from_user.id, file.file_id)
 
 
+# async def get_document(message: types.Message):
+#
+#     await bot.send_message(message.from_user.id, )
+
+
 def register_handlers_client(db: Dispatcher):
     db.register_message_handler(db_answer, commands=['start'])
     db.register_message_handler(get_user, commands=['get'])
