@@ -24,37 +24,37 @@ from tasks import validate, request
 async def db_answer(message: types.Message):
     async with async_session() as session:
         async with session.begin():
-            credentials_repo = AIOCredentialRepo(session)
-            scan_repo = AIOScanRepo(session)
-            scan_result = await scan_repo.get_with(AIOScanDateUserSpecification(1, datetime.date.today()))
-            await bot.send_message(message.from_user.id, [(item.url, item.login, item.password) for item in
-                                                          (await credentials_repo.get_all_credentials())[0]])
-            await bot.send_message(message.from_user.id, scan_result)
-
-
-async def get_user(message: types.Message):
-    async with async_session() as session:
-        async with session.begin():
+            # Creating user row in database
             user_repo = AIOUserRepository(session)
-            user = await user_repo.get_user(
-                user_specification=AIOUserTeleIdSpecification(message.from_user.id),
-            )
-            await bot.send_message(message.from_user.id, [(item.id, item.created, ) for item in user])
+            await user_repo.create(message.from_user.id)
+
+            # answer
+            await bot.send_message(message.from_user.id, 'Your account has been successfully created')
 
 
-async def create_user(message: types.Message):
-    async with async_session() as session:
-        async with session.begin():
-            user_repo = AIOUserRepository(session)
-            user = await user_repo.create(message.from_user.id)
-            await bot.send_message(message.from_user.id, 'User created!')
-            await bot.send_message(message.from_user.id, user.id)
+# async def get_user(message: types.Message):
+#     async with async_session() as session:
+#         async with session.begin():
+#             user_repo = AIOUserRepository(session)
+#             user = await user_repo.get_user(
+#                 user_specification=AIOUserTeleIdSpecification(message.from_user.id),
+#             )
+#             await bot.send_message(message.from_user.id, [(item.id, item.created, ) for item in user])
+#
+#
+# async def create_user(message: types.Message):
+#     async with async_session() as session:
+#         async with session.begin():
+#             user_repo = AIOUserRepository(session)
+#             user = await user_repo.create(message.from_user.id)
+#             await bot.send_message(message.from_user.id, 'User created!')
+#             await bot.send_message(message.from_user.id, user.id)
 
 
-async def document(message: types.Message):
-    file = await bot.get_file(message.document.file_id)
-    await bot.send_message(message.from_user.id, file.file_path)
-    await bot.send_message(message.from_user.id, file.file_id)
+# async def document(message: types.Message):
+#     file = await bot.get_file(message.document.file_id)
+#     await bot.send_message(message.from_user.id, file.file_path)
+#     await bot.send_message(message.from_user.id, file.file_id)
 
 
 # async def get_document(message: types.Message):
