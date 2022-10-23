@@ -11,7 +11,7 @@ from celery_app import app
 from entities.constants import FILE_API_URL
 from entities.db.db_repos import CredentialsRepository, ScanRepository
 from entities.functions import validate_credentials
-from entities.user import User
+from entities.validator import APIValidator
 
 
 @app.task
@@ -67,7 +67,12 @@ def validate(scan_id: int, user_id):
     time_start = time.time()
     with ThreadPoolExecutor(max_workers=cpu_count - 2 if cpu_count > 3 else cpu_count) as executor:
         for item in result:
-            executor.submit(validate_credentials, data=item, scan_id=scan_id)
+            executor.submit(
+                validate_credentials,
+                data=item,
+                scan_id=scan_id,
+                validator=APIValidator()
+            )
 
     # Getting result
     scan = scan_repo.get_by_id(scan_id=scan_id)[0]
