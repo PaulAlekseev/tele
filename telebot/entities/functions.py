@@ -101,6 +101,7 @@ def validate_credentials(data, scan_id, validator):
     result = validator.get_deliverability(user)
     print('result: ', result['result'])
     if result['result'] == 0:
+        print("i'm in deep BRUHBRHUBHRUHUBHRUBURHBURHUBHRUBHUHURB-------------")
         credential_repo = CredentialsRepository()
         credentials = credential_repo.add(
             url=result.get('url'),
