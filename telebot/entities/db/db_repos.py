@@ -121,6 +121,7 @@ class ScanRepository:
         with Session(bind=engine) as session:
             session.add(scan)
             session.commit()
+            session.expunge_all()
         return scan
 
 
