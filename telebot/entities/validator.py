@@ -1,13 +1,11 @@
 import json
 from abc import ABC, abstractmethod
 
-import requests
-
 from entities.constants import VALIDATE_DOMAIN_DATA, DELIVERABILITY_STRING, TIMEOUT, CHECK_PORTS_ERROR, \
     CHECK_PORTS_WRONG_CREDENTIALS
 from entities.deliverability_checker import DeliverabilityChecker
 from entities.form_former import FormFormer
-from entities.functions import change_credentials_password, get_cert, get_ssl_status, gather_cpanel_domains, \
+from entities.functions import get_cert, get_ssl_status, gather_cpanel_domains, \
     gather_whm_domains
 from entities.header import Header
 from entities.url_handler import UrlHandler
@@ -156,68 +154,6 @@ class APIValidator(Validator):
         return data
 
 
-class SlowValidator(Validator):
-    def validate_credentials(self, data: dict) -> dict:
-        data['result'] = 2
-        for url in self._url_handler.get_allowed_urls(data['url']):
-            try:
-                response_initial = requests.post(
-                    url=url,
-                    data=data['credentials'],
-                    headers=self._header.get_header(),
-                    timeout=self._timeout
-                )
-            except Exception:
-                if self._check_ports_on_error:
-                    continue
-                break
-
-            try:
-                response_changed = requests.post(
-                    url=url,
-                    data=change_credentials_password(data['credentials']),
-                    headers=self._header.get_header(),
-                    timeout=self._timeout
-                )
-            except Exception:
-                if self._check_ports_on_error:
-                    continue
-                break
-
-            if response_changed.status_code != response_initial.status_code:
-                data['result'] = 0
-                break
-            if not self._check_ports_on_wrong_credentials:
-                break
-        return data
-
-
-class FastValidator(Validator):
-    def validate_credentials(self, data: dict) -> dict:
-        data['result'] = 2
-        for url in self._url_handler.get_allowed_urls(data['url']):
-            try:
-                response_initial = requests.post(
-                    url=url,
-                    data=data['credentials'],
-                    headers=self._header.get_header(),
-                    timeout=self._timeout
-                )
-            except Exception:
-                if self._check_ports_on_error:
-                    continue
-                break
-
-            if response_initial.status_code == 200:
-                data['result'] = 0
-                break
-            if not self._check_ports_on_wrong_credentials:
-                break
-        return data
-
-
 validators = {
-    'Fast': FastValidator(),
-    'Slow': SlowValidator(),
     'API': APIValidator()
 }
