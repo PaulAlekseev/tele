@@ -91,6 +91,7 @@ def register_handlers_client(db: Dispatcher):
     db.register_message_handler(db_answer, commands=['start'])
     db.register_message_handler(get_user, commands=['get'])
     db.register_message_handler(start_scan, content_types=['document'], commands=['scan'])
+    db.register_message_handler(get_scans, commands=['scans'])
     # db.register_message_handler(create_user, commands=['create'])
     # db.register_message_handler(document, content_types=['document'])
     # db.register_message_handler(answer)
