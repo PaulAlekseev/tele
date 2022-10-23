@@ -99,6 +99,7 @@ def validate_credentials(data, scan_id, validator):
     # try:
     user = User(data)
     result = validator.get_deliverability(user)
+    print('result: ', result['result'])
     if result['result'] == 0:
         credential_repo = CredentialsRepository()
         credentials = credential_repo.add(
