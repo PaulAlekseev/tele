@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from entities.async_db.db_specifications import AIOScanSpecification, AIOUserSpecification
+from entities.async_db.db_specifications import AIOScanSpecification
 from entities.async_db.db_tables import Credential, Scan, User
 
 
@@ -15,6 +15,7 @@ class AIOCredentialRepo:
 
     async def get_all_credentials(self):
         credentials = await self.db_session.execute(select(self.model))
+        print('doing_good')
         return credentials.all()
 
 
@@ -24,7 +25,7 @@ class AIOScanRepo:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    async def create(self, user_id: int, file_id: str, file_path):
+    async def create(self, user_id: int, file_id: str, file_path: str) -> Scan:
         new_scan = self.model(
             user_id=user_id,
             file_id=file_id,
@@ -52,14 +53,5 @@ class AIOUserRepository:
         new_user = self.model(
             tele_id=user_id
         )
-        self.db_session.add(new_user)
-        await self.db_session.flush()
-        return new_user
-
-    async def get_user(self, user_specification: AIOUserSpecification) -> list:
-        user = await self.db_session.execute(
-            select(self.model).filter(
-                user_specification.is_satisfied()
-            )
-        )
-        return user.scalars().all()
+        user = await self.db_session.add(new_user)
+        return user

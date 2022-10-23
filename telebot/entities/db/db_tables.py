@@ -40,7 +40,12 @@ class Domain(Base):
 class Scan(Base):
     __tablename__ = 'scan'
     id = Column(Integer, primary_key=True)
+
+    # DATABASE USE ID
+    # NOT TELEGRAM ID
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    file_id = Column(String(200), nullable=False)
+    file_path = Column(String(200), nullable=False)
     valid_amount = Column(Integer)
     time = Column(Integer)
     created = Column(Date, default=date.today)

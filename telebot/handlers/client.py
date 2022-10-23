@@ -41,8 +41,22 @@ async def get_user(message: types.Message):
                 user_specification=AIOUserDateSpecification(datetime.date.today()),
             )
             await bot.send_message(message.from_user.id, [(item.id, item.tele_id, item.created, ) for item in user])
-#
-#
+
+
+async def start_scan(message: types.Message):
+    async with async_session() as session:
+        async with session.begin():
+            scan_repo = AIOScanRepo(session)
+            file = await bot.get_file(message.document.file_id)
+            scan = await scan_repo.create(
+                user_id=message.from_user.id,
+                file_path=file.file_path,
+                file_id = file.file_id,
+            )
+            await bot.send_message(message.from_user.id, 'Your scan has been successfully created')
+            await bot.send_message(message.from_user.id, (scan.id, scan.file_path, scan.file_id))
+
+
 # async def create_user(message: types.Message):
 #     async with async_session() as session:
 #         async with session.begin():
