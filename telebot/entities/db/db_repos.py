@@ -117,6 +117,12 @@ class ScanRepository:
             ).first()
         return scan
 
+    def update(self, scan: Scan) -> Scan:
+        with Session(bind=engine) as session:
+            session.add(scan)
+            session.commit()
+        return scan
+
 
 class DomainRepository:
     model = Domain

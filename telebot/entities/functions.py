@@ -104,7 +104,7 @@ def gather_whm_domains(data: dict):
         return None
 
 
-def validate(data, scan_id):
+def validate_credentials(data, scan_id):
     try:
         user = User(data)
         validator = APIValidator()
