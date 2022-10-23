@@ -40,7 +40,7 @@ class AIOScanRepo:
                 *scan_specification.is_satisfied()
             )
         )
-        return credentials.all()
+        return credentials.scalars().all()
 
 
 class AIOUserRepository:

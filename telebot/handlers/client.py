@@ -40,7 +40,7 @@ async def get_user(message: types.Message):
             user = await user_repo.get_user(
                 user_specification=AIOUserDateSpecification(datetime.date.today()),
             )
-            await bot.send_message(message.from_user.id, [(item.id, item.tele_id, item.created, ) for item in user])
+            await bot.send_message(message.from_user.id, [(item.id, item.tele_id, item.created,) for item in user])
 
 
 async def start_scan(message: types.Message):
@@ -51,10 +51,20 @@ async def start_scan(message: types.Message):
             scan = await scan_repo.create(
                 user_id=message.from_user.id,
                 file_path=file.file_path,
-                file_id = file.file_id,
+                file_id=file.file_id,
             )
             await bot.send_message(message.from_user.id, 'Your scan has been successfully created')
             await bot.send_message(message.from_user.id, (scan.id, scan.file_path, scan.file_id))
+
+
+async def get_scans(message: types.Message):
+    async with async_session() as session:
+        async with session.begin():
+            scan_repo = AIOScanRepo(session)
+            scans = await scan_repo.get_with(
+                AIOScanDateUserSpecification(message.from_user.id, datetime.date.today())
+            )
+            await bot.send_message(message.from_user.id, [(item.id, item.file_id, item.file_path,) for item in scans])
 
 
 # async def create_user(message: types.Message):
@@ -80,8 +90,7 @@ async def start_scan(message: types.Message):
 def register_handlers_client(db: Dispatcher):
     db.register_message_handler(db_answer, commands=['start'])
     db.register_message_handler(get_user, commands=['get'])
-    db.register_message_handler(start_scan, commands=['scan'])
+    db.register_message_handler(start_scan, content_types=['document'], commands=['scan'])
     # db.register_message_handler(create_user, commands=['create'])
     # db.register_message_handler(document, content_types=['document'])
     # db.register_message_handler(answer)
-
