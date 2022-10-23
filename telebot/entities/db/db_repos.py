@@ -119,10 +119,11 @@ class ScanRepository:
 
     def update(self, scan: Scan) -> Scan:
         with Session(bind=engine) as session:
-            session.add(scan)
+            scan_result = scan
+            session.add(scan_result)
             session.commit()
-            session.expunge(scan)
-        return scan
+            session.expunge_all()
+        return scan_result
 
 
 class DomainRepository:
