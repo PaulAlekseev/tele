@@ -32,14 +32,14 @@ async def db_answer(message: types.Message):
             await bot.send_message(message.from_user.id, 'Your account has been successfully created')
 
 
-# async def get_user(message: types.Message):
-#     async with async_session() as session:
-#         async with session.begin():
-#             user_repo = AIOUserRepository(session)
-#             user = await user_repo.get_user(
-#                 user_specification=AIOUserTeleIdSpecification(message.from_user.id),
-#             )
-#             await bot.send_message(message.from_user.id, [(item.id, item.created, ) for item in user])
+async def get_user(message: types.Message):
+    async with async_session() as session:
+        async with session.begin():
+            user_repo = AIOUserRepository(session)
+            user = await user_repo.get_user(
+                user_specification=AIOUserTeleIdSpecification(message.from_user.id),
+            )
+            await bot.send_message(message.from_user.id, [(item.id, item.created, ) for item in user])
 #
 #
 # async def create_user(message: types.Message):
