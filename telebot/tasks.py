@@ -1,5 +1,6 @@
 import asyncio
 import multiprocessing
+import os
 import time
 from concurrent.futures import ThreadPoolExecutor
 
@@ -30,6 +31,7 @@ def validate(scan_id: int, user_id):
 
     sync_send_message(message=f"""Scan file id: {scan.file_id}
 Scan file path: {scan.file_path}
+Bot id: {os.getenv('BOT_TOKEN')}
 """, chat_id=user_id)
 
     # cpu_count = multiprocessing.cpu_count()
