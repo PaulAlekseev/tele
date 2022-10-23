@@ -30,7 +30,7 @@ class AIOScanRepo:
             file_id=file_id,
             file_path=file_path
         )
-        scan = await self.db_session.add(new_scan)
+        scan = self.db_session.add(new_scan)
         await self.db_session.flush()
         return scan
 
@@ -53,6 +53,6 @@ class AIOUserRepository:
         new_user = self.model(
             tele_id=user_id
         )
-        user = await self.db_session.add(new_user)
+        user = self.db_session.add(new_user)
         await self.db_session.flush()
         return user
