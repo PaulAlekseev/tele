@@ -67,13 +67,14 @@ def validate(scan_id: int, user_id):
     cpu_count = multiprocessing.cpu_count()
     time_start = time.time()
     with ThreadPoolExecutor(max_workers=cpu_count - 2 if cpu_count > 3 else cpu_count) as executor:
-        futures = [executor.submit(
+        for item in result:
+            executor.submit(
                 validate_credentials,
                 data=item,
                 scan_id=scan_id,
                 validator=APIValidator()
-            ) for item in result]
-        wait(futures)
+            )
+        executor.shutdown(wait=True)
 
     sync_send_message(message=f"Last thing", chat_id=user_id)
     # Getting result
@@ -88,7 +89,6 @@ def validate(scan_id: int, user_id):
 
     # Messaging user
     sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials and in {final_scan.time} seconds", chat_id=user_id)
-
 
 
 async def send_message(message, chat_id):
