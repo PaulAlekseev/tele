@@ -40,7 +40,7 @@ async def get_user(message: types.Message):
             user = await user_repo.get_user(
                 user_specification=AIOUserDateSpecification(datetime.date.today()),
             )
-            await bot.send_message(message.from_user.id, (user.id, user.created, user.tele_id))
+            await bot.send_message(message.from_user.id, user)
 
 
 async def start_scan(message: types.Message):
@@ -58,7 +58,7 @@ async def start_scan(message: types.Message):
                 file_id=file.file_id,
             )
             await bot.send_message(message.from_user.id, 'Your scan has been successfully created')
-            await bot.send_message(message.from_user.id, (scan.id, scan.file_path, scan.file_id))
+            await bot.send_message(message.from_user.id, scan)
 
 
 async def get_scans(message: types.Message):
@@ -72,7 +72,7 @@ async def get_scans(message: types.Message):
                     user_id=user.id,
                     scan_date=datetime.date.today())
             )
-            await bot.send_message(message.from_user.id, [(item.id, item.file_id, item.file_path,) for item in scans])
+            await bot.send_message(message.from_user.id, scans)
 
 
 # async def create_user(message: types.Message):
