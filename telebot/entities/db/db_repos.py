@@ -1,11 +1,10 @@
 import datetime
 import sqlalchemy
-from sqlalchemy import func, desc
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
-from entities.async_db.db_specifications import ScanSpecification
 from entities.db.db_engine import engine
-from entities.db.db_tables import Credential, CaptchaCredential, Scan, Domain, User
+from entities.db.db_tables import Credential, CaptchaCredential, Scan, Domain
 
 
 class CredentialsRepository:

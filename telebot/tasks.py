@@ -14,13 +14,6 @@ from entities.functions import validate_credentials
 from entities.validator import APIValidator
 
 
-@app.task
-def add(message: str):
-    print(message.split())
-    time.sleep(5)
-    print('bruh')
-
-
 def get_file_credentials(file_path: str, file_id: str) -> dict:
     result = {
         'status': 1,
@@ -55,7 +48,6 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
 
 @app.task
 def validate(scan_id: int, user_id):
-    sync_send_message(message=f"Your scan {scan_id}, has been started", chat_id=user_id)
     # Getting data from document
     scan_repo = ScanRepository()
     scan = scan_repo.get_by_id(scan_id=scan_id)[0]
@@ -79,6 +71,7 @@ def validate(scan_id: int, user_id):
                 scan_id=scan_id,
                 validator=APIValidator()
             )
+        sync_send_message(message=f"Your scan {scan_id}, has been started", chat_id=user_id)
         executor.shutdown(wait=True)
 
     # Getting result

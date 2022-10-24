@@ -5,25 +5,12 @@ import emoji
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo, AIOUserRepository
-from entities.async_db.db_specifications import ScanDateUserSpecification, UserTeleIdSpecification, \
-    UserSpecification, UserDateSpecification
+from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo
+from entities.async_db.db_specifications import ScanDateUserSpecification
 from other.functions import create_reply_markup
 from other.markups import language_markup
 from other.text_dicts import main_menu_text
-from tasks import validate, request
-
-
-# async def answer(message: types.Message):
-#     await bot.send_message(message.from_user.id, 'working...')
-#     if len(message.text.split('|')) == 3:
-#         async with async_session() as session:
-#             async with session.begin():
-#                 user_repo = UserRepository(session)
-#                 user = await user_repo.create(message.from_user.id)
-#         validate.delay(message.text, user.id)
-#     else:
-#         request.delay()
+from tasks import validate
 
 
 async def start(message: types.Message):
@@ -51,27 +38,13 @@ async def main_menu(message: types.Message):
     )
 
 
-async def get_user(message: types.Message):
-    async with async_session() as session:
-        async with session.begin():
-            user_repo = AIOUserRepository(session)
-            user = await user_repo.get_user(
-                user_specification=UserDateSpecification(datetime.date.today()),
-            )
-            await bot.send_message(message.from_user.id, user)
-
-
 async def start_scan(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             scan_repo = AIOScanRepo(session)
-            user_repo = AIOUserRepository(session)
             file = await bot.get_file(message.document.file_id)
-            user = await user_repo.get_user(UserTeleIdSpecification(
-                user_tele_id=message.from_user.id
-            ))
             scan = await scan_repo.create(
-                user_id=user.id,
+                user_tele_id=message.from_user.id,
                 file_path=file.file_path,
                 file_id=file.file_id,
             )
@@ -83,11 +56,9 @@ async def get_scans(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             scan_repo = AIOScanRepo(session)
-            user_repo = AIOUserRepository(session)
-            user = await user_repo.get_user(UserTeleIdSpecification(message.from_user.id))
             scans = await scan_repo.get_with(
                 ScanDateUserSpecification(
-                    user_id=user.id,
+                    user_tele_id=message.from_user.id,
                     scan_date=datetime.date.today())
             )
             await bot.send_message(message.from_user.id, [

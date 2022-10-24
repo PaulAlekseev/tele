@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, Column, Date, ForeignKey
+from sqlalchemy import String, Integer, Column, Date, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base
 from datetime import date
 
@@ -43,16 +43,10 @@ class Scan(Base):
 
     # DATABASE USE ID
     # NOT TELEGRAM ID
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    tele_id = Column(String(200), nullable=False)
     file_id = Column(String(200), nullable=False)
     file_path = Column(String(200), nullable=False)
-    valid_amount = Column(Integer)
-    time = Column(Integer)
-    created = Column(Date, default=date.today)
-
-
-class User(Base):
-    __tablename__ = 'user'
-    id = Column(Integer, primary_key=True)
-    tele_id = Column(Integer, nullable=False)
+    validated = Column(Boolean)
+    valid_amount = Column(Integer, default=0)
+    time = Column(Integer, default=0)
     created = Column(Date, default=date.today)
