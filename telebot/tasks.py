@@ -31,6 +31,7 @@ async def get_file_credentials(file_path: str, file_id: str) -> dict:
                 data=data
             ) as response:
                 response_test = await response.text()
+                print(response_test)
                 if len(response_test) > 0:
                     for item in response_test.split('\n'):
                         result_item = item.strip().split('|')
