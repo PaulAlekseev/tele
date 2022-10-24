@@ -1,7 +1,7 @@
 from typing import List
 
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from aiogram.utils import emoji
+import emoji
 
 
 def create_reply_markup(

@@ -1,5 +1,5 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from aiogram.utils import emoji
+import emoji
 
 from other.text_dicts import main_menu_text
 
