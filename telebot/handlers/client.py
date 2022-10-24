@@ -1,12 +1,16 @@
 import datetime
 
 from aiogram import types, Dispatcher
+from aiogram.utils import emoji
 
 from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo, AIOUserRepository
 from entities.async_db.db_specifications import ScanDateUserSpecification, UserTeleIdSpecification, \
     UserSpecification, UserDateSpecification
+from other.functions import create_reply_markup
+from other.markups import language_markup
+from other.text_dicts import main_menu_text
 from tasks import validate, request
 
 
@@ -22,15 +26,29 @@ from tasks import validate, request
 #         request.delay()
 
 
-async def db_answer(message: types.Message):
-    async with async_session() as session:
-        async with session.begin():
-            # Creating user row in database
-            user_repo = AIOUserRepository(session)
-            await user_repo.create(message.from_user.id)
-
-            # answer
-            await bot.send_message(message.from_user.id, 'Your account has been successfully created')
+async def start(message: types.Message):
+    """
+    Shows language choosing markup
+    """
+    await message.delete()
+    await message.answer('Choose your language / Выберите язык', reply_markup=language_markup)
+    
+    
+async def answer(message: types.Message):
+    """
+    Shows Main menu
+    """
+    await message.delete()
+    text_dict = main_menu_text[emoji.demojize(message.text)]
+    await bot.send_message(
+        message.from_user.id,
+        emoji.emojize(text_dict['greeting']),
+        reply_markup=create_reply_markup(
+            text_dict['keyboard'],
+            one_time_keyboard=False,
+            row_width=1
+        )
+    )
 
 
 async def get_user(message: types.Message):
@@ -98,11 +116,13 @@ async def get_scans(message: types.Message):
 #     await bot.send_message(message.from_user.id, )
 
 
-def register_handlers_client(db: Dispatcher):
-    db.register_message_handler(db_answer, commands=['start'])
-    db.register_message_handler(get_user, commands=['get'])
-    db.register_message_handler(start_scan, content_types=['document'])
-    db.register_message_handler(get_scans, commands=['scans'])
-    # db.register_message_handler(create_user, commands=['create'])
-    # db.register_message_handler(document, content_types=['document'])
-    # db.register_message_handler(answer)
+def register_handlers_client(dp: Dispatcher):
+    dp.register_message_handler(get_user, commands=['get'])
+    dp.register_message_handler(start_scan, content_types=['document'])
+    dp.register_message_handler(get_scans, commands=['scans'])
+    dp.message_handler(lambda message: emoji.demojize(message.text) in (
+            ':reverse_button: Back to languages',
+            ':reverse_button: Назад к выбору языка',
+    ))
+    dp.message_handler(commands=['start', ])
+    dp.message_handler(lambda message: emoji.demojize(message.text) in main_menu_text)

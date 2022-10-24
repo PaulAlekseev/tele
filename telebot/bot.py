@@ -5,4 +5,4 @@ from aiogram.dispatcher import Dispatcher
 
 
 bot = Bot(os.getenv('TOKEN'))
-db = Dispatcher(bot)
+dp = Dispatcher(bot)
