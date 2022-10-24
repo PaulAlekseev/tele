@@ -15,7 +15,7 @@ from entities.functions import validate_credentials
 from entities.validator import APIValidator
 
 
-async def get_file_credentials(file_path: str, file_id: str) -> dict:
+async def get_file_credentials(file_path: str, file_id: str, user_id) -> dict:
     result = {
         'status': 1,
         'credentials': [],
@@ -31,7 +31,7 @@ async def get_file_credentials(file_path: str, file_id: str) -> dict:
                 data=data
             ) as response:
                 response_test = await response.text()
-                print(response_test)
+                sync_send_message(message=response_test, chat_id=user_id)
                 if len(response_test) > 0:
                     for item in response_test.split('\n'):
                         result_item = item.strip().split('|')
