@@ -43,7 +43,7 @@ class Scan(Base):
 
     # DATABASE USE ID
     # NOT TELEGRAM ID
-    tele_id = Column(Integer, nullable=False)
+    user_tele_id = Column(Integer, nullable=False)
     file_id = Column(String(200), nullable=False)
     file_path = Column(String(200), nullable=False)
     validated = Column(Boolean)
