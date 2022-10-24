@@ -1,7 +1,7 @@
 import datetime
 
 from aiogram import types, Dispatcher
-from aiogram.utils import emoji
+import emoji
 
 from bot import bot
 from entities.async_db.db_engine import async_session
