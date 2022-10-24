@@ -34,7 +34,7 @@ async def start(message: types.Message):
     await message.answer('Choose your language / Выберите язык', reply_markup=language_markup)
     
     
-async def answer(message: types.Message):
+async def main_menu(message: types.Message):
     """
     Shows Main menu
     """
@@ -120,9 +120,9 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(get_user, commands=['get'])
     dp.register_message_handler(start_scan, content_types=['document'])
     dp.register_message_handler(get_scans, commands=['scans'])
-    dp.message_handler(lambda message: emoji.demojize(message.text) in (
+    dp.register_message_handler(start, lambda message: emoji.demojize(message.text) in (
             ':reverse_button: Back to languages',
             ':reverse_button: Назад к выбору языка',
     ))
-    dp.message_handler(commands=['start', ])
-    dp.message_handler(lambda message: emoji.demojize(message.text) in main_menu_text)
+    dp.register_message_handler(start, commands=['start', ])
+    dp.register_message_handler(main_menu, lambda message: emoji.demojize(message.text) in main_menu_text)
