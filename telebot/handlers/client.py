@@ -50,8 +50,6 @@ async def start_scan(message: types.Message):
                 file_id=file.file_id,
             )
     # validate.delay(scan.id, message.from_user.id)
-    scan_repo = ScanRepository()
-    scan = scan_repo.get_by_id(scan_id=scan.id)[0]
     file_result = get_file_credentials(file_path=scan.file_path, file_id=scan.file_id)
     if file_result['status'] > 1:
         scan.validated = True
