@@ -7,10 +7,11 @@ from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo
 from entities.async_db.db_specifications import ScanDateUserSpecification
+from entities.db.db_repos import ScanRepository
 from other.functions import create_reply_markup
 from other.markups import language_markup
 from other.text_dicts import main_menu_text
-from tasks import validate
+from tasks import validate, get_file_credentials, validate_short
 
 
 async def start(message: types.Message):
@@ -48,7 +49,18 @@ async def start_scan(message: types.Message):
                 file_path=file.file_path,
                 file_id=file.file_id,
             )
-    validate.delay(scan.id, message.from_user.id)
+    # validate.delay(scan.id, message.from_user.id)
+    scan_repo = ScanRepository()
+    scan = scan_repo.get_by_id(scan_id=scan.id)[0]
+    file_result = get_file_credentials(file_path=scan.file_path, file_id=scan.file_id)
+    if file_result['status'] > 1:
+        scan.validated = True
+        scan_repo.update(scan)
+    else:
+        result = file_result['credentials']
+        for item in result:
+            validate_short.delay(item, scan.id, message.from_user.id)
+
     await bot.send_message(message.from_user.id, 'Your scan has been successfully created')
 
 

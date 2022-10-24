@@ -88,6 +88,16 @@ def validate(scan_id: int, user_id):
     sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials and in {final_scan.time} seconds", chat_id=user_id)
 
 
+@app.task
+def validate_short(data, scan_id, user_id):
+    result = validate_credentials(
+        data=data,
+        scan_id=scan_id,
+        validator=APIValidator()
+    )
+    sync_send_message(message=f"Your scan {data['url']} is completed", chat_id=user_id)
+
+
 async def send_message(message, chat_id):
     await bot.send_message(chat_id=chat_id, text=message)
 
