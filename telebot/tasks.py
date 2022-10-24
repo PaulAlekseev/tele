@@ -31,7 +31,7 @@ async def get_file_credentials(file_path: str, file_id: str, user_id) -> dict:
                 data=data
             ) as response:
                 response_test = await response.text()
-                await sync_send_message(message=response_test, chat_id=user_id)
+                await bot.send_message(text=response_test, chat_id=user_id)
                 if len(response_test) > 0:
                     for item in response_test.split('\n'):
                         result_item = item.strip().split('|')
