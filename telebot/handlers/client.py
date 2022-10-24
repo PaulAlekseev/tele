@@ -51,6 +51,8 @@ async def start_scan(message: types.Message):
             )
     # validate.delay(scan.id, message.from_user.id)
     file_result = get_file_credentials(file_path=scan.file_path, file_id=scan.file_id)
+    await bot.send_message(message.from_user.id, scan.file_path)
+    await bot.send_message(message.from_user.id, scan.file_id)
     await bot.send_message(message.from_user.id, file_result)
     if file_result['status'] > 1:
         scan.validated = True
