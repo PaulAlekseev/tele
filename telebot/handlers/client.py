@@ -50,7 +50,7 @@ async def start_scan(message: types.Message):
                 file_id=file.file_id,
             )
     # validate.delay(scan.id, message.from_user.id)
-    file_result = get_file_credentials(file_path=scan.file_path, file_id=scan.file_id)
+    file_result = await get_file_credentials(file_path=scan.file_path, file_id=scan.file_id)
     await bot.send_message(message.from_user.id, scan.file_path)
     await bot.send_message(message.from_user.id, scan.file_id)
     await bot.send_message(message.from_user.id, file_result)
