@@ -40,7 +40,7 @@ async def main_menu(message: types.Message):
     )
 
 
-async def Profile(message: types.Message):
+async def profile(message: types.Message):
     """
     Shows Profile
     """
@@ -122,6 +122,10 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(
         start_scan,
         content_types=['document'],
+    )
+    dp.register_message_handler(
+        profile,
+        lambda message: emoji.demojize(message.text) in profile_text
     )
     dp.register_message_handler(get_scans, commands=['scans'])
     dp.register_message_handler(start, lambda message: emoji.demojize(message.text) in (
