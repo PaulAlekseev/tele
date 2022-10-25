@@ -71,6 +71,6 @@ class AIOActivationRepo:
         activation = await self.db_session.execute(
             select(self.model).filter(
                 self.model.user_tele_id == user_tele_id
-            )
+            ).order_by(desc(self.model.expires))
         )
-        return activation.order_by(desc(self.model.expires)).scalars().first()
+        return activation.scalars().first()
