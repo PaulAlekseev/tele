@@ -57,3 +57,4 @@ class Activation(Base):
     id = Column(Integer, primary_key=True)
     created = Column(Date, default=date.today)
     expires = Column(Date, nullable=False)
+    user_tele_id = Column(Integer, nullable=False)
