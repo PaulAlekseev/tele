@@ -2,6 +2,7 @@ import datetime
 
 from aiogram import types, Dispatcher
 import emoji
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot import bot
 from entities.async_db.db_engine import async_session
@@ -10,8 +11,8 @@ from entities.async_db.db_specifications import ScanDateUserSpecification
 from entities.db.db_repos import ScanRepository
 from other.functions import create_reply_markup
 from other.markups import language_markup
-from other.text_dicts import main_menu_text
-from tasks import get_file_credentials, validate_short
+from other.text_dicts import main_menu_text, scan_text, activation_text
+from tasks import get_file_credentials, validate_short, validate
 
 
 async def start(message: types.Message):
@@ -40,29 +41,28 @@ async def main_menu(message: types.Message):
 
 
 async def start_scan(message: types.Message):
+    # async with async_session() as session:
+    #     async with session.begin():
+    #         scan_repo = AIOScanRepo(session)
+    #         file = await bot.get_file(message.document.file_id)
+    #         scan = await scan_repo.create(
+    #             user_tele_id=message.from_user.id,
+    #             file_path=file.file_path,
+    #             file_id=file.file_id,
+    #         )
+    text_markup = scan_text[message.text]
     async with async_session() as session:
         async with session.begin():
-            scan_repo = AIOScanRepo(session)
-            file = await bot.get_file(message.document.file_id)
-            scan = await scan_repo.create(
-                user_tele_id=message.from_user.id,
-                file_path=file.file_path,
-                file_id=file.file_id,
-            )
-    # validate.delay(scan.id, message.from_user.id)
-    file_result = await get_file_credentials(file_path=scan.file_path, file_id=scan.file_id, user_id=message.from_user.id)
-    await bot.send_message(message.from_user.id, scan.file_path)
-    await bot.send_message(message.from_user.id, scan.file_id)
-    await bot.send_message(message.from_user.id, file_result)
-    if file_result['status'] > 1:
-        scan.validated = True
-        scan_repo.update(scan)
+            activation_repo = AIOActivationRepo(session)
+            latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
+    inline_keyboard = InlineKeyboardMarkup(row_width=1)
+    if latest_activation >= datetime.date.today():
+        inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
+        text = text_markup['text']['good']
     else:
-        result = file_result['credentials']
-        for item in result:
-            validate_short.delay(item, scan.id, message.from_user.id)
-
-    await bot.send_message(message.from_user.id, 'Your scan has been successfully created')
+        inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
+        text = text_markup['text']['bad']
+    await message.reply(text=text, reply_markup=inline_keyboard)
 
 
 async def get_scans(message: types.Message):
@@ -80,19 +80,23 @@ async def get_scans(message: types.Message):
             ])
 
 
-async def create_activation(message: types.Message):
+async def create_activation(callback_query: types.CallbackQuery):
     async with async_session() as session:
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
             activation = await activation_repo.create(
                 expiration_date=datetime.date.today() + datetime.timedelta(days=30),
-                user_tele_id=message.from_user.id
+                user_tele_id=callback_query.from_user.id
             )
-            await bot.send_message(message.from_user.id, text=f"Your {activation.id} activation expires {activation.expires}")
+            await bot.send_message(callback_query.from_user.id, text=activation_text[callback_query.data])
 
 
 def register_handlers_client(dp: Dispatcher):
-    dp.register_message_handler(start_scan, content_types=['document'])
+    dp.register_message_handler(
+        start_scan,
+        lambda message: message.text in scan_text,
+        content_types=['document']
+    )
     dp.register_message_handler(get_scans, commands=['scans'])
     dp.register_message_handler(start, lambda message: emoji.demojize(message.text) in (
             ':reverse_button: Back to languages',
@@ -100,6 +104,4 @@ def register_handlers_client(dp: Dispatcher):
     ))
     dp.register_message_handler(start, commands=['start', ])
     dp.register_message_handler(main_menu, lambda message: emoji.demojize(message.text) in main_menu_text)
-    dp.register_message_handler(create_activation2, commands=['create2'])
-    dp.register_message_handler(create_activation, commands=['create'])
-    dp.register_message_handler(get_activation, commands=['get'])
+    dp.register_callback_query_handler(create_activation, lambda c: c.data in activation_text)

@@ -22,3 +22,36 @@ main_menu_text = {
         ]
 }
 }
+
+scan_text = {
+    'Скан': {
+        'text': {
+            'good': 'Ваш файл готов к сканированию',
+            'bad': 'Для сканирования требуется активация аккаунта'
+        },
+        'button': {
+            'good': 'scan_start_ru',
+            'bad': 'activation_ru'
+        },
+        'start': 'Начать сканирование',
+        'no_activation': 'Активировать аккаунт',
+    },
+    'Scan': {
+        'text': {
+            'good': 'Your file ready for scanning',
+            'bad': 'You need to activate your account for that'
+        },
+        'button': {
+            'good': 'scan_start_en',
+            'bad': 'activation_en'
+        },
+        'start': 'Start scanning',
+        'no_activation': 'Activate account',
+    }
+}
+
+
+activation_text = {
+    'activation_en': 'Your account has been successfully activated for 30 days',
+    'activation_ru': 'Ваш профиль был активирован на 30 дней'
+}
