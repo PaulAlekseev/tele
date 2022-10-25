@@ -97,6 +97,7 @@ async def get_activation(message: types.Message):
             activation_repo = AIOActivationRepo(session)
             last_activation = await activation_repo.get_latest(message.from_user.id)
             await bot.send_message(message.from_user.id, text=f"Id of your last activation is {last_activation.id}")
+            await bot.send_message(message.from_user.id, text=f'{last_activation > datetime.date.today()}')
 
 
 def register_handlers_client(dp: Dispatcher):
