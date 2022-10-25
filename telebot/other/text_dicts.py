@@ -24,7 +24,7 @@ main_menu_text = {
 scan_text = {
     'Скан': {
         'text': {
-            'good': 'Ваш файл готов к сканированию',
+            'good': 'Ваш файл был отправлен на сканирование',
             'bad': 'Для сканирования требуется активация аккаунта'
         },
         'button': {
@@ -36,7 +36,7 @@ scan_text = {
     },
     'Scan': {
         'text': {
-            'good': 'Your file ready for scanning',
+            'good': 'We started scanning your file',
             'bad': 'You need to activate your account for that'
         },
         'button': {

@@ -62,16 +62,7 @@ async def profile(message: types.Message):
             )
 
 
-async def start_scan(message: types.Message):
-    # async with async_session() as session:
-    #     async with session.begin():
-    #         scan_repo = AIOScanRepo(session)
-    #         file = await bot.get_file(message.document.file_id)
-    #         scan = await scan_repo.create(
-    #             user_tele_id=message.from_user.id,
-    #             file_path=file.file_path,
-    #             file_id=file.file_id,
-    #         )
+async def file_handler(message: types.Message):
     if message.caption not in scan_text:
         return 0
     text_markup = scan_text[message.caption]
@@ -79,18 +70,31 @@ async def start_scan(message: types.Message):
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
             latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
-        inline_keyboard = InlineKeyboardMarkup(row_width=1)
-        if latest_activation:
-            if latest_activation.expires >= datetime.date.today():
-                inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
-                text = text_markup['text']['good']
-            else:
-                inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
-                text = text_markup['text']['bad']
+    inline_keyboard = InlineKeyboardMarkup(row_width=1)
+    all_good = False
+    if latest_activation:
+        if latest_activation.expires >= datetime.date.today():
+            all_good = True
+            text = text_markup['text']['good']
         else:
             inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
             text = text_markup['text']['bad']
-    await message.reply(text=text, reply_markup=inline_keyboard)
+    else:
+        inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
+        text = text_markup['text']['bad']
+    await message.reply(text=text, reply_markup=inline_keyboard if all_good else None)
+
+
+async def start_scan(callback_query: types.CallbackQuery):
+    async with async_session() as session:
+        async with session.begin():
+            scan_repo = AIOScanRepo(session)
+            file = await bot.get_file(callback_query.message.reply_to_message.)
+            scan = await scan_repo.create(
+                user_tele_id=callback_query.from_user.id,
+                file_path=file.file_path,
+                file_id=file.file_id,
+            )
 
 
 async def get_scans(message: types.Message):
