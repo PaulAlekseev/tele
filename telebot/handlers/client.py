@@ -50,21 +50,23 @@ async def start_scan(message: types.Message):
     #             file_path=file.file_path,
     #             file_id=file.file_id,
     #         )
-    if message.text not in scan_text:
-        return 0
-    text_markup = scan_text[message.text.strip('/')]
-    async with async_session() as session:
-        async with session.begin():
-            activation_repo = AIOActivationRepo(session)
-            latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
-    inline_keyboard = InlineKeyboardMarkup(row_width=1)
-    if latest_activation >= datetime.date.today():
-        inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
-        text = text_markup['text']['good']
-    else:
-        inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
-        text = text_markup['text']['bad']
-    await message.reply(text=text, reply_markup=inline_keyboard)
+    await bot.send_message(message.from_user.id, message.text, type(message.text))
+
+    # if message.text not in scan_text:
+    #     return 0
+    # text_markup = scan_text[message.text.strip('/')]
+    # async with async_session() as session:
+    #     async with session.begin():
+    #         activation_repo = AIOActivationRepo(session)
+    #         latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
+    # inline_keyboard = InlineKeyboardMarkup(row_width=1)
+    # if latest_activation >= datetime.date.today():
+    #     inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
+    #     text = text_markup['text']['good']
+    # else:
+    #     inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
+    #     text = text_markup['text']['bad']
+    # await message.reply(text=text, reply_markup=inline_keyboard)
 
 
 async def get_scans(message: types.Message):
