@@ -96,7 +96,7 @@ async def create_activation2(message: types.Message):
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
             activation = await activation_repo.create(
-                expiration_date=datetime.date.today() + datetime.timedelta(days=15),
+                expiration_date=datetime.date.today() - datetime.timedelta(days=15),
                 user_tele_id=message.from_user.id
             )
             await bot.send_message(message.from_user.id, text=f"Your {activation.id} activation expires {activation.expires}")
