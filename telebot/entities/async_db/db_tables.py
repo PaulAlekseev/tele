@@ -50,3 +50,11 @@ class Scan(Base):
     valid_amount = Column(Integer, default=0)
     time = Column(Integer, default=0)
     created = Column(Date, default=date.today)
+
+
+class Activation(Base):
+    __tablename__ = 'activation'
+    id = Column(Integer, primary_key=True)
+    created = Column(Date, default=date.today)
+    expires = Column(Date, nullable=False)
+    user_tele_id = Column(Integer, nullable=False)

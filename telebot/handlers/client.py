@@ -5,7 +5,7 @@ import emoji
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo
+from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo, AIOActivationRepo
 from entities.async_db.db_specifications import ScanDateUserSpecification
 from entities.db.db_repos import ScanRepository
 from other.functions import create_reply_markup
@@ -80,24 +80,23 @@ async def get_scans(message: types.Message):
             ])
 
 
-# async def create_user(message: types.Message):
-#     async with async_session() as session:
-#         async with session.begin():
-#             user_repo = AIOUserRepository(session)
-#             user = await user_repo.create(message.from_user.id)
-#             await bot.send_message(message.from_user.id, 'User created!')
-#             await bot.send_message(message.from_user.id, user.id)
+async def create_activation(message: types.Message):
+    async with async_session() as session:
+        async with session.begin():
+            activation_repo = AIOActivationRepo(session)
+            activation = await activation_repo.create(
+                expiration_date=datetime.date.today() + datetime.timedelta(days=30),
+                user_tele_id=message.from_user.id
+            )
+            await bot.send_message(message.from_user.id, text=f"Your {activation.id} activation expires {activation.expires}")
 
 
-# async def document(message: types.Message):
-#     file = await bot.get_file(message.document.file_id)
-#     await bot.send_message(message.from_user.id, file.file_path)
-#     await bot.send_message(message.from_user.id, file.file_id)
-
-
-# async def get_document(message: types.Message):
-#
-#     await bot.send_message(message.from_user.id, )
+async def get_activation(message: types.Message):
+    async with async_session() as session:
+        async with session.begin():
+            activation_repo = AIOActivationRepo(session)
+            last_activation = await activation_repo.get_latest(message.from_user.id)
+            await bot.send_message(message.from_user.id, text=f"Id of your last activation is {last_activation.id}")
 
 
 def register_handlers_client(dp: Dispatcher):
@@ -109,3 +108,5 @@ def register_handlers_client(dp: Dispatcher):
     ))
     dp.register_message_handler(start, commands=['start', ])
     dp.register_message_handler(main_menu, lambda message: emoji.demojize(message.text) in main_menu_text)
+    dp.register_message_handler(create_activation, commands=['create'])
+    dp.register_message_handler(get_activation, commands=['get'])
