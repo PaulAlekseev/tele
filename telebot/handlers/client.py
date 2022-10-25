@@ -50,6 +50,8 @@ async def start_scan(message: types.Message):
     #             file_path=file.file_path,
     #             file_id=file.file_id,
     #         )
+    if message.caption not in scan_text:
+        return 0
     text_markup = scan_text[message.caption]
     async with async_session() as session:
         async with session.begin():
