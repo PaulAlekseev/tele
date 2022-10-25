@@ -54,11 +54,11 @@ async def profile(message: types.Message):
             text_dict = profile_text[emoji.demojize(message.text)]
             await bot.send_message(
                 message.from_user.id,
-                text_dict['text'].format(
+                emoji.emojize(text_dict['text'].format(
                     message.from_user.id,
                     text_dict['active']['good'] if active else text_dict['active']['bad'],
                     latest_activation.expires if active else '-',
-                )
+                ))
             )
 
 
