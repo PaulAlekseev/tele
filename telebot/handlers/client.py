@@ -50,7 +50,7 @@ async def start_scan(message: types.Message):
     #             file_path=file.file_path,
     #             file_id=file.file_id,
     #         )
-    text_markup = scan_text[message.text]
+    text_markup = scan_text[message.text.strip('/')]
     async with async_session() as session:
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
@@ -95,7 +95,7 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(
         start_scan,
         content_types=['document'],
-        func=lambda message: message.text in scan_text
+        commands=scan_text.keys()
     )
     dp.register_message_handler(get_scans, commands=['scans'])
     dp.register_message_handler(start, lambda message: emoji.demojize(message.text) in (
