@@ -91,26 +91,6 @@ async def create_activation(message: types.Message):
             await bot.send_message(message.from_user.id, text=f"Your {activation.id} activation expires {activation.expires}")
 
 
-async def create_activation2(message: types.Message):
-    async with async_session() as session:
-        async with session.begin():
-            activation_repo = AIOActivationRepo(session)
-            activation = await activation_repo.create(
-                expiration_date=datetime.date.today() - datetime.timedelta(days=15),
-                user_tele_id=message.from_user.id
-            )
-            await bot.send_message(message.from_user.id, text=f"Your {activation.id} activation expires {activation.expires}")
-
-
-async def get_activation(message: types.Message):
-    async with async_session() as session:
-        async with session.begin():
-            activation_repo = AIOActivationRepo(session)
-            last_activation = await activation_repo.get_latest(message.from_user.id)
-            await bot.send_message(message.from_user.id, text=f"Id of your last activation is {last_activation.id}")
-            await bot.send_message(message.from_user.id, text=f'{last_activation.expires > datetime.date.today()}')
-
-
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(start_scan, content_types=['document'])
     dp.register_message_handler(get_scans, commands=['scans'])
