@@ -94,8 +94,8 @@ async def create_activation(callback_query: types.CallbackQuery):
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(
         start_scan,
-        lambda message: message.text in scan_text,
-        content_types=['document']
+        content_types=['document'],
+        func=lambda message: message.text in scan_text
     )
     dp.register_message_handler(get_scans, commands=['scans'])
     dp.register_message_handler(start, lambda message: emoji.demojize(message.text) in (
