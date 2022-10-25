@@ -40,19 +40,25 @@ async def main_menu(message: types.Message):
     )
 
 
-# async def Profile(message: types.Message):
-#     """
-#     Shows Profile
-#     """
-#     await message.delete()
-#     async with async_session() as session:
-#         async with session.begin():
-#
-#     text_dict = profile_text[emoji.demojize(message.text)]
-#     await bot.send_message(
-#         message.from_user.id,
-#
-#     )
+async def Profile(message: types.Message):
+    """
+    Shows Profile
+    """
+    await message.delete()
+    async with async_session() as session:
+        async with session.begin():
+            activation_repo = AIOActivationRepo(session)
+            latest_activation = await activation_repo.get_latest(message.from_user.id)
+            active = True if latest_activation.expires >= datetime.date.today() else False
+            text_dict = profile_text[emoji.demojize(message.text)]
+            await bot.send_message(
+                message.from_user.id,
+                text_dict['text'].format(
+                    message.from_user.id,
+                    text_dict['active']['good'] if active else text_dict['active']['bad'],
+                    latest_activation.expires if active else '-',
+                )
+            )
 
 
 async def start_scan(message: types.Message):
@@ -73,9 +79,13 @@ async def start_scan(message: types.Message):
             activation_repo = AIOActivationRepo(session)
             latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
         inline_keyboard = InlineKeyboardMarkup(row_width=1)
-        if latest_activation.expires >= datetime.date.today():
-            inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
-            text = text_markup['text']['good']
+        if latest_activation:
+            if latest_activation.expires >= datetime.date.today():
+                inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
+                text = text_markup['text']['good']
+            else:
+                inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
+                text = text_markup['text']['bad']
         else:
             inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
             text = text_markup['text']['bad']
