@@ -53,27 +53,29 @@ scan_text = {
 
 activation_text = {
     'activation_en': 'Your account has been successfully activated for 30 days',
-    'activation_ru': 'Ваш профиль был активирован на 30 дней'
+    'activation_ru': 'Ваш профиль был активирован на 30 дней',
+    ':check_mark_button: Активировать аккаунт': None,
+    ':check_mark_button: Activate account': None
 }
 
 
 profile_text = {
     ':bust_in_silhouette: Profile': {
-        'text': '''Your id: {0}
-Status:{1}
-Activation expires:{2}''',
-        'active': {
-            'good': 'Активирован',
-            'bad': 'Не активирован'
-        }
-    },
-    ':bust_in_silhouette: Профиль': {
-        'text': '''Ваш id: {0}
-Статус: {1}
-Активация заканчивается: {2}''',
+        'text': ''':key: Your id: {0}
+:briefcase: Status: {1}
+:spiral_calendar: Activation expires: {2}''',
         'active': {
             'good': 'Active',
             'bad': 'Not active'
+        }
+    },
+    ':bust_in_silhouette: Профиль': {
+        'text': ''':key: Ваш id: {0}
+:briefcase: Статус: {1}
+:spiral_calendar: Активация заканчивается: {2}''',
+        'active': {
+            'good': 'Активирован',
+            'bad': 'Не активирован'
         }
     }
 }
