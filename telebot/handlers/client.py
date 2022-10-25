@@ -11,7 +11,7 @@ from entities.async_db.db_specifications import ScanDateUserSpecification
 from entities.db.db_repos import ScanRepository
 from other.functions import create_reply_markup
 from other.markups import language_markup
-from other.text_dicts import main_menu_text, scan_text, activation_text
+from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text
 from tasks import get_file_credentials, validate_short, validate
 
 
@@ -40,6 +40,21 @@ async def main_menu(message: types.Message):
     )
 
 
+# async def Profile(message: types.Message):
+#     """
+#     Shows Profile
+#     """
+#     await message.delete()
+#     async with async_session() as session:
+#         async with session.begin():
+#
+#     text_dict = profile_text[emoji.demojize(message.text)]
+#     await bot.send_message(
+#         message.from_user.id,
+#
+#     )
+
+
 async def start_scan(message: types.Message):
     # async with async_session() as session:
     #     async with session.begin():
@@ -57,13 +72,13 @@ async def start_scan(message: types.Message):
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
             latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
-    inline_keyboard = InlineKeyboardMarkup(row_width=1)
-    if latest_activation >= datetime.date.today():
-        inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
-        text = text_markup['text']['good']
-    else:
-        inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
-        text = text_markup['text']['bad']
+        inline_keyboard = InlineKeyboardMarkup(row_width=1)
+        if latest_activation.expires >= datetime.date.today():
+            inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
+            text = text_markup['text']['good']
+        else:
+            inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
+            text = text_markup['text']['bad']
     await message.reply(text=text, reply_markup=inline_keyboard)
 
 
