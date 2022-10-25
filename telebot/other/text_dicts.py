@@ -59,18 +59,18 @@ activation_text = {
 
 profile_text = {
     ':bust_in_silhouette: Profile': {
-        'text': '''Your id: {1}
-Status:{2}
-Activation expires:{3}''',
+        'text': '''Your id: {0}
+Status:{1}
+Activation expires:{2}''',
         'active': {
             'good': 'Активирован',
             'bad': 'Не активирован'
         }
     },
     ':bust_in_silhouette: Профиль': {
-        'text': '''Ваш id: {1}
-Статус: {2}
-Активация заканчивается: {3}''',
+        'text': '''Ваш id: {0}
+Статус: {1}
+Активация заканчивается: {2}''',
         'active': {
             'good': 'Active',
             'bad': 'Not active'
