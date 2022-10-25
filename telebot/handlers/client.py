@@ -82,7 +82,7 @@ async def file_handler(message: types.Message):
     else:
         inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
         text = text_markup['text']['bad']
-    await message.reply(text=text, reply_markup=inline_keyboard if all_good else None)
+    await message.reply(text=text, reply_markup=inline_keyboard if not all_good else None)
 
 
 async def start_scan(message: types.Message):
