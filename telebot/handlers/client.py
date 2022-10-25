@@ -85,13 +85,13 @@ async def file_handler(message: types.Message):
     await message.reply(text=text, reply_markup=inline_keyboard if all_good else None)
 
 
-async def start_scan(callback_query: types.CallbackQuery):
+async def start_scan(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             scan_repo = AIOScanRepo(session)
-            file = await bot.get_file(callback_query.message.reply_to_message.)
+            file = await bot.get_file(message.document)
             scan = await scan_repo.create(
-                user_tele_id=callback_query.from_user.id,
+                user_tele_id=message.from_user.id,
                 file_path=file.file_path,
                 file_id=file.file_id,
             )
