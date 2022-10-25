@@ -55,3 +55,13 @@ activation_text = {
     'activation_en': 'Your account has been successfully activated for 30 days',
     'activation_ru': 'Ваш профиль был активирован на 30 дней'
 }
+
+
+profile_text = {
+    ':bust_in_silhouette: Profile': '''Your id: {1}
+Status:{2}
+Activation expires:{3}''',
+    ':bust_in_silhouette: Профиль': '''Ваш id: {1}
+Статус: {2}
+Активация заканчивается: {3}'''
+}

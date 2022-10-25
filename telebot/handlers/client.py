@@ -96,7 +96,6 @@ async def create_activation(callback_query: types.CallbackQuery):
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(
         start_scan,
-        lambda message: message.caption in activation_text,
         content_types=['document'],
     )
     dp.register_message_handler(get_scans, commands=['scans'])
