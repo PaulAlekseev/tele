@@ -72,5 +72,5 @@ class AIOActivationRepo:
             select(self.model).filter(
                 self.model.user_tele_id == user_tele_id
             )
-        ).order_by(desc(self.model.expires))
-        return activation.scalars().first()
+        )
+        return activation.order_by(desc(self.model.expires)).scalars().first()
