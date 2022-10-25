@@ -50,23 +50,19 @@ async def start_scan(message: types.Message):
     #             file_path=file.file_path,
     #             file_id=file.file_id,
     #         )
-    await bot.send_message(message.from_user.id, message.caption, type(message.caption))
-
-    # if message.text not in scan_text:
-    #     return 0
-    # text_markup = scan_text[message.text.strip('/')]
-    # async with async_session() as session:
-    #     async with session.begin():
-    #         activation_repo = AIOActivationRepo(session)
-    #         latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
-    # inline_keyboard = InlineKeyboardMarkup(row_width=1)
-    # if latest_activation >= datetime.date.today():
-    #     inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
-    #     text = text_markup['text']['good']
-    # else:
-    #     inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
-    #     text = text_markup['text']['bad']
-    # await message.reply(text=text, reply_markup=inline_keyboard)
+    text_markup = scan_text[message.caption]
+    async with async_session() as session:
+        async with session.begin():
+            activation_repo = AIOActivationRepo(session)
+            latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
+    inline_keyboard = InlineKeyboardMarkup(row_width=1)
+    if latest_activation >= datetime.date.today():
+        inline_keyboard.add(InlineKeyboardButton(text_markup['start'], callback_data=text_markup['button']['good']))
+        text = text_markup['text']['good']
+    else:
+        inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
+        text = text_markup['text']['bad']
+    await message.reply(text=text, reply_markup=inline_keyboard)
 
 
 async def get_scans(message: types.Message):
@@ -98,6 +94,7 @@ async def create_activation(callback_query: types.CallbackQuery):
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(
         start_scan,
+        lambda message: message.caption in activation_text,
         content_types=['document'],
     )
     dp.register_message_handler(get_scans, commands=['scans'])
