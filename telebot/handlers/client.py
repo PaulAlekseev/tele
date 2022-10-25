@@ -50,7 +50,7 @@ async def start_scan(message: types.Message):
     #             file_path=file.file_path,
     #             file_id=file.file_id,
     #         )
-    await bot.send_message(message.from_user.id, message.text, type(message.text))
+    await bot.send_message(message.from_user.id, message.caption, type(message.caption))
 
     # if message.text not in scan_text:
     #     return 0
