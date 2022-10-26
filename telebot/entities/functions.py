@@ -96,23 +96,18 @@ def gather_whm_domains(data: dict):
 
 
 def validate_credentials(data, scan_id, validator):
-    # try:
-    user = User(data)
-    result = validator.get_deliverability(user)
-    print('result: ', result['result'])
-    if result['result'] == 0:
-        print("i'm in deep BRUHBRHUBHRUHUBHRUBURHBURHUBHRUBHUHURB-------------")
-        credential_repo = CredentialsRepository()
-        credentials = credential_repo.add(
-            url=result.get('url'),
-            login=result['credentials']['user'],
-            password=result['credentials']['pass'],
-            scan_id=scan_id
-        )
-        print('bruh what the frick1111111111111111111111111111111')
-        domain_repo = DomainRepository()
-        domain_repo.add_or_update(result, credentials.id)
-        print('bruh what the frick2222222222222222222222222222222')
-        print('---------------------------------------')
-    # except Exception:
-    #     pass
+    try:
+        user = User(data)
+        result = validator.get_deliverability(user)
+        if result['result'] == 0:
+            credential_repo = CredentialsRepository()
+            credentials = credential_repo.add(
+                url=result.get('url'),
+                login=result['credentials']['user'],
+                password=result['credentials']['pass'],
+                scan_id=scan_id
+            )
+            domain_repo = DomainRepository()
+            domain_repo.add_or_update(result, credentials.id)
+    except Exception:
+        pass

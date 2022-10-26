@@ -90,7 +90,7 @@ def validate(scan_id: int, user_id):
     result = ''.join([f"{item.url}|{item.login}|{item.password}" for item in valid_credentials])
 
     # Messaging user
-    sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials and in {final_scan.time} seconds", chat_id=user_id)
+    sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials in {final_scan.time} seconds", chat_id=user_id)
 
 
 @app.task
