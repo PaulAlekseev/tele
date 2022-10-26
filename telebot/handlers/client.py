@@ -76,6 +76,7 @@ async def file_handler(message: types.Message):
         if latest_activation.expires >= datetime.date.today():
             all_good = True
             text = text_markup['text']['good']
+            await start_scan(message)
         else:
             inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
             text = text_markup['text']['bad']
@@ -90,7 +91,7 @@ async def start_scan(message: types.Message):
         async with session.begin():
             scan_repo = AIOScanRepo(session)
             file = await bot.get_file(message.document.file_id)
-            scan = await scan_repo.create(
+            await scan_repo.create(
                 user_tele_id=message.from_user.id,
                 file_path=file.file_path,
                 file_id=file.file_id,

@@ -6,6 +6,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, wait
 
 import requests
+from aiogram.types import File
 
 from bot import bot
 from celery_app import app
@@ -79,11 +80,14 @@ def validate(scan_id: int, user_id):
     scan = scan_repo.get_by_id(scan_id=scan_id)[0]
     scan.validated = True
     credentials_repo = CredentialsRepository()
-    scan.valid_amount = len(credentials_repo.get_by_session(scan_id))
-    print(scan.valid_amount)
+    valid_credentials = credentials_repo.get_by_session(scan_id)
+    scan.valid_amount = len(valid_credantials)
     scan.time = int(time.time() - time_start)
     scan_repo.update(scan)
     final_scan = scan_repo.get_by_id(scan_id=scan_id)[0]
+
+    # Getting data for message
+    result = ''.join([f"{item.url}|{item.login}|{item.password}" for item in valid_credentials])
 
     # Messaging user
     sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials and in {final_scan.time} seconds", chat_id=user_id)
