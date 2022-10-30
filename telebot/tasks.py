@@ -10,6 +10,7 @@ from aiogram.types import File
 
 from bot import bot
 from celery_app import app
+from entities.async_validator import AsyncValidator
 from entities.constants import FILE_API_URL
 from entities.db.db_repos import CredentialsRepository, ScanRepository
 from entities.functions import validate_credentials
@@ -63,8 +64,14 @@ def validate(scan_id: int, user_id):
         result = file_result['credentials']
 
     # Scanning for data
-    cpu_count = multiprocessing.cpu_count()
     time_start = time.time()
+    connector = aiohttp.TCPConnector(limit=50)
+    validator = AsyncValidator()
+    async with aiohttp.ClientSession(connector=connector) as session:
+        for item in result:
+            task = asyncio.ensure_future()
+
+
     with ThreadPoolExecutor(max_workers=cpu_count - 2 if cpu_count > 3 else cpu_count) as executor:
         for item in result:
             executor.submit(
@@ -91,16 +98,6 @@ def validate(scan_id: int, user_id):
 
     # Messaging user
     sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials in {final_scan.time} seconds", chat_id=user_id)
-
-
-@app.task
-def validate_short(data, scan_id, user_id):
-    result = validate_credentials(
-        data=data,
-        scan_id=scan_id,
-        validator=APIValidator()
-    )
-    sync_send_message(message=f"Your scan {data['url']} is completed", chat_id=user_id)
 
 
 async def send_message(message, chat_id):

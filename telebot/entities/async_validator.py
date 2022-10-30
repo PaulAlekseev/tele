@@ -66,7 +66,7 @@ class AsyncApiValidator(AsyncValidator):
                         continue
         return data
 
-    def get_domains(self, user: User, session):
+    async def get_domains(self, user: User, session):
         data = await self.validate_credentials(user, session)
         if data.get('result') > 0:
             return data
@@ -77,9 +77,9 @@ class AsyncApiValidator(AsyncValidator):
                 timeout=self._timeout
             ) as response:
                 status = 0
-                result = await response.text
-                status_code = result.status_code
-        except Exception:
+                result = await response.text()
+                status_code = response.status
+        except Exception as err:
             data['domains'] = None
             return data
         if status_code != 200:
@@ -109,8 +109,7 @@ class AsyncApiValidator(AsyncValidator):
         }
         return data
 
-    def get_ssl(self, user: User, session):
-        data = self.get_domains(user, session)
+    def get_ssl(self, data: dict) -> dict:
         if data.get('result') > 0:
             return data
         if data.get('domains') is None:
@@ -127,8 +126,8 @@ class AsyncApiValidator(AsyncValidator):
                 })
         return data
 
-    def get_deliverability(self, user: User, session):
-        data = self.get_ssl(user, session)
+    async def get_deliverability(self, user: User, session):
+        data = await self.get_ssl(user, session)
         if data.get('result') > 0:
             return data
         if data.get('domains') is None:

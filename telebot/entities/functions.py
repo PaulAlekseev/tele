@@ -10,8 +10,6 @@ import idna
 from socket import socket
 
 from entities.constants import RESTRICTED_CPANEL_DOMAINS, RESTRICTED_WHM_DOMAINS
-from entities.db.db_repos import CredentialsRepository, DomainRepository
-from entities.user import User
 
 
 def get_common_name(cert):
@@ -93,21 +91,3 @@ def gather_whm_domains(data: dict):
         return result
     except Exception:
         return None
-
-
-def validate_credentials(data, scan_id, validator):
-    try:
-        user = User(data)
-        result = validator.get_deliverability(user)
-        if result['result'] == 0:
-            credential_repo = CredentialsRepository()
-            credentials = credential_repo.add(
-                url=result.get('url'),
-                login=result['credentials']['user'],
-                password=result['credentials']['pass'],
-                scan_id=scan_id
-            )
-            domain_repo = DomainRepository()
-            domain_repo.add_or_update(result, credentials.id)
-    except Exception:
-        pass
