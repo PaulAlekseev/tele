@@ -1,4 +1,6 @@
 import asyncio
+from typing import List
+
 import aiohttp
 import os
 import time
@@ -47,7 +49,7 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
     return result
 
 
-async def validate_credentials(data: list, validator: AsyncValidator) -> tuple:
+async def validate_credentials(data: list, validator: AsyncValidator):
     connector = aiohttp.TCPConnector(limit=50)
     tasks = []
     async with aiohttp.ClientSession(connector=connector) as session:
@@ -77,7 +79,10 @@ def validate(scan_id: int, user_id):
 
     # Scanning for data
     time_start = time.time()
-    new_result = [validator.get_ssl(item) for item in asyncio.run(validate_credentials(result, validator))]
+    new_result = [
+        validator.get_ssl(item) for item in asyncio.run(validate_credentials(result, validator))
+        if item.get('result') == 0
+    ]
     print(new_result)
 
 
