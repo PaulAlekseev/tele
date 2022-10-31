@@ -47,9 +47,8 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
     return result
 
 
-async def validate_credentials(data: list) -> tuple:
+async def validate_credentials(data: list, validator: AsyncValidator) -> tuple:
     connector = aiohttp.TCPConnector(limit=50)
-    validator = AsyncApiValidator()
     tasks = []
     async with aiohttp.ClientSession(connector=connector) as session:
         for item in data:
@@ -66,6 +65,7 @@ def validate(scan_id: int, user_id):
     # Getting data from document
     scan_repo = ScanRepository()
     scan = scan_repo.get_by_id(scan_id=scan_id)[0]
+    validator = AsyncApiValidator()
     file_result = get_file_credentials(file_path=scan.file_path, file_id=scan.file_id)
     if file_result['status'] > 1:
         sync_send_message(message="Sorry, we couldn't find your file", chat_id=user_id)
@@ -77,21 +77,10 @@ def validate(scan_id: int, user_id):
 
     # Scanning for data
     time_start = time.time()
-    new_result = asyncio.run(validate_credentials(result))
+    new_result = [validator.get_ssl(item) for item in asyncio.run(validate_credentials(result, validator))]
     print(new_result)
 
 
-    # with ThreadPoolExecutor(max_workers=cpu_count - 2 if cpu_count > 3 else cpu_count) as executor:
-    #     for item in result:
-    #         executor.submit(
-    #             validate_credentials,
-    #             data=item,
-    #             scan_id=scan_id,
-    #             validator=APIValidator()
-    #         )
-    #     sync_send_message(message=f"Your scan {scan_id}, has been started", chat_id=user_id)
-    #     executor.shutdown(wait=True)
-    #
     # # Getting result
     # scan = scan_repo.get_by_id(scan_id=scan_id)[0]
     # scan.validated = True
