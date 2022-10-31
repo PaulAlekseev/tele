@@ -30,6 +30,18 @@ class AsyncValidator(ABC):
         """
         pass
 
+    @abstractmethod
+    def get_domains(self, user: User, session):
+        pass
+
+    @abstractmethod
+    def get_ssl(self, data: dict) -> dict:
+        pass
+
+    @abstractmethod
+    def get_deliverability(self, user: User, session):
+        pass
+
 
 class AsyncApiValidator(AsyncValidator):
     async def validate_credentials(self, user: User, session) -> dict:
@@ -127,7 +139,7 @@ class AsyncApiValidator(AsyncValidator):
         return data
 
     async def get_deliverability(self, user: User, session):
-        data = await self.get_ssl(user, session)
+        data = await self.get_domains(user, session)
         if data.get('result') > 0:
             return data
         if data.get('domains') is None:

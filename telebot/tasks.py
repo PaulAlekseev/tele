@@ -1,12 +1,10 @@
 import asyncio
 import aiohttp
-import multiprocessing
 import os
 import time
-from concurrent.futures import ThreadPoolExecutor, wait
+from concurrent.futures import ThreadPoolExecutor
 
 import requests
-from aiogram.types import File
 
 from bot import bot
 from celery_app import app
@@ -14,6 +12,7 @@ from entities.async_validator import AsyncValidator
 from entities.constants import FILE_API_URL
 from entities.db.db_repos import CredentialsRepository, ScanRepository
 from entities.functions import validate_credentials
+from entities.user import User
 from entities.validator import APIValidator
 
 
@@ -67,9 +66,15 @@ def validate(scan_id: int, user_id):
     time_start = time.time()
     connector = aiohttp.TCPConnector(limit=50)
     validator = AsyncValidator()
+    tasks = []
     async with aiohttp.ClientSession(connector=connector) as session:
         for item in result:
-            task = asyncio.ensure_future()
+            user = User(item)
+            task = asyncio.ensure_future(validator.get_deliverability(session=session, user=user))
+            tasks.append(task)
+        result = asyncio.gather(*tasks)
+        await result
+    print(result)
 
 
     with ThreadPoolExecutor(max_workers=cpu_count - 2 if cpu_count > 3 else cpu_count) as executor:
