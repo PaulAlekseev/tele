@@ -97,7 +97,7 @@ def add_credentials_to_db(data: List[dict], scan_id: int) -> dict:
     credentials_repo = CredentialsRepository()
     domain_repo = DomainRepository()
     for credential in data:
-        credential = credentials_repo.add(
+        credential_db_entity = credentials_repo.add(
             url=credential.get('url'),
             login=credential['credentials'].get('user'),
             password=credential['credentials'].get('pass'),
@@ -106,6 +106,6 @@ def add_credentials_to_db(data: List[dict], scan_id: int) -> dict:
         if len(credential.get('domains')) > 0:
             domain_repo.add_or_update(
                 data=credential,
-                credentials_id=credential.id,
+                credentials_id=credential_db_entity.id,
             )
     return data
