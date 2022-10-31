@@ -11,7 +11,6 @@ from celery_app import app
 from entities.async_validator import AsyncValidator
 from entities.constants import FILE_API_URL
 from entities.db.db_repos import CredentialsRepository, ScanRepository
-from entities.functions import validate_credentials
 from entities.user import User
 from entities.validator import APIValidator
 
@@ -48,6 +47,19 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
     return result
 
 
+async def validate_credentials(data: list) -> tuple:
+    connector = aiohttp.TCPConnector(limit=50)
+    validator = AsyncValidator()
+    tasks = []
+    async with aiohttp.ClientSession(connector=connector) as session:
+        for item in data:
+            user = User(item)
+            task = asyncio.ensure_future(validator.get_deliverability(session=session, user=user))
+            tasks.append(task)
+        result = asyncio.gather(*tasks)
+    return await result
+
+
 @app.task
 def validate(scan_id: int, user_id):
     # Getting data from document
@@ -64,45 +76,36 @@ def validate(scan_id: int, user_id):
 
     # Scanning for data
     time_start = time.time()
-    connector = aiohttp.TCPConnector(limit=50)
-    validator = AsyncValidator()
-    tasks = []
-    async with aiohttp.ClientSession(connector=connector) as session:
-        for item in result:
-            user = User(item)
-            task = asyncio.ensure_future(validator.get_deliverability(session=session, user=user))
-            tasks.append(task)
-        result = asyncio.gather(*tasks)
-        await result
-    print(result)
+    new_result = asyncio.run(validate_credentials(result))
+    print(new_result)
 
 
-    with ThreadPoolExecutor(max_workers=cpu_count - 2 if cpu_count > 3 else cpu_count) as executor:
-        for item in result:
-            executor.submit(
-                validate_credentials,
-                data=item,
-                scan_id=scan_id,
-                validator=APIValidator()
-            )
-        sync_send_message(message=f"Your scan {scan_id}, has been started", chat_id=user_id)
-        executor.shutdown(wait=True)
-
-    # Getting result
-    scan = scan_repo.get_by_id(scan_id=scan_id)[0]
-    scan.validated = True
-    credentials_repo = CredentialsRepository()
-    valid_credentials = credentials_repo.get_by_session(scan_id)
-    scan.valid_amount = len(valid_credentials)
-    scan.time = int(time.time() - time_start)
-    scan_repo.update(scan)
-    final_scan = scan_repo.get_by_id(scan_id=scan_id)[0]
-
-    # Getting data for message
-    result = ''.join([f"{item.url}|{item.login}|{item.password}" for item in valid_credentials])
-
-    # Messaging user
-    sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials in {final_scan.time} seconds", chat_id=user_id)
+    # with ThreadPoolExecutor(max_workers=cpu_count - 2 if cpu_count > 3 else cpu_count) as executor:
+    #     for item in result:
+    #         executor.submit(
+    #             validate_credentials,
+    #             data=item,
+    #             scan_id=scan_id,
+    #             validator=APIValidator()
+    #         )
+    #     sync_send_message(message=f"Your scan {scan_id}, has been started", chat_id=user_id)
+    #     executor.shutdown(wait=True)
+    #
+    # # Getting result
+    # scan = scan_repo.get_by_id(scan_id=scan_id)[0]
+    # scan.validated = True
+    # credentials_repo = CredentialsRepository()
+    # valid_credentials = credentials_repo.get_by_session(scan_id)
+    # scan.valid_amount = len(valid_credentials)
+    # scan.time = int(time.time() - time_start)
+    # scan_repo.update(scan)
+    # final_scan = scan_repo.get_by_id(scan_id=scan_id)[0]
+    #
+    # # Getting data for message
+    # result = ''.join([f"{item.url}|{item.login}|{item.password}" for item in valid_credentials])
+    #
+    # # Messaging user
+    # sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials in {final_scan.time} seconds", chat_id=user_id)
 
 
 async def send_message(message, chat_id):
