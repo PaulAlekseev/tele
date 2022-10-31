@@ -104,11 +104,12 @@ def add_credentials_to_db(data: List[dict], scan_id: int) -> dict:
             password=credential['credentials'].get('pass'),
             scan_id=scan_id
         )
-        if len(credential.get('domains')) > 0:
-            domain_repo.add_or_update(
-                data=credential,
-                credentials_id=credential_db_entity.id,
-            )
+        if credential.get('domains'):
+            if len(credential.get('domains')) > 0:
+                domain_repo.add_or_update(
+                    data=credential,
+                    credentials_id=credential_db_entity.id,
+                )
     return data
 
 
@@ -123,7 +124,8 @@ def form_credentials_client(data: dict) -> str:
     """
         string.write(bytes(semi_result, 'UTF-8'))
         string.write(bytes('\n', 'UTF-8'))
-    return '\n'.join(result)
+    string.seek(0)
+    return string
 
 
 def form_credentials_admin(data: dict) -> io.BytesIO:
