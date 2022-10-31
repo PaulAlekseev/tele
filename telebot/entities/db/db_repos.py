@@ -121,8 +121,9 @@ class ScanRepository:
         with Session(bind=engine) as session:
             session.add(scan)
             session.commit()
-            session.expunge_all()
-        return scan
+            session.refresh(scan)
+            session.expunge(scan)
+            return scan
 
 
 class DomainRepository:
