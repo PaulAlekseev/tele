@@ -76,7 +76,7 @@ async def file_handler(message: types.Message):
         if latest_activation.expires >= datetime.date.today():
             all_good = True
             text = text_markup['text']['good']
-            await start_scan(message)
+            await start_scan(message, message.caption)
         else:
             inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
             text = text_markup['text']['bad']
@@ -86,7 +86,7 @@ async def file_handler(message: types.Message):
     await message.reply(text=text, reply_markup=inline_keyboard if not all_good else None)
 
 
-async def start_scan(message: types.Message):
+async def start_scan(message: types.Message, lang: str):
     async with async_session() as session:
         async with session.begin():
             scan_repo = AIOScanRepo(session)
@@ -96,7 +96,7 @@ async def start_scan(message: types.Message):
                 file_path=file.file_path,
                 file_id=file.file_id,
             )
-            validate.delay(scan_id=scan.id, user_id=message.from_user.id)
+            validate.delay(scan_id=scan.id, user_id=message.from_user.id, lang=lang)
 
 
 async def get_scans(message: types.Message):

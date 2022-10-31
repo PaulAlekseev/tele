@@ -14,6 +14,7 @@ from entities.constants import FILE_API_URL
 from entities.db.db_repos import CredentialsRepository, ScanRepository, CredentialDomainRepository
 from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
+from other.text_dicts import scan_text
 
 
 def get_file_credentials(file_path: str, file_id: str) -> dict:
@@ -62,7 +63,7 @@ async def validate_credentials(data: list, validator: AsyncValidator):
 
 
 @app.task
-def validate(scan_id: int, user_id):
+def validate(scan_id: int, user_id: id, lang: str):
     # Getting data from document
     scan_repo = ScanRepository()
     scan = scan_repo.get_by_id(scan_id=scan_id)[0]
@@ -91,14 +92,14 @@ def validate(scan_id: int, user_id):
     valid_credentials = credentials_repo.get_by_session(scan_id)
     scan.valid_amount = len(valid_credentials)
     scan.time = int(time.time() - time_start)
-    scan_repo.update(scan)
+    scan = scan_repo.update(scan)
     final_scan = scan_repo.get_by_id(scan_id=scan_id)[0]
 
     # Getting data for message
     result = form_credentials_admin(valid_credentials)
 
     # Messaging user
-    message = f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials in {final_scan.time} seconds"
+    message = scan_text[lang]['scan']
     text_file = InputFile(path_or_bytesio=result, filename=f'{scan.created}-{scan.id}.txt')
     sync_send_document(
         chat_id=user_id, document=text_file, caption=message

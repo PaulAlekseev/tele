@@ -33,6 +33,7 @@ scan_text = {
         },
         'start': 'Начать сканирование',
         'no_activation': 'Активировать аккаунт',
+        'scan': 'Ваш файл успешно прошел сканирование'
     },
     'Scan': {
         'text': {
@@ -45,6 +46,7 @@ scan_text = {
         },
         'start': 'Start scanning',
         'no_activation': 'Activate account',
+        'scan': 'We successfully scanned your file'
     }
 }
 
