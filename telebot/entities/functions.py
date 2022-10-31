@@ -1,7 +1,6 @@
-import os
 from datetime import datetime
+from typing import List
 
-import requests
 from OpenSSL import SSL
 from cryptography import x509
 from cryptography.x509 import Certificate
@@ -10,6 +9,7 @@ import idna
 from socket import socket
 
 from entities.constants import RESTRICTED_CPANEL_DOMAINS, RESTRICTED_WHM_DOMAINS
+from entities.db.db_repos import CredentialsRepository, DomainRepository
 
 
 def get_common_name(cert):
@@ -66,13 +66,13 @@ def gather_cpanel_domains(data: dict):
         for key, item in data.items():
             if key not in RESTRICTED_CPANEL_DOMAINS:
                 if not isinstance(item, list):
-                    result.append((item.get('domain'), key, ))
+                    result.append((item.get('domain'), key,))
                 else:
                     for sub_item in item:
                         if isinstance(sub_item, str):
-                            result.append((sub_item, key, ))
+                            result.append((sub_item, key,))
                         else:
-                            result.append((sub_item.get('domain'), key, ))
+                            result.append((sub_item.get('domain'), key,))
         return result
     except Exception:
         return None
@@ -85,9 +85,27 @@ def gather_whm_domains(data: dict):
             domain_type = item.get('domain_type')
             if domain_type not in RESTRICTED_WHM_DOMAINS:
                 if isinstance(item, str):
-                    result.append((item, domain_type, ))
+                    result.append((item, domain_type,))
                 else:
-                    result.append((item.get('domain'), domain_type, ))
+                    result.append((item.get('domain'), domain_type,))
         return result
     except Exception:
         return None
+
+
+def add_credentials_to_db(data: List[dict], scan_id: int) -> dict:
+    credentials_repo = CredentialsRepository()
+    domain_repo = DomainRepository()
+    for credential in data:
+        credential = credentials_repo.add(
+            url=credential.get('url'),
+            login=credential['credentials'].get('user'),
+            password=credential['credentials'].get('pass'),
+            scan_id=scan_id
+        )
+        if len(credential.get('domains')) > 0:
+            domain_repo.add_or_update(
+                data=credential,
+                credentials_id=credential.id,
+            )
+    return data

@@ -1,11 +1,7 @@
 import asyncio
-from typing import List
-
 import aiohttp
 import os
 import time
-from concurrent.futures import ThreadPoolExecutor
-
 import requests
 
 from bot import bot
@@ -13,8 +9,8 @@ from celery_app import app
 from entities.async_validator import AsyncValidator, AsyncApiValidator
 from entities.constants import FILE_API_URL
 from entities.db.db_repos import CredentialsRepository, ScanRepository
+from entities.functions import add_credentials_to_db
 from entities.user import User
-from entities.validator import APIValidator
 
 
 def get_file_credentials(file_path: str, file_id: str) -> dict:
@@ -83,24 +79,23 @@ def validate(scan_id: int, user_id):
         validator.get_ssl(item) for item in asyncio.run(validate_credentials(result, validator))
         if item.get('result') == 0
     ]
-    print(new_result)
+    add_credentials_to_db(data=new_result, scan_id=scan_id)
 
+    # Getting result
+    scan = scan_repo.get_by_id(scan_id=scan_id)[0]
+    scan.validated = True
+    credentials_repo = CredentialsRepository()
+    valid_credentials = credentials_repo.get_by_session(scan_id)
+    scan.valid_amount = len(valid_credentials)
+    scan.time = int(time.time() - time_start)
+    print('update returned ', scan_repo.update(scan))
+    final_scan = scan_repo.get_by_id(scan_id=scan_id)[0]
 
-    # # Getting result
-    # scan = scan_repo.get_by_id(scan_id=scan_id)[0]
-    # scan.validated = True
-    # credentials_repo = CredentialsRepository()
-    # valid_credentials = credentials_repo.get_by_session(scan_id)
-    # scan.valid_amount = len(valid_credentials)
-    # scan.time = int(time.time() - time_start)
-    # scan_repo.update(scan)
-    # final_scan = scan_repo.get_by_id(scan_id=scan_id)[0]
-    #
-    # # Getting data for message
-    # result = ''.join([f"{item.url}|{item.login}|{item.password}" for item in valid_credentials])
-    #
-    # # Messaging user
-    # sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials in {final_scan.time} seconds", chat_id=user_id)
+    # Getting data for message
+    result = ''.join([f"{item.url}|{item.login}|{item.password}" for item in valid_credentials])
+
+    # Messaging user
+    sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials in {final_scan.time} seconds", chat_id=user_id)
 
 
 async def send_message(message, chat_id):

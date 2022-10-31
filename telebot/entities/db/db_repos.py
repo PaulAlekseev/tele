@@ -29,9 +29,9 @@ class CredentialsRepository:
                     password=password,
                     scan_id=scan_id,
                 )
-            self._save_object(session, credentials)
-            session.refresh(credentials)
-            session.expunge(credentials)
+                self._save_object(session, credentials)
+                session.refresh(credentials)
+                session.expunge(credentials)
             return credentials
 
     def get_by_date(self, requested_date: datetime.date):
@@ -121,6 +121,7 @@ class ScanRepository:
             session.add(scan)
             session.commit()
             session.expunge_all()
+        return scan
 
 
 class DomainRepository:
