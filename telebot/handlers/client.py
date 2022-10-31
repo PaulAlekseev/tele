@@ -12,7 +12,7 @@ from entities.db.db_repos import ScanRepository
 from other.functions import create_reply_markup
 from other.markups import language_markup
 from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text
-from tasks import get_file_credentials, validate_short, validate
+from tasks import validate
 
 
 async def start(message: types.Message):
