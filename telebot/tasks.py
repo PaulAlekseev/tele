@@ -8,7 +8,7 @@ import requests
 
 from bot import bot
 from celery_app import app
-from entities.async_validator import AsyncValidator
+from entities.async_validator import AsyncValidator, AsyncApiValidator
 from entities.constants import FILE_API_URL
 from entities.db.db_repos import CredentialsRepository, ScanRepository
 from entities.user import User
@@ -49,7 +49,7 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
 
 async def validate_credentials(data: list) -> tuple:
     connector = aiohttp.TCPConnector(limit=50)
-    validator = AsyncValidator()
+    validator = AsyncApiValidator()
     tasks = []
     async with aiohttp.ClientSession(connector=connector) as session:
         for item in data:
