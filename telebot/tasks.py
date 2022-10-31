@@ -57,7 +57,8 @@ async def validate_credentials(data: list) -> tuple:
             task = asyncio.ensure_future(validator.get_deliverability(session=session, user=user))
             tasks.append(task)
         result = asyncio.gather(*tasks)
-    return await result
+        new_result = await result
+    return new_result
 
 
 @app.task
