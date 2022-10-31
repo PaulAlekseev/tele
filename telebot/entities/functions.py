@@ -122,7 +122,7 @@ def form_credentials_client(data: dict) -> str:
                 semi_result += f"""    {domain['name']}{SEPARATOR}{domain['type']}
     """
         string.write(bytes(semi_result, 'UTF-8'))
-        string.write(bytes('', 'UTF-8'))
+        string.write(bytes('\n', 'UTF-8'))
     return '\n'.join(result)
 
 
@@ -136,6 +136,6 @@ def form_credentials_admin(data: dict) -> io.BytesIO:
                 semi_result += f"""    {domain['name']}{SEPARATOR}{domain['type']}{SEPARATOR}{domain['status']}{SEPARATOR}{domain['email']}{SEPARATOR}{domain['email_dns']}
     """
         string.write(bytes(semi_result, 'UTF-8'))
-        string.write(bytes('', 'UTF-8'))
+        string.write(bytes('\n', 'UTF-8'))
     string.seek(0)
     return string
