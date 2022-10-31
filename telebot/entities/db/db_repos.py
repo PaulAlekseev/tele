@@ -2,6 +2,7 @@ import datetime
 import sqlalchemy
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
+from typing import Dict
 
 from entities.db.db_engine import engine
 from entities.db.db_tables import Credential, CaptchaCredential, Scan, Domain

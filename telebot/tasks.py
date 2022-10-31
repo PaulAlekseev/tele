@@ -1,15 +1,18 @@
 import asyncio
+from typing import io
+
 import aiohttp
 import os
 import time
 import requests
+from aiogram.types import InputFile
 
 from bot import bot
 from celery_app import app
 from entities.async_validator import AsyncValidator, AsyncApiValidator
 from entities.constants import FILE_API_URL
-from entities.db.db_repos import CredentialsRepository, ScanRepository
-from entities.functions import add_credentials_to_db
+from entities.db.db_repos import CredentialsRepository, ScanRepository, CredentialDomainRepository
+from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
 
 
@@ -84,18 +87,37 @@ def validate(scan_id: int, user_id):
     # Getting result
     scan = scan_repo.get_by_id(scan_id=scan_id)[0]
     scan.validated = True
-    credentials_repo = CredentialsRepository()
+    credentials_repo = CredentialDomainRepository()
     valid_credentials = credentials_repo.get_by_session(scan_id)
     scan.valid_amount = len(valid_credentials)
     scan.time = int(time.time() - time_start)
-    print('update returned ', scan_repo.update(scan))
     final_scan = scan_repo.get_by_id(scan_id=scan_id)[0]
 
     # Getting data for message
-    result = ''.join([f"{item.url}|{item.login}|{item.password}" for item in valid_credentials])
+    result = form_credentials_admin(valid_credentials)
 
     # Messaging user
-    sync_send_message(message=f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials in {final_scan.time} seconds", chat_id=user_id)
+    message = f"Your scan {scan_id} is completed with {final_scan.valid_amount} valid credentials in {final_scan.time} seconds"
+    text_file = InputFile(path_or_bytesio=result, filename=f'{scan.created}-{scan.id}.txt')
+    sync_send_document(
+        chat_id=user_id, document=text_file, caption=message
+    )
+
+
+async def send_document(chat_id: int, document: InputFile, caption: str):
+    await bot.send_document(
+        chat_id=chat_id,
+        document=document,
+        caption=caption,
+    )
+
+
+def sync_send_document(chat_id: int, document: InputFile, caption: str):
+    asyncio.run(send_document(
+        chat_id=chat_id,
+        document=document,
+        caption=caption,
+    ))
 
 
 async def send_message(message, chat_id):
