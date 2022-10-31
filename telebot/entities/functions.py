@@ -132,7 +132,7 @@ def form_credentials_admin(data: dict) -> io.BytesIO:
     """
         if item.get('domains'):
             for domain in item['domains'].values():
-                semi_result += f"""    {domain['name']}{SEPARATOR}{domain['type']}{SEPARATOR}{domain['status']}{SEPARATOR}{domain['email']}{separator}{domain['email_dns']}
+                semi_result += f"""    {domain['name']}{SEPARATOR}{domain['type']}{SEPARATOR}{domain['status']}{SEPARATOR}{domain['email']}{SEPARATOR}{domain['email_dns']}
     """
         string.write(bytes(semi_result, 'UTF-8'))
     string.seek(0)
