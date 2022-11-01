@@ -114,6 +114,7 @@ def add_credentials_to_db(data: List[dict]) -> List[dict]:
 
 def form_credentials_client(data: dict) -> str:
     string = io.BytesIO()
+    data = change_info(data)
     for item in data.values():
         semi_result = f"""{item['url']}{SEPARATOR}{item['credentials']['user']}{SEPARATOR}{item['credentials']['pass']}
     """
@@ -129,6 +130,7 @@ def form_credentials_client(data: dict) -> str:
 
 def form_credentials_admin(data: List[dict]) -> io.BytesIO:
     string = io.BytesIO()
+    data = change_info(data)
     for item in data:
         semi_result = f"""{item['url']}{SEPARATOR}{item['credentials']['user']}{SEPARATOR}{item['credentials']['pass']}
     """
@@ -140,3 +142,13 @@ def form_credentials_admin(data: List[dict]) -> io.BytesIO:
         string.write(bytes('\n', 'UTF-8'))
     string.seek(0)
     return string
+
+
+def change_info(data: List[dict]) -> List[dict]:
+    for item in data:
+        if item.get('domains'):
+            for domain in item['domains'].values():
+                if not domain.get('email'):
+                    domain['email'] = 'No info'
+                    domain['dns_email'] = 'No info'
+    return data
