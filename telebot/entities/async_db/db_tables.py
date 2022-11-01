@@ -13,17 +13,6 @@ class Credential(Base):
     password = Column(String(200), nullable=False)
     created = Column(Date, default=date.today)
     updated = Column(Date, default=date.today, onupdate=date.today)
-    scan_id = Column(Integer, ForeignKey('scan.id'))
-
-
-class CaptchaCredential(Base):
-    __tablename__ = 'captcha_credential'
-    id = Column(Integer, primary_key=True)
-    url = Column(String(200), nullable=False)
-    login = Column(String(200), nullable=False)
-    password = Column(String(200), nullable=False)
-    created = Column(Date, default=date.today)
-    scan_id = Column(Integer, ForeignKey('scan.id'))
 
 
 class Domain(Base):
