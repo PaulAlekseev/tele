@@ -78,7 +78,6 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str):
         if item.get('result') == 0
     ]
     valid_credentials = add_credentials_to_db(data=new_result)
-    sync_send_message(chat_id=user_id, message=str(valid_credentials))
 
     # Getting data for message
     result = form_credentials_admin(valid_credentials)
