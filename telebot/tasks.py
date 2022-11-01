@@ -1,10 +1,8 @@
 import asyncio
 from datetime import datetime
-from typing import io
 
 import aiohttp
 import os
-import time
 import requests
 from aiogram.types import InputFile
 
@@ -12,7 +10,7 @@ from bot import bot
 from celery_app import app
 from entities.async_validator import AsyncValidator, AsyncApiValidator
 from entities.constants import FILE_API_URL
-from entities.db.db_repos import CredentialsRepository, ScanRepository, CredentialDomainRepository
+from entities.db.db_repos import CredentialsRepository
 from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
 from other.text_dicts import scan_text
