@@ -4,8 +4,8 @@ from sqlalchemy import desc
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from entities.async_db.db_specifications import ScanSpecification, ActivationSpecification
-from entities.async_db.db_tables import Credential, Scan, Activation
+from entities.async_db.db_specifications import ActivationSpecification
+from entities.async_db.db_tables import Credential, Activation
 
 
 class AIOCredentialRepo:
