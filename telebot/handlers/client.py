@@ -87,29 +87,13 @@ async def file_handler(message: types.Message):
 async def start_scan(message: types.Message, lang: str):
     async with async_session() as session:
         async with session.begin():
-            scan_repo = AIOScanRepo(session)
             file = await bot.get_file(message.document.file_id)
-            scan = await scan_repo.create(
-                user_tele_id=message.from_user.id,
-                file_path=file.file_path,
-                file_id=file.file_id,
+            validate.delay(
+                scan_file_id=file.file_id,
+                scan_file_path=file.file_path,
+                user_id=message.from_user.id,
+                lang=lang
             )
-            validate.delay(scan_id=scan.id, user_id=message.from_user.id, lang=lang)
-
-
-async def get_scans(message: types.Message):
-    async with async_session() as session:
-        async with session.begin():
-            scan_repo = AIOScanRepo(session)
-            scans = await scan_repo.get_with(
-                ScanDateUserSpecification(
-                    user_tele_id=message.from_user.id,
-                    scan_date=datetime.date.today())
-            )
-            await bot.send_message(message.from_user.id, [
-                (item.id, item.valid_amount, item.time, item.created)
-                for item in scans
-            ])
 
 
 async def create_activation(callback_query: types.CallbackQuery):
@@ -132,7 +116,6 @@ def register_handlers_client(dp: Dispatcher):
         profile,
         lambda message: emoji.demojize(message.text) in profile_text
     )
-    dp.register_message_handler(get_scans, commands=['scans'])
     dp.register_message_handler(start, lambda message: emoji.demojize(message.text) in (
             ':reverse_button: Back to languages',
             ':reverse_button: Назад к выбору языка',
