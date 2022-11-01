@@ -119,7 +119,7 @@ def form_credentials_client(data: dict) -> str:
     """
         if item.get('domains'):
             for domain in item['domains'].values():
-                semi_result += f"""    {domain['name']}{SEPARATOR}{domain['type']}
+                semi_result += f"""    {domain['domain']}{SEPARATOR}{domain['type']}
     """
         string.write(bytes(semi_result, 'UTF-8'))
         string.write(bytes('\n', 'UTF-8'))
@@ -134,7 +134,7 @@ def form_credentials_admin(data: List[dict]) -> io.BytesIO:
     """
         if item.get('domains'):
             for domain in item['domains'].values():
-                semi_result += f"""    {domain['name']}{SEPARATOR}{domain['type']}{SEPARATOR}{domain['status']}{SEPARATOR}{domain['email']}{SEPARATOR}{domain['email_dns']}
+                semi_result += f"""    {domain['domain']}{SEPARATOR}{domain['type']}{SEPARATOR}{domain['ssl_status']}{SEPARATOR}{domain['email']}{SEPARATOR}{domain['dns_email']}
     """
         string.write(bytes(semi_result, 'UTF-8'))
         string.write(bytes('\n', 'UTF-8'))
