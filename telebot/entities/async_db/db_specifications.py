@@ -1,6 +1,6 @@
 from datetime import date
 
-from entities.async_db.db_tables import Scan, Activation
+from entities.async_db.db_tables import Activation
 
 
 class Specification:
