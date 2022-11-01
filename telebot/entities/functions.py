@@ -112,10 +112,10 @@ def add_credentials_to_db(data: List[dict]) -> List[dict]:
     return data
 
 
-def form_credentials_client(data: dict) -> str:
+def form_credentials_client(data: List[dict]) -> io.BytesIO:
     string = io.BytesIO()
     data = change_info(data)
-    for item in data.values():
+    for item in data:
         semi_result = f"""{item['url']}{SEPARATOR}{item['credentials']['user']}{SEPARATOR}{item['credentials']['pass']}
     """
         if item.get('domains'):
