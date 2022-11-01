@@ -64,7 +64,6 @@ async def validate_credentials(data: list, validator: AsyncValidator):
 @app.task
 def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str):
     # Getting data from document
-    scan_repo = ScanRepository()
     validator = AsyncApiValidator()
     file_result = get_file_credentials(file_path=scan_file_path, file_id=scan_file_id)
     if file_result['status'] > 1:
