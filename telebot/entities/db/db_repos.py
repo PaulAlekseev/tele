@@ -1,11 +1,9 @@
 import datetime
 import sqlalchemy
-from sqlalchemy import desc
 from sqlalchemy.orm import Session
-from typing import Dict
 
 from entities.db.db_engine import engine
-from entities.db.db_tables import Credential, CaptchaCredential, Scan, Domain
+from entities.db.db_tables import Credential, Domain
 
 
 class CredentialsRepository:
@@ -15,7 +13,7 @@ class CredentialsRepository:
         session.add(obj)
         session.commit()
 
-    def add(self, url, login, password, scan_id):
+    def add(self, url, login, password):
         with Session(bind=engine) as session:
             try:
                 credentials = session.query(self.model).filter(
@@ -28,7 +26,6 @@ class CredentialsRepository:
                     url=url,
                     login=login,
                     password=password,
-                    scan_id=scan_id,
                 )
                 self._save_object(session, credentials)
                 session.refresh(credentials)
@@ -49,81 +46,6 @@ class CredentialsRepository:
                 self.model.created <= date2,
             ).all()
         return result
-
-    def get_by_session(self, session_id):
-        with Session(bind=engine) as session:
-            result = session.query(self.model).filter(
-                self.model.scan_id == session_id
-            ).all()
-        return result
-
-
-class CaptchaCredentialsRepository:
-    model = CaptchaCredential
-
-    def _save_object(self, session, obj):
-        session.add(obj)
-        session.commit()
-
-    def add_or_update(self, url, login, password, scan_id):
-        with Session(bind=engine) as session:
-            try:
-                credentials = session.query(self.model).filter(
-                    self.model.url == url,
-                    self.model.login == login,
-                    self.model.password == password,
-                ).one()
-            except sqlalchemy.orm.exc.NoResultFound:
-                credentials = self.model(
-                    url=url,
-                    login=login,
-                    password=password,
-                    scan_id=scan_id
-                )
-            self._save_object(session, credentials)
-        return credentials
-
-    def get_by_id(self, session_id: int):
-        with Session(bind=engine) as session:
-            result = session.query(self.model).filter(
-                self.model.scan_id == session_id
-            ).all()
-        return result
-
-    def remove(self, url, login, password):
-        with Session(bind=engine) as session:
-            session.query(self.model).filter(
-                self.model.url == url,
-                self.model.login == login,
-                self.model.password == password,
-            ).delete(synchronize_session=False)
-            session.commit()
-
-
-class ScanRepository:
-    model = Scan
-
-    def get_by_id(self, scan_id):
-        with Session(bind=engine) as session:
-            scan = session.query(self.model).filter(
-                self.model.id == scan_id
-            ).all()
-        return scan
-
-    def get_latest(self) -> Scan:
-        with Session(bind=engine) as session:
-            scan = session.query(self.model).order_by(
-                desc('created')
-            ).first()
-        return scan
-
-    def update(self, scan: Scan) -> Scan:
-        with Session(bind=engine) as session:
-            session.add(scan)
-            session.commit()
-            session.refresh(scan)
-            session.expunge(scan)
-            return scan
 
 
 class DomainRepository:

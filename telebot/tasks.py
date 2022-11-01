@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 from typing import io
 
 import aiohttp
@@ -63,44 +64,30 @@ async def validate_credentials(data: list, validator: AsyncValidator):
 
 
 @app.task
-def validate(scan_id: int, user_id: id, lang: str):
+def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str):
     # Getting data from document
     scan_repo = ScanRepository()
-    scan = scan_repo.get_by_id(scan_id=scan_id)[0]
     validator = AsyncApiValidator()
-    file_result = get_file_credentials(file_path=scan.file_path, file_id=scan.file_id)
+    file_result = get_file_credentials(file_path=scan_file_path, file_id=scan_file_id)
     if file_result['status'] > 1:
         sync_send_message(message="Sorry, we couldn't find your file", chat_id=user_id)
-        scan.validated = True
-        scan_repo.update(scan)
         return 0
     else:
         result = file_result['credentials']
 
     # Scanning for data
-    time_start = time.time()
     new_result = [
         validator.get_ssl(item) for item in asyncio.run(validate_credentials(result, validator))
         if item.get('result') == 0
     ]
-    add_credentials_to_db(data=new_result, scan_id=scan_id)
-
-    # Getting result
-    scan = scan_repo.get_by_id(scan_id=scan_id)[0]
-    scan.validated = True
-    credentials_repo = CredentialDomainRepository()
-    valid_credentials = credentials_repo.get_by_session(scan_id)
-    scan.valid_amount = len(valid_credentials)
-    scan.time = int(time.time() - time_start)
-    scan = scan_repo.update(scan)
-    final_scan = scan_repo.get_by_id(scan_id=scan_id)[0]
+    valid_credentials = add_credentials_to_db(data=new_result)
 
     # Getting data for message
     result = form_credentials_admin(valid_credentials)
 
     # Messaging user
     message = scan_text[lang]['scan']
-    text_file = InputFile(path_or_bytesio=result, filename=f'{scan.created}-{scan.id}.txt')
+    text_file = InputFile(path_or_bytesio=result, filename=f'{datetime.now()}-{user_id}.txt')
     sync_send_document(
         chat_id=user_id, document=text_file, caption=message
     )

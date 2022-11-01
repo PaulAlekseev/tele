@@ -94,7 +94,7 @@ def gather_whm_domains(data: dict):
         return None
 
 
-def add_credentials_to_db(data: List[dict], scan_id: int) -> dict:
+def add_credentials_to_db(data: List[dict]) -> List[dict]:
     credentials_repo = CredentialsRepository()
     domain_repo = DomainRepository()
     for credential in data:
@@ -102,7 +102,6 @@ def add_credentials_to_db(data: List[dict], scan_id: int) -> dict:
             url=credential.get('url'),
             login=credential['credentials'].get('user'),
             password=credential['credentials'].get('pass'),
-            scan_id=scan_id
         )
         if credential.get('domains'):
             if len(credential.get('domains')) > 0:
@@ -128,9 +127,9 @@ def form_credentials_client(data: dict) -> str:
     return string
 
 
-def form_credentials_admin(data: dict) -> io.BytesIO:
+def form_credentials_admin(data: List[dict]) -> io.BytesIO:
     string = io.BytesIO()
-    for item in data.values():
+    for item in data:
         semi_result = f"""{item['url']}{SEPARATOR}{item['credentials']['user']}{SEPARATOR}{item['credentials']['pass']}
     """
         if item.get('domains'):

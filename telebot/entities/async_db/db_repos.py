@@ -19,31 +19,6 @@ class AIOCredentialRepo:
         return credentials.all()
 
 
-class AIOScanRepo:
-    model = Scan
-
-    def __init__(self, db_session: Session):
-        self.db_session = db_session
-
-    async def create(self, user_tele_id: int, file_id: str, file_path: str) -> Scan:
-        new_scan = self.model(
-            user_tele_id=user_tele_id,
-            file_id=file_id,
-            file_path=file_path
-        )
-        self.db_session.add(new_scan)
-        await self.db_session.flush()
-        return new_scan
-
-    async def get_with(self, scan_specification: ScanSpecification):
-        credentials = await self.db_session.execute(
-            select(self.model).filter(
-                *scan_specification.is_satisfied()
-            )
-        )
-        return credentials.scalars().all()
-
-
 class AIOActivationRepo:
     model = Activation
 

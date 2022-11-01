@@ -37,21 +37,6 @@ class Domain(Base):
     credential_id = Column(Integer, ForeignKey('credential.id'))
 
 
-class Scan(Base):
-    __tablename__ = 'scan'
-    id = Column(Integer, primary_key=True)
-
-    # DATABASE USE ID
-    # NOT TELEGRAM ID
-    user_tele_id = Column(Integer, nullable=False)
-    file_id = Column(String(200), nullable=False)
-    file_path = Column(String(200), nullable=False)
-    validated = Column(Boolean)
-    valid_amount = Column(Integer, default=0)
-    time = Column(Integer, default=0)
-    created = Column(Date, default=date.today)
-
-
 class Activation(Base):
     __tablename__ = 'activation'
     id = Column(Integer, primary_key=True)

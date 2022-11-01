@@ -6,9 +6,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOCredentialRepo, AIOScanRepo, AIOActivationRepo
-from entities.async_db.db_specifications import ScanDateUserSpecification
-from entities.db.db_repos import ScanRepository
+from entities.async_db.db_repos import AIOActivationRepo
 from other.functions import create_reply_markup
 from other.markups import language_markup
 from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text
