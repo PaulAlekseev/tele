@@ -20,8 +20,10 @@ async def get_by_date(message: types.Message, regexp):
         async with session.begin():
             credential_repo = AIOCredentialDomainRepo(session)
             credential_result = await credential_repo.get_by_date_range(date1, date2)
+            await bot.send_message(message.from_user.id, str(credential_result))
             if len(credential_result) == 0:
                 await bot.send_message(message.from_user.id, 'No credentials this dates')
+                return 0
             text_result = form_credentials_admin(credential_result)
             text_file = InputFile(
                 path_or_bytesio=text_result, filename=f'{datetime.now()}-{message.from_user.id}.txt'
