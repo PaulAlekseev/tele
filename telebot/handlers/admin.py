@@ -20,7 +20,7 @@ async def get_by_date(message: types.Message, regexp):
             credential_repo = AIOCredentialDomainRepo(session)
             credential_result = await credential_repo.get_by_date_range(date1, date2)
             text_file = InputFile(
-                path_or_bytesio=credential_result, filename=f'{datetime.now()}-{message.from_user.id}'
+                path_or_bytesio=credential_result, filename=f'{datetime.now()}-{message.from_user.id}.txt'
             )
             await bot.send_document(
                 chat_id=message.from_user.id,
