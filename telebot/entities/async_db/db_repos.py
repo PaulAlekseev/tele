@@ -107,9 +107,10 @@ class AIOUserRepo:
 
     async def create(self, tele_id):
         try:
-            new_user = self.db_session.execute(select(self.model).filter(
+            new_user = await self.db_session.execute(select(self.model).filter(
                 self.model.tele_id == tele_id,
-            )).one()
+            ))
+            new_user = new_user.one()
         except sqlalchemy.orm.exc.NoResultFound:
             new_user = self.model(
                 tele_id=tele_id
