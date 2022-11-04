@@ -94,5 +94,5 @@ class AIOCredentialDomainRepo:
                         'email_dns': item.email_dns,
                     }
                 })
-        print(result)
+        print('result', result)
         return result
