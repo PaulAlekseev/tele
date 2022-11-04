@@ -17,7 +17,7 @@ async def get_by_date(message: types.Message, regexp):
     async with async_session() as session:
         async with session.begin():
             credential_repo = AIOCredentialDomainRepo(session)
-            credential_result = credential_repo.get_by_date_range(date1, date2)
+            credential_result = await credential_repo.get_by_date_range(date1, date2)
             await bot.send_message(
                 message.from_user.id,
                 str(credential_result)
