@@ -1,5 +1,6 @@
 from typing import List
 
+import sqlalchemy
 from sqlalchemy import desc
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
@@ -105,11 +106,16 @@ class AIOUserRepo:
         self.db_session = session
 
     async def create(self, tele_id):
-        new_user = self.model(
-            tele_id=tele_id
-        )
-        self.db_session.add(new_user)
-        await self.db_session.flush()
+        try:
+            new_user = self.db_session.execute(select(self.model).filter(
+                self.model.tele_id == tele_id,
+            )).one()
+        except sqlalchemy.orm.exc.NoResultFound:
+            new_user = self.model(
+                tele_id=tele_id
+            )
+            self.db_session.add(new_user)
+            await self.db_session.flush()
         return new_user
 
     async def get_all(self) -> List[User]:
