@@ -90,9 +90,9 @@ class AIOCredentialDomainRepo:
                     item.domain: {
                         'domain': item.domain,
                         'type': item.type,
-                        'status': item.status,
+                        'ssl_status': item.status,
                         'email': item.email,
-                        'email_dns': item.email_dns,
+                        'dns_email': item.email_dns,
                     }
                 })
         return [item for item in result.values()]
