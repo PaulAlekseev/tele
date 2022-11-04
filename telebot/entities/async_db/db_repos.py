@@ -65,7 +65,8 @@ class AIOCredentialDomainRepo:
                 self.model1.created <= date2
             )
         )
-        credential_ids = [item.id for item in credentials.scalars().all()]
+        credential_result = credentials.scalars().all()
+        credential_ids = [item.id for item in credential_result]
         domains = await self._session.execute(
             select(self.model2).filter(
                 self.model2.credential_id.in_(credential_ids)
@@ -81,7 +82,7 @@ class AIOCredentialDomainRepo:
                 },
                 'domains': {
 
-                }} for item in credentials
+                }} for item in credential_result
         }
         if domain_result:
             for item in domain_result:
