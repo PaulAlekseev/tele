@@ -25,4 +25,4 @@ async def get_by_date(message: types.Message, regexp):
 
 
 def register_handlers_admin(dp: Dispatcher):
-    dp.register_message_handler(get_by_date, regexp='^date\s(\d{2}\-\d{2}\-\d{4})-(\d{2}\-\d{2}\-\d{4})')
+    dp.register_message_handler(get_by_date, regexp='^date\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})')
