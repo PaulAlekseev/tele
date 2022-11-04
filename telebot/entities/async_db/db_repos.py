@@ -95,4 +95,4 @@ class AIOCredentialDomainRepo:
                         'email_dns': item.email_dns,
                     }
                 })
-        return result
+        return [item for item in result.values()]
