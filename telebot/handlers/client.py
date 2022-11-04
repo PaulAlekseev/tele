@@ -20,7 +20,7 @@ async def start(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             user_repo = AIOUserRepo(session)
-            await user_repo.create(message.from_user.id)
+            await user_repo.create(str(message.from_user.id))
     await message.delete()
     await message.answer('Choose your language / Выберите язык', reply_markup=language_markup)
     
