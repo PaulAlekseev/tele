@@ -1,6 +1,6 @@
 from datetime import date
 
-from entities.async_db.db_tables import Activation
+from entities.async_db.db_tables import Activation, User
 
 
 class Specification:
@@ -10,6 +10,10 @@ class Specification:
 
 class ActivationSpecification(Specification):
     model = Activation
+
+
+class UserSpecification(Specification):
+    model = User
 
 
 class ActivationUserIdSpecification(ActivationSpecification):

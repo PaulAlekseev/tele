@@ -5,7 +5,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from entities.async_db.db_specifications import ActivationSpecification
-from entities.async_db.db_tables import Credential, Activation, Domain
+from entities.async_db.db_tables import Credential, Activation, Domain, User
 
 
 class AIOCredentialRepo:
@@ -96,3 +96,22 @@ class AIOCredentialDomainRepo:
                     }
                 })
         return [item for item in result.values()]
+
+
+class AIOUserRepo:
+    model = User
+
+    def __init__(self, session):
+        self.db_session = session
+
+    async def create(self, tele_id):
+        new_user = self.model(
+            tele_id=tele_id
+        )
+        self.db_session.add(new_user)
+        await self.db_session.flush()
+        return new_user
+
+    async def get_all(self) -> List[User]:
+        users = await self.db_session.execute(select(self.model))
+        return users.scalars().all()

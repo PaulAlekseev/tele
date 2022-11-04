@@ -5,7 +5,7 @@ from aiogram.types import InputFile
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOCredentialDomainRepo
+from entities.async_db.db_repos import AIOCredentialDomainRepo, AIOUserRepo
 from entities.functions import form_credentials_admin
 
 
@@ -20,7 +20,6 @@ async def get_by_date(message: types.Message, regexp):
         async with session.begin():
             credential_repo = AIOCredentialDomainRepo(session)
             credential_result = await credential_repo.get_by_date_range(date1, date2)
-            await bot.send_message(message.from_user.id, str(credential_result))
             if len(credential_result) == 0:
                 await bot.send_message(message.from_user.id, 'No credentials this dates')
                 return 0
@@ -35,5 +34,18 @@ async def get_by_date(message: types.Message, regexp):
             )
 
 
+async def text_all(message: types.Message, regexp):
+    async with async_session() as session:
+        async with session.begin():
+            user_repo = AIOUserRepo(session)
+            all_users = await user_repo.get_all()
+            for item in all_users:
+                await bot.send_message(item.tele_id, regexp.group(1))
+
+
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(get_by_date, regexp='^date\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})')
+    dp.register_message_handler(
+        text_all,
+        regexp=r"^send\s([a-zA-Zа-яА-Я\s\d.,?\/\\(\)!@#$%^&*\[\]\{\}';:№`~]+)"
+    )

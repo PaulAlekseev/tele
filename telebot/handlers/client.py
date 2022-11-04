@@ -6,7 +6,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOActivationRepo
+from entities.async_db.db_repos import AIOActivationRepo, AIOUserRepo
 from other.functions import create_reply_markup
 from other.markups import language_markup
 from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text
@@ -17,6 +17,10 @@ async def start(message: types.Message):
     """
     Shows language choosing markup
     """
+    async with async_session() as session:
+        async with session.begin():
+            user_repo = AIOUserRepo(session)
+            await user_repo.create(message.from_user.id)
     await message.delete()
     await message.answer('Choose your language / Выберите язык', reply_markup=language_markup)
     
