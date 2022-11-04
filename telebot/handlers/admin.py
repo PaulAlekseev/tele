@@ -39,6 +39,8 @@ async def get_statistics(message: types.Message):
         async with session.begin():
             user_repo = AIOUserRepo(session)
             users = await user_repo.get_all()
+            if len(users) == 0:
+                await bot.send_message(message.from_user.id, 'No users')
             string = form_user_statistics(users)
             text_file = InputFile(path_or_bytesio=string, filename=f'User statistics - {date.today()}')
             await bot.send_document(
