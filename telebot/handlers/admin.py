@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from aiogram import types, Dispatcher
+from aiogram.types import InputFile
 
 from bot import bot
 from entities.async_db.db_engine import async_session
@@ -18,9 +19,11 @@ async def get_by_date(message: types.Message, regexp):
         async with session.begin():
             credential_repo = AIOCredentialDomainRepo(session)
             credential_result = await credential_repo.get_by_date_range(date1, date2)
-            await bot.send_message(
-                message.from_user.id,
-                str(credential_result)
+            text_file = InputFile(path_or_bytesio=credential_result, filename=f'{datetime.now()}-{user_id}.txt')
+            await bot.send_document(
+                chat_id=message.from_user.id,
+                document=text_file,
+                caption=f"Data from {date1} to {date2}",
             )
 
 
