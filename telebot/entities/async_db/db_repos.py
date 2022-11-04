@@ -65,13 +65,13 @@ class AIOCredentialDomainRepo:
                 self.model1.created <= date2
             )
         )
-        credential_ids = [item.id for item in credentials.all()]
+        credential_ids = [item.id for item in credentials.scalars().all()]
         domains = await self._session.execute(
             select(self.model2).filter(
                 self.model2.credential_id.in_(credential_ids)
             )
         )
-        domain_result = domains.all()
+        domain_result = domains.scalars().all()
         result = {
             str(item.id): {
                 'url': item.url,
@@ -94,4 +94,5 @@ class AIOCredentialDomainRepo:
                         'email_dns': item.email_dns,
                     }
                 })
+        print(result)
         return result
