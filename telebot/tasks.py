@@ -8,9 +8,10 @@ from aiogram.types import InputFile
 
 from bot import bot
 from celery_app import app
+from entities.async_db.db_repos import AIOUserRepo
 from entities.async_validator import AsyncValidator, AsyncApiValidator
 from entities.constants import FILE_API_URL
-from entities.db.db_repos import CredentialsRepository
+from entities.db.db_repos import CredentialsRepository, UserRepo
 from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
 from other.text_dicts import scan_text
@@ -65,6 +66,7 @@ async def validate_credentials(data: list, validator: AsyncValidator):
 def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str):
     # Getting data from document
     validator = AsyncApiValidator()
+    user_repo = UserRepo()
     file_result = get_file_credentials(file_path=scan_file_path, file_id=scan_file_id)
     if file_result['status'] > 1:
         sync_send_message(message="Sorry, we couldn't find your file", chat_id=user_id)
@@ -88,6 +90,7 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str):
     sync_send_document(
         chat_id=user_id, document=text_file, caption=message
     )
+    user_repo.add_to_count(file_result['amount'])
 
 
 async def send_document(chat_id: int, document: InputFile, caption: str):

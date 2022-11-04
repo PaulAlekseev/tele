@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from aiogram import types, Dispatcher
 from aiogram.types import InputFile
@@ -6,7 +6,7 @@ from aiogram.types import InputFile
 from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOCredentialDomainRepo, AIOUserRepo
-from entities.functions import form_credentials_admin
+from entities.functions import form_credentials_admin, form_user_statistics
 
 
 async def get_by_date(message: types.Message, regexp):
@@ -31,6 +31,20 @@ async def get_by_date(message: types.Message, regexp):
                 chat_id=message.from_user.id,
                 document=text_file,
                 caption=f"Data from {date1} to {date2}",
+            )
+
+
+async def get_statistics(message: types.Message):
+    async with async_session() as session:
+        async with session.begin():
+            user_repo = AIOUserRepo(session)
+            users = await user_repo.get_all()
+            string = form_user_statistics(users)
+            text_file = InputFile(path_or_bytesio=string, filename=f'User statistics - {date.today()}')
+            await bot.send_document(
+                chat_id=message.from_user.id,
+                document=text_file,
+                caption='Successfully created user statistics',
             )
 
 

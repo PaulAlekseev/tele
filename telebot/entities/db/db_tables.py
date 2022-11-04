@@ -38,3 +38,5 @@ class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     tele_id = Column(String(50), nullable=False)
+    count = Column(Integer, default=0)
+

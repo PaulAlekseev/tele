@@ -3,7 +3,7 @@ import sqlalchemy
 from sqlalchemy.orm import Session
 
 from entities.db.db_engine import engine
-from entities.db.db_tables import Credential, Domain
+from entities.db.db_tables import Credential, Domain, User
 
 
 class CredentialsRepository:
@@ -158,3 +158,16 @@ class CredentialDomainRepository:
                     }
                 })
         return result
+
+
+class UserRepo:
+    model = User
+
+    def add_to_count(self, tele_id) -> None:
+        with Session(bind=engine) as session:
+            user = session.query(self.model).filter(
+                self.model.tele_id == tele_id
+            ).first()
+            user.count += user.count
+            session.add(user)
+            session.commit()

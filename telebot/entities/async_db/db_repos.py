@@ -5,7 +5,7 @@ from sqlalchemy import desc
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from entities.async_db.db_specifications import ActivationSpecification
+from entities.async_db.db_specifications import ActivationSpecification, UserSpecification
 from entities.async_db.db_tables import Credential, Activation, Domain, User
 
 
@@ -121,4 +121,12 @@ class AIOUserRepo:
 
     async def get_all(self) -> List[User]:
         users = await self.db_session.execute(select(self.model))
+        return users.scalars().all()
+
+    async def get(self, user_specification: UserSpecification):
+        users = await self.db_session.execute(
+            select(self.model).filter(
+                *user_specification.is_satisfied()
+            )
+        )
         return users.scalars().all()
