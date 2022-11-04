@@ -6,6 +6,7 @@ from aiogram.types import InputFile
 from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOCredentialDomainRepo
+from entities.functions import form_credentials_admin
 
 
 async def get_by_date(message: types.Message, regexp):
@@ -19,8 +20,9 @@ async def get_by_date(message: types.Message, regexp):
         async with session.begin():
             credential_repo = AIOCredentialDomainRepo(session)
             credential_result = await credential_repo.get_by_date_range(date1, date2)
+            text_result = form_credentials_admin(credential_result)
             text_file = InputFile(
-                path_or_bytesio=credential_result, filename=f'{datetime.now()}-{message.from_user.id}.txt'
+                path_or_bytesio=text_result, filename=f'{datetime.now()}-{message.from_user.id}.txt'
             )
             await bot.send_document(
                 chat_id=message.from_user.id,
