@@ -5,7 +5,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from entities.async_db.db_specifications import ActivationSpecification
-from entities.async_db.db_tables import Credential, Activation
+from entities.async_db.db_tables import Credential, Activation, Domain
 
 
 class AIOCredentialRepo:
@@ -49,3 +49,49 @@ class AIOActivationRepo:
             ).order_by(desc(self.model.expires))
         )
         return activation.scalars().first()
+
+
+class AIOCredentialDomainRepo:
+    model1 = Credential
+    model2 = Domain
+
+    def __init__(self, session):
+        self._session = session
+
+    async def get_by_date_range(self, date1, date2):
+        credentials = await self._session.execute(
+            select(self.model1).filter(
+                self.model1.created >= date1,
+                self.model1.created <= date2
+            )
+        )
+        credential_ids = [item.id for item in credentials.all()]
+        domains = await self._session.execute(
+            select(self.model2).filter(
+                self.model2.credential_id.in_(credential_ids)
+            )
+        )
+        domain_result = domains.all()
+        result = {
+            str(item.id): {
+                'url': item.url,
+                'credentials': {
+                    'user': item.login,
+                    'pass': item.password
+                },
+                'domains': {
+
+                }} for item in credentials
+        }
+        if domain_result:
+            for item in domain_result:
+                result[str(item.credential_id)]['domains'].update({
+                    item.domain: {
+                        'name': item.domain,
+                        'type': item.type,
+                        'status': item.status,
+                        'email': item.email,
+                        'email_dns': item.email_dns,
+                    }
+                })
+        return result
