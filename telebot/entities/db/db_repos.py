@@ -163,11 +163,11 @@ class CredentialDomainRepository:
 class UserRepo:
     model = User
 
-    def add_to_count(self, tele_id) -> None:
+    def add_to_count(self, tele_id, amount) -> None:
         with Session(bind=engine) as session:
             user = session.query(self.model).filter(
                 self.model.tele_id == tele_id
             ).first()
-            user.count += user.count
+            user.count += amount
             session.add(user)
             session.commit()

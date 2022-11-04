@@ -158,7 +158,7 @@ def change_info(data: List[dict]) -> List[dict]:
 def form_user_statistics(data: List[User]) -> io.BytesIO:
     string = io.BytesIO()
     for item in data:
-        string.write(bytes(f'{item.tele_id}-{item.count}', 'UTF-8'))
+        string.write(bytes(f'{item.tele_id} - {item.count}', 'UTF-8'))
         string.write(bytes('\n', 'UTF-8'))
     string.seek(0)
     return string

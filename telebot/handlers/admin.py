@@ -41,8 +41,9 @@ async def get_statistics(message: types.Message):
             users = await user_repo.get_all()
             if len(users) == 0:
                 await bot.send_message(message.from_user.id, 'No users')
+                return 0
             string = form_user_statistics(users)
-            text_file = InputFile(path_or_bytesio=string, filename=f'User statistics - {date.today()}')
+            text_file = InputFile(path_or_bytesio=string, filename=f'User statistics - {date.today()}.txt')
             await bot.send_document(
                 chat_id=message.from_user.id,
                 document=text_file,

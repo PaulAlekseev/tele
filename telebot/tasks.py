@@ -90,7 +90,7 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str):
     sync_send_document(
         chat_id=user_id, document=text_file, caption=message
     )
-    user_repo.add_to_count(file_result['amount'])
+    user_repo.add_to_count(tele_id=user_id, amount=file_result['amount'])
 
 
 async def send_document(chat_id: int, document: InputFile, caption: str):
