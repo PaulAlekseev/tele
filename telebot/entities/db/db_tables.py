@@ -32,3 +32,9 @@ class Activation(Base):
     created = Column(Date, default=date.today)
     expires = Column(Date, nullable=False)
     user_tele_id = Column(Integer, nullable=False)
+
+
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    tele_id = Column(String(50), nullable=False)
