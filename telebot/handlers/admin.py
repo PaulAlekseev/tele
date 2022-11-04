@@ -63,3 +63,4 @@ def register_handlers_admin(dp: Dispatcher):
         text_all,
         regexp=r"^send\s([a-zA-Zа-яА-Я\s\d.,?\/\\(\)!@#$%^&*\[\]\{\}';:№`~]+)"
     )
+    dp.register_message_handler(get_statistics, commands=['statistics', ])
