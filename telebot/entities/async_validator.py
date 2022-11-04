@@ -117,7 +117,7 @@ class AsyncApiValidator(AsyncValidator):
             })
             return data
         data['domains'] = {
-            item[0]: {'name': item[0], 'type': item[1], 'ssl_status': 'No info'} for item in result
+            item[0]: {'domain': item[0], 'type': item[1], 'ssl_status': 'No info'} for item in result
         }
         return data
 
