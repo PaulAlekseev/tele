@@ -88,7 +88,7 @@ class AIOCredentialDomainRepo:
             for item in domain_result:
                 result[str(item.credential_id)]['domains'].update({
                     item.domain: {
-                        'name': item.domain,
+                        'domain': item.domain,
                         'type': item.type,
                         'status': item.status,
                         'email': item.email,
