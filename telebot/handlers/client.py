@@ -8,7 +8,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOActivationRepo, AIOUserRepo, AIOActivationTypeRepo
-from entities.async_db.db_specifications import ActivationTypeActiveSpecification
+from entities.async_db.db_specifications import ActivationTypeActiveSpecification, ActivationTypeIdSpecification
 from other.functions import create_reply_markup, form_activation_type_tariffs, form_payment_markup
 from other.markups import language_markup
 from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text, activation_tariffs_text, \
@@ -145,10 +145,17 @@ async def choose_payment_coin(callback_query: types.CallbackQuery, regexp):
 
 
 async def payment_start(callback_query: types.CallbackQuery, regexp):
-    await bot.send_message(
-        chat_id=callback_query.from_user.id,
-        text=f'{regexp.group(1)} - active_id {regexp.group(2)} - lang: {regexp.group(3)}'
-    )
+    async with async_session() as session:
+        async with session.begin():
+            activation_type_repo = AIOActivationTypeRepo(session)
+            activation_types = await activation_type_repo.get(
+                ActivationTypeIdSpecification(int(regexp.group(2)))
+            )
+            activation_type = activation_types[0]
+            await bot.send_message(
+                chat_id=callback_query.from_user.id,
+                text=f'{activation_type.id} - {activation_type.active} - {activation_type.name} - {activation_type.price}'
+            )
 
 
 def register_handlers_client(dp: Dispatcher):
