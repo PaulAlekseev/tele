@@ -41,4 +41,4 @@ class ActivationTypeActiveSpecification(ActivationTypeSpecification):
 
 class ActivationTypeAllSpecification(ActivationTypeSpecification):
     def is_satisfied(self):
-        return self.model.id.all_(),
+        return self.model.id >= 0,
