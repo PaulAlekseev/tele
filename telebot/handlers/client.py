@@ -154,5 +154,5 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_callback_query_handler(create_activation, lambda c: c.data in activation_text)
     dp.register_callback_query_handler(
         choose_payment_coin,
-        lambda c: re.match(r"^type-\d+(rus|eng)", c.data)
+        lambda c: re.search(r"^type-\d+(rus|eng)", c.data)
     )
