@@ -54,7 +54,7 @@ async def profile(message: types.Message):
             activation_exist = True if latest_activation else False
             active = True if activation_exist and latest_activation.expires >= datetime.date.today() else False
             text_dict = profile_text[emoji.demojize(message.text)]
-            await bot.send_message(
+            bot_message = await bot.send_message(
                 message.from_user.id,
                 emoji.emojize(text_dict['text'].format(
                     message.from_user.id,
@@ -62,6 +62,7 @@ async def profile(message: types.Message):
                     latest_activation.expires if active else '-',
                 ))
             )
+            await bot_message.delete()
 
 
 async def file_handler(message: types.Message):
