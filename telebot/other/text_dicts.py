@@ -3,20 +3,22 @@
 main_menu_text = {
     ':Russia: Русский': {
         'greeting': ':open_book: Главное меню',
+        'instructions': 'Какие-то инструкции',
         'keyboard': [
             ':bust_in_silhouette: Профиль',
             ':key: Активировать',
-            ':brain: О боте',
+            ':brain: Правила',
             ':SOS_button: Поддержка',
             ':reverse_button: Назад к выбору языка'
         ]
     },
     ':United_States: English': {
         'greeting': ":open_book: Main menu",
+        'instructions': 'Some instructions',
         'keyboard': [
             ':bust_in_silhouette: Profile',
             ':key: Activate',
-            ':brain: About',
+            ':brain: Rules',
             ':SOS_button: Support',
             ':reverse_button: Back to languages'
         ]
@@ -110,3 +112,22 @@ available_crypto = [
     'BTC',
     'TCN'
 ]
+
+
+support_text = {
+    ':SOS_button: Support': {
+        'text': 'Some support @some_support',
+    },
+    ':SOS_button: Поддержка': {
+        'text': 'Саппорт @some_support',
+    }
+}
+
+rules_text = {
+    ':SOS_button: Support': {
+        'text': 'Some rules',
+    },
+    ':SOS_button: Поддержка': {
+        'text': 'Какие-то правила',
+    }
+}

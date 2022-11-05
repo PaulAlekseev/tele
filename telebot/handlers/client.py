@@ -1,5 +1,4 @@
 import datetime
-import re
 
 from aiogram import types, Dispatcher
 import emoji
@@ -13,7 +12,7 @@ from other.functions import create_reply_markup, form_activation_type_tariffs, f
     check_and_update_activation
 from other.markups import language_markup
 from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text, activation_tariffs_text, \
-    available_crypto, crypto_payment_choice
+    available_crypto, crypto_payment_choice, support_text, rules_text
 from tasks import validate
 
 
@@ -44,6 +43,10 @@ async def main_menu(message: types.Message):
             row_width=1
         )
     )
+    await bot.send_message(
+        message.from_user.id,
+        text=text_dict['instructions']
+    )
 
 
 async def profile(message: types.Message):
@@ -66,6 +69,25 @@ async def profile(message: types.Message):
                     latest_activation.expires if active else '-',
                 ))
             )
+
+
+async def support(message: types.Message):
+    """
+    Shows support
+    """
+    await message.delete()
+    text = support_text[emoji.demojize(message.text)]
+    await bot.send_message(message.from_user.id, text=text['text'])
+
+
+async def rules(message: types.Message):
+    """
+    Shows rules
+    """
+    await message.delete()
+    text = rules_text[emoji.demojize(message.text)]
+    await bot.send_message(message.from_user.id, text=text['text'])
+
 
 
 async def file_handler(message: types.Message):
@@ -162,6 +184,7 @@ async def choose_payment_coin(callback_query: types.CallbackQuery, regexp):
 
 
 async def payment_start(callback_query: types.CallbackQuery, regexp):
+    await callback_query.message.delete()
     async with async_session() as session:
         async with session.begin():
             activation_type_repo = AIOActivationTypeRepo(session)
@@ -203,3 +226,5 @@ def register_handlers_client(dp: Dispatcher):
         payment_start,
         regexp=r"^final_pay-(\w+)-(\d+)-(\w{3})"
     )
+    dp.register_message_handler(rules, lambda message: emoji.demojize(message.text) in rules_text)
+    dp.register_message_handler(support, lambda message: emoji.demojize(message.text) in support_text)
