@@ -7,7 +7,8 @@ from aiogram.types import InputFile
 from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOCredentialDomainRepo, AIOUserRepo, AIOActivationTypeRepo
-from entities.async_db.db_specifications import ActivationTypeAllSpecification, ActivationTypeIdSpecification
+from entities.async_db.db_specifications import ActivationTypeAllSpecification, ActivationTypeIdSpecification, \
+    ActivationTypeActiveSpecification
 from entities.functions import form_credentials_admin, form_user_statistics
 
 
@@ -84,7 +85,7 @@ async def get_activation_types(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             activation_type_repo = AIOActivationTypeRepo(session)
-            activation_types = await activation_type_repo.get(ActivationTypeAllSpecification())
+            activation_types = await activation_type_repo.get(ActivationTypeActiveSpecification())
             text_header = f"id - name - amount - price"
             text_content = '\n'.join([
                 ' - '.join((_type.id, _type.name, _type.amount, _type.price, ))

@@ -36,7 +36,7 @@ class ActivationTypeIdSpecification(ActivationTypeSpecification):
 
 class ActivationTypeActiveSpecification(ActivationTypeSpecification):
     def is_satisfied(self):
-        return self.model.active == True
+        return self.model.active.is_(True)
 
 
 class ActivationTypeAllSpecification(ActivationTypeSpecification):
