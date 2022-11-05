@@ -40,3 +40,11 @@ class User(Base):
     tele_id = Column(String(50), nullable=False)
     count = Column(Integer, default=0)
 
+
+class ActivationType(Base):
+    __tablename__ = 'activation_type'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(200), nullable=False)
+    amount = Column(String(50), nullable=False)
+    price = Column(String(30), nullable=False)
+    active = Column(Boolean, nullable=False)
