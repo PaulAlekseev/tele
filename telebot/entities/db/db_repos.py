@@ -3,7 +3,7 @@ import sqlalchemy
 from sqlalchemy.orm import Session
 
 from entities.db.db_engine import engine
-from entities.db.db_tables import Credential, Domain, User
+from entities.db.db_tables import Credential, Domain, User, Activation
 
 
 class CredentialsRepository:
@@ -170,4 +170,20 @@ class UserRepo:
             ).first()
             user.count += amount
             session.add(user)
+            session.commit()
+
+
+class ActivationRepo:
+    model = Activation
+
+    def get(self, id) -> Activation:
+        with Session(bind=engine) as session:
+            activation = session.query(self.model).filter(
+                self.model.id == id,
+            ).first()
+            return activation
+
+    def update(self, activation: Activation):
+        with Session(bind=engine) as session:
+            session.add(activation)
             session.commit()

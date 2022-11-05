@@ -26,10 +26,12 @@ class AIOActivationRepo:
     def __init__(self, db_session):
         self.db_session = db_session
 
-    async def create(self, expiration_date, user_tele_id):
+    async def create(self, expiration_date, user_tele_id: int, amount: int):
         new_activation = self.model(
             expires=expiration_date,
-            user_tele_id=user_tele_id
+            user_tele_id=user_tele_id,
+            amount=amount,
+            amount_check=amount
         )
         self.db_session.add(new_activation)
         await self.db_session.flush()
@@ -50,6 +52,11 @@ class AIOActivationRepo:
             ).order_by(desc(self.model.expires))
         )
         return activation.scalars().first()
+
+    async def update(self, activation: Activation) -> Activation:
+        self.db_session.add(activation)
+        await self.db_session.flush()
+        return activation
 
 
 class AIOCredentialDomainRepo:

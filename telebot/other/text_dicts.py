@@ -26,7 +26,7 @@ main_menu_text = {
 scan_text = {
     'Скан': {
         'text': {
-            'good': 'Ваш файл был отправлен на сканирование',
+            'good': 'Ваш файл был добавлен в очередь сканирования, у вас осталось {0} сканирований на сегодня',
             'bad': 'Для сканирования требуется активация аккаунта'
         },
         'button': {
@@ -35,11 +35,12 @@ scan_text = {
         },
         'start': 'Начать сканирование',
         'no_activation': 'Активировать аккаунт',
-        'scan': 'Ваш файл успешно прошел сканирование'
-    },
+        'scan': 'Ваш файл успешно прошел сканирование, в итоге у вас осталось {0} сканирований на сегодня',
+        'activation_failure': "К сожалению лимит сканирования на сегодня для вас закончился"
+},
     'Scan': {
         'text': {
-            'good': 'We started scanning your file',
+            'good': 'Your file has been added to the queue, you got {0} scans left for today',
             'bad': 'You need to activate your account for that'
         },
         'button': {
@@ -48,7 +49,8 @@ scan_text = {
         },
         'start': 'Start scanning',
         'no_activation': 'Activate account',
-        'scan': 'We successfully scanned your file'
+        'scan': 'We successfully scanned your file, you have {0} scans left for today',
+        'activation_failure': "Sorry, but you're out of the checks for today"
     }
 }
 

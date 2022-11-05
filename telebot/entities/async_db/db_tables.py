@@ -32,6 +32,9 @@ class Activation(Base):
     created = Column(Date, default=date.today)
     expires = Column(Date, nullable=False)
     user_tele_id = Column(Integer, nullable=False)
+    amount = Column(Integer, nullable=False)
+    date_check = Column(Date, default=date.today)
+    amount_check = Column(Integer, nullable=False)
 
 
 class User(Base):

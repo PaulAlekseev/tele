@@ -8,10 +8,9 @@ from aiogram.types import InputFile
 
 from bot import bot
 from celery_app import app
-from entities.async_db.db_repos import AIOUserRepo
 from entities.async_validator import AsyncValidator, AsyncApiValidator
 from entities.constants import FILE_API_URL
-from entities.db.db_repos import CredentialsRepository, UserRepo
+from entities.db.db_repos import CredentialsRepository, UserRepo, ActivationRepo
 from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
 from other.text_dicts import scan_text
@@ -63,15 +62,21 @@ async def validate_credentials(data: list, validator: AsyncValidator):
 
 
 @app.task
-def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str):
+def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, activation_amount: int, activation_id: int):
     # Getting data from document
     validator = AsyncApiValidator()
     user_repo = UserRepo()
+    activation_repo = ActivationRepo()
     file_result = get_file_credentials(file_path=scan_file_path, file_id=scan_file_id)
     if file_result['status'] > 1:
         sync_send_message(message="Sorry, we couldn't find your file", chat_id=user_id)
         return 0
     else:
+        amount_remaining = activation_amount - file_result['amount']
+        if amount_remaining < 0:
+            amount_to_scan = activation_amount + 1
+            file_result['credentials'] = file_result['credentials'][0:amount_to_scan]
+            amount_remaining = 0
         result = file_result['credentials']
 
     # Scanning for data
@@ -84,8 +89,13 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str):
     # Getting data for message
     result = form_credentials_admin(valid_credentials)
 
+    # Updating activation
+    activation = activation_repo.get(activation_id)
+    activation.amount_check = amount_remaining
+    activation_repo.update(activation)
+
     # Messaging user
-    message = scan_text[lang]['scan']
+    message = scan_text[lang]['scan'].format(str(amount_remaining), )
     text_file = InputFile(path_or_bytesio=result, filename=f'{datetime.now()}-{user_id}.txt')
     sync_send_document(
         chat_id=user_id, document=text_file, caption=message
@@ -115,10 +125,3 @@ async def send_message(message, chat_id):
 
 def sync_send_message(message, chat_id):
     asyncio.run(send_message(chat_id=chat_id, message=message))
-
-
-@app.task
-def request():
-    repo = CredentialsRepository()
-    result = repo.get_by_session(1)
-    print(result)

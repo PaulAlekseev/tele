@@ -1,6 +1,7 @@
+import datetime
 
 import emoji
-from typing import List
+from typing import List, Dict
 
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
@@ -9,7 +10,7 @@ from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOActivationTypeRepo
 from entities.async_db.db_specifications import ActivationTypeSpecification, ActivationTypeIdSpecification
-from entities.async_db.db_tables import ActivationType
+from entities.async_db.db_tables import ActivationType, Activation
 
 
 def create_reply_markup(
@@ -38,7 +39,7 @@ async def get_activation_types(message: types.Message, activation_type_specifica
             activation_types = await activation_type_repo.get(activation_type_specification)
             text_header = f"id - name - amount - price:\n"
             text_content = '\n'.join([
-                ' - '.join((str(_type.id), _type.name, _type.amount, _type.price, ))
+                ' - '.join((str(_type.id), _type.name, _type.amount, _type.price,))
                 for _type in activation_types
             ])
             text_result = text_header + text_content
@@ -85,3 +86,21 @@ def form_payment_markup(data: List[str], activation_type_id: str, lang: str) -> 
         ) for item in data]
     )
     return keyboard_markup
+
+
+def check_and_update_activation(activation: Activation) -> dict:
+    result = {
+        'result': True,
+        'amount': 0
+    }
+    if activation.date_check < datetime.date.today():
+        activation.amount_check = activation.amount
+        activation.date_check = datetime.date.today()
+        result['amount'] = activation.amount
+    else:
+        if activation.amount > 0:
+            result['amount'] = activation.amount_check
+        else:
+            result['result'] = False
+    result['activation'] = activation
+    return result

@@ -9,7 +9,8 @@ from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOActivationRepo, AIOUserRepo, AIOActivationTypeRepo
 from entities.async_db.db_specifications import ActivationTypeActiveSpecification, ActivationTypeIdSpecification
-from other.functions import create_reply_markup, form_activation_type_tariffs, form_payment_markup
+from other.functions import create_reply_markup, form_activation_type_tariffs, form_payment_markup, \
+    check_and_update_activation
 from other.markups import language_markup
 from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text, activation_tariffs_text, \
     available_crypto, crypto_payment_choice
@@ -71,17 +72,30 @@ async def file_handler(message: types.Message):
     if message.caption not in scan_text:
         return 0
     text_markup = scan_text[message.caption]
+
+    # Getting lates activation
     async with async_session() as session:
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
             latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
+
+    # Checking if scan is allowed
     inline_keyboard = InlineKeyboardMarkup(row_width=1)
     all_good = False
     if latest_activation:
         if latest_activation.expires >= datetime.date.today():
+            checked_activation = check_and_update_activation(latest_activation)
+            if not checked_activation['result']:
+                bot.send_message(message.from_user.id, text_markup['activation_failure'])
+                return 0
             all_good = True
-            text = text_markup['text']['good']
-            await start_scan(message, message.caption)
+            text = text_markup['text']['good'].format(str(checked_activation['amount']), )
+            await start_scan(
+                message=message,
+                lang=message.caption,
+                amount=checked_activation['amount'],
+                activation_id=latest_activation.id,
+            )
         else:
             inline_keyboard.add(
                 InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
@@ -93,7 +107,7 @@ async def file_handler(message: types.Message):
     await message.reply(text=text, reply_markup=inline_keyboard if not all_good else None)
 
 
-async def start_scan(message: types.Message, lang: str):
+async def start_scan(message: types.Message, lang: str, amount: int, activation_id: int):
     async with async_session() as session:
         async with session.begin():
             file = await bot.get_file(message.document.file_id)
@@ -101,7 +115,9 @@ async def start_scan(message: types.Message, lang: str):
                 scan_file_id=file.file_id,
                 scan_file_path=file.file_path,
                 user_id=message.from_user.id,
-                lang=lang
+                lang=lang,
+                activation_amount=amount,
+                activation_id=activation_id,
             )
 
 
@@ -111,7 +127,8 @@ async def create_activation(callback_query: types.CallbackQuery):
             activation_repo = AIOActivationRepo(session)
             activation = await activation_repo.create(
                 expiration_date=datetime.date.today() + datetime.timedelta(days=30),
-                user_tele_id=callback_query.from_user.id
+                user_tele_id=callback_query.from_user.id,
+                amount=100
             )
             await bot.send_message(callback_query.from_user.id, text=activation_text[callback_query.data])
 
