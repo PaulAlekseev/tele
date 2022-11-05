@@ -5,8 +5,8 @@ from sqlalchemy import desc
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from entities.async_db.db_specifications import ActivationSpecification, UserSpecification
-from entities.async_db.db_tables import Credential, Activation, Domain, User
+from entities.async_db.db_specifications import ActivationSpecification, UserSpecification, ActivationTypeSpecification
+from entities.async_db.db_tables import Credential, Activation, Domain, User, ActivationType
 
 
 class AIOCredentialRepo:
@@ -130,3 +130,34 @@ class AIOUserRepo:
             )
         )
         return users.scalars().all()
+
+
+class AIOActivationTypeRepo:
+    model = ActivationType
+
+    def __init__(self, session):
+        self.db_session = session
+
+    async def create(self, name: str, amount: str, price: str):
+        new_activation_type = self.model(
+            name=name,
+            amount=amount,
+            active=True,
+            price=price
+        )
+        self.db_session.add(new_activation_type)
+        await self.db_session.flush()
+        return new_activation_type
+
+    async def get(self, activation_type_specification: ActivationTypeSpecification) -> List[ActivationType]:
+        activation_types = await self.db_session.execute(
+            select(self.model).filter(
+                *activation_type_specification.is_satisfied()
+            )
+        )
+        return activation_types.scalars().all()
+
+    async def update(self, activation_type: ActivationType):
+        self.db_session.add(activation_type)
+        await self.db_session.flush()
+        return activation_type

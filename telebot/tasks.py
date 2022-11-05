@@ -50,7 +50,7 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
 
 
 async def validate_credentials(data: list, validator: AsyncValidator):
-    connector = aiohttp.TCPConnector(limit=50)
+    connector = aiohttp.TCPConnector(limit=int(os.getenv('CONNECTIONS')))
     tasks = []
     async with aiohttp.ClientSession(connector=connector) as session:
         for item in data:

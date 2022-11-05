@@ -1,11 +1,13 @@
 from datetime import datetime, date
+from typing import List
 
 from aiogram import types, Dispatcher
 from aiogram.types import InputFile
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOCredentialDomainRepo, AIOUserRepo
+from entities.async_db.db_repos import AIOCredentialDomainRepo, AIOUserRepo, AIOActivationTypeRepo
+from entities.async_db.db_specifications import ActivationTypeAllSpecification, ActivationTypeIdSpecification
 from entities.functions import form_credentials_admin, form_user_statistics
 
 
@@ -60,10 +62,73 @@ async def text_all(message: types.Message, regexp):
                 await bot.send_message(item.tele_id, regexp.group(1))
 
 
+async def create_activation_type(message: types.Message, regexp):
+    async with async_session() as session:
+        async with session.begin():
+            activation_type_repo = AIOActivationTypeRepo(session)
+            name = ' '.join(regexp.group(1).split('_'))
+            amount = regexp.group(2)
+            price = regexp.group(3)
+            activation_type = await activation_type_repo.create(
+                name=name,
+                amount=amount,
+                price=price
+            )
+            await bot.send_message(message.from_user.id, f"""Activation type {activation_type.name} has been successfully created
+price: {activation_type.price}$/month
+amount: {activation_type.amount} credentials/day
+""")
+
+
+async def get_activation_types(message: types.Message):
+    async with async_session() as session:
+        async with session.begin():
+            activation_type_repo = AIOActivationTypeRepo(session)
+            activation_types = await activation_type_repo.get(ActivationTypeAllSpecification())
+            text_header = f"id - name - amount - price"
+            text_content = '\n'.join([
+                ' - '.join((_type.id, _type.name, _type.amount, _type.price, ))
+                for _type in activation_types
+            ])
+            text_result = text_header + text_content
+            await bot.send_message(
+                message.from_user.id,
+                text_result
+            )
+
+
+async def deactivate_type(message: types.Message, regexp):
+    async with async_session() as session:
+        async with session.begin():
+            activation_type_repo = AIOActivationTypeRepo(session)
+            activation_types = await activation_type_repo.get(ActivationTypeIdSpecification(
+                regexp.group(1)
+            ))
+            activation_type = activation_types[0]
+            activation_type.active = False
+            await activation_type_repo.update(activation_type)
+            await bot.send_message(
+                message.from_user.id,
+                f"Activation type {activation_type.name}({activation_type.id}) has been successfully deactivated"
+            )
+
+
 def register_handlers_admin(dp: Dispatcher):
-    dp.register_message_handler(get_by_date, regexp='^date\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})')
+    dp.register_message_handler(get_by_date, regexp='^\/date\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})')
     dp.register_message_handler(
         text_all,
-        regexp=r"^send\s([a-zA-Zа-яА-Я\s\d.,?\/\\(\)!@#$%^&*\[\]\{\}';:№`~]+)"
+        regexp=r"^\/send\s([a-zA-Zа-яА-Я\s\d.,?\/\\(\)!@#$%^&*\[\]\{\}';:№`~" + '"]+)'
+    )
+    dp.register_message_handler(
+        create_activation_type,
+        regexp=r'^\/create_type\s([\w]+)\s([\d]+\s([\d]+)'
+    )
+    dp.register_message_handler(
+        get_activation_types,
+        commands=['types']
+    )
+    dp.register_message_handler(
+        deactivate_type,
+        regexp=r'^\/deactivate\s([\d]+)'
     )
     dp.register_message_handler(get_statistics, commands=['statistics', ])
