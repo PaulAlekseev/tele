@@ -8,7 +8,7 @@ from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOCredentialDomainRepo, AIOUserRepo, AIOActivationTypeRepo
 from entities.async_db.db_specifications import ActivationTypeAllSpecification, ActivationTypeIdSpecification, \
-    ActivationTypeActiveSpecification
+    ActivationTypeActiveSpecification, ActivationTypeSpecification
 from entities.functions import form_credentials_admin, form_user_statistics
 
 
@@ -81,12 +81,12 @@ amount: {activation_type.amount} credentials/day
 """)
 
 
-async def get_activation_types(message: types.Message):
+async def get_activation_types(message: types.Message, activation_type_specification: ActivationTypeSpecification):
     async with async_session() as session:
         async with session.begin():
             activation_type_repo = AIOActivationTypeRepo(session)
-            activation_types = await activation_type_repo.get(ActivationTypeActiveSpecification())
-            text_header = f"id - name - amount - price"
+            activation_types = await activation_type_repo.get(activation_type_specification)
+            text_header = f"id - name - amount - price:\n"
             text_content = '\n'.join([
                 ' - '.join((str(_type.id), _type.name, _type.amount, _type.price, ))
                 for _type in activation_types
@@ -98,7 +98,15 @@ async def get_activation_types(message: types.Message):
             )
 
 
-async def deactivate_type(message: types.Message, regexp):
+async def get_all_activation_types(message: types.Message):
+    await get_activation_types(message, activation_type_specification=ActivationTypeAllSpecification())
+
+
+async def get_active_activation_types(message: types.Message):
+    await get_activation_types(message, activation_type_specification=ActivationTypeActiveSpecification())
+
+
+async def change_activation_type_active(message: types.Message, regexp, activity: bool, text: str):
     async with async_session() as session:
         async with session.begin():
             activation_type_repo = AIOActivationTypeRepo(session)
@@ -106,12 +114,20 @@ async def deactivate_type(message: types.Message, regexp):
                 int(regexp.group(1))
             ))
             activation_type = activation_types[0]
-            activation_type.active = False
+            activation_type.active = activity
             await activation_type_repo.update(activation_type)
             await bot.send_message(
                 message.from_user.id,
-                f"Activation type {activation_type.name}({activation_type.id}) has been successfully deactivated"
+                f"Activation type {activation_type.name}({activation_type.id}) has been successfully {text}"
             )
+
+
+async def activate_activation_type(message: types.Message, regexp):
+    await change_activation_type_active(message, regexp, True, text='activated')
+
+
+async def deactivate_activation_type(message: types.Message, regexp):
+    await change_activation_type_active(message, regexp, False, text='activated')
 
 
 def register_handlers_admin(dp: Dispatcher):
@@ -125,11 +141,19 @@ def register_handlers_admin(dp: Dispatcher):
         regexp=r'^\/create_type\s([\w]+)\s([\d]+)\s([\d]+)'
     )
     dp.register_message_handler(
-        get_activation_types,
+        get_active_activation_types,
         commands=['types']
     )
     dp.register_message_handler(
-        deactivate_type,
+        get_all_activation_types,
+        commands=['types_all']
+    )
+    dp.register_message_handler(
+        deactivate_activation_type,
+        regexp=r'^\/activate\s([\d]+)'
+    )
+    dp.register_message_handler(
+        activate_activation_type,
         regexp=r'^\/deactivate\s([\d]+)'
     )
     dp.register_message_handler(get_statistics, commands=['statistics', ])
