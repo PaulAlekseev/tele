@@ -113,6 +113,8 @@ async def change_activation_type_active(message: types.Message, regexp, activity
             activation_types = await activation_type_repo.get(ActivationTypeIdSpecification(
                 int(regexp.group(1))
             ))
+            if len(activation_types) == 0:
+                bot.send_message(message.from_user.id, f"There is no activation type with id - {regexp.group(1)}")
             activation_type = activation_types[0]
             activation_type.active = activity
             await activation_type_repo.update(activation_type)
