@@ -117,11 +117,11 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(get_by_date, regexp='^\/date\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})')
     dp.register_message_handler(
         text_all,
-        regexp=r"^\/send\s([a-zA-Zа-яА-Я\s\d.,?\/\\(\)!@#$%^&*\[\]\{\}';:№`~]+)"
+        regexp=r"^\/send\s([a-zA-Zа-яА-Я\s\d.,?\/\\(\)!@#$%^&*\[\]\{\}';:№`~" + '"]+)'
     )
     dp.register_message_handler(
         create_activation_type,
-        regexp=r'^\/create_type\s([\w]+)\s([\d]+\s([\d]+)'
+        regexp=r'^\/create_type\s([\w]+)\s([\d]+)\s([\d]+)'
     )
     dp.register_message_handler(
         get_activation_types,
