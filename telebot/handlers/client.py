@@ -128,7 +128,7 @@ async def get_activation_type_tariffs(message: types.Message):
                 message.from_user.id, reply_markup=keyboard, text=f"Choose between available tariffs")
 
 
-async def choose_payment_coin(callback_query: types.CallbackQuery):
+async def choose_payment_coin(callback_query: types.CallbackQuery, regexp):
     await bot.send_message(callback_query.from_user.id, callback_query.data)
 
 
