@@ -88,7 +88,7 @@ async def get_activation_types(message: types.Message):
             activation_types = await activation_type_repo.get(ActivationTypeActiveSpecification())
             text_header = f"id - name - amount - price"
             text_content = '\n'.join([
-                ' - '.join((_type.id, _type.name, _type.amount, _type.price, ))
+                ' - '.join((str(_type.id), _type.name, _type.amount, _type.price, ))
                 for _type in activation_types
             ])
             text_result = text_header + text_content
