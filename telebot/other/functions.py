@@ -97,10 +97,9 @@ def check_and_update_activation(activation: Activation) -> dict:
         activation.amount_check = activation.amount
         activation.date_check = datetime.date.today()
         result['amount'] = activation.amount
+    if activation.amount > 0:
+        result['amount'] = activation.amount_check
     else:
-        if activation.amount > 0:
-            result['amount'] = activation.amount_check
-        else:
-            result['result'] = False
+        result['result'] = False
     result['activation'] = activation
     return result
