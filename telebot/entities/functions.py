@@ -129,10 +129,10 @@ def form_credentials_client(data: List[dict]) -> io.BytesIO:
     return string
 
 
-def form_credentials_admin(data: List[dict], amount: int) -> io.BytesIO:
+def form_credentials_admin(data: List[dict]) -> io.BytesIO:
     string = io.BytesIO()
     data = change_info(data)
-    string.write(bytes(f'{str(amount)}\n', 'UTF-8'))
+    string.write(bytes(f'{str(len(data))}\n', 'UTF-8'))
     if data:
         for item in data:
             semi_result = f"""{item['url']}{SEPARATOR}{item['credentials']['user']}{SEPARATOR}{item['credentials']['pass']}
