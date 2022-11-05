@@ -14,7 +14,10 @@ def create_reply_markup(
         one_time_keyboard=one_time_keyboard,
         row_width=row_width,
     )
+    keyboard.row(
+        *[KeyboardButton(text=emoji.emojize(key)) for key in button_str_list[0:2]]
+    )
     keyboard.add(
-        *[KeyboardButton(text=emoji.emojize(key)) for key in button_str_list]
+        *[KeyboardButton(text=emoji.emojize(key)) for key in button_str_list[2:]]
     )
     return keyboard

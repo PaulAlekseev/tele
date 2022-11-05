@@ -5,6 +5,7 @@ main_menu_text = {
         'greeting': ':open_book: Главное меню',
         'keyboard': [
             ':bust_in_silhouette: Профиль',
+            ':key: Активировать',
             ':brain: О боте',
             ':SOS_button: Поддержка',
             ':reverse_button: Назад к выбору языка'
@@ -14,6 +15,7 @@ main_menu_text = {
         'greeting': ":open_book: Main menu",
         'keyboard': [
             ':bust_in_silhouette: Profile',
+            ':key: Activate',
             ':brain: About',
             ':SOS_button: Support',
             ':reverse_button: Back to languages'
