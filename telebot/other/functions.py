@@ -67,9 +67,11 @@ async def change_activation_type_active(message: types.Message, regexp, activity
             )
 
 
-def form_activation_type_tariffs(data: List[ActivationType]):
+def form_activation_type_tariffs(data: List[ActivationType], lang: str):
     keyboard_markup = InlineKeyboardMarkup(row_width=1)
     keyboard_markup.add(
-        *[InlineKeyboardButton(text=f'{item.name} - {item.amount}cred/day - {item.price}$/month', callback_data=f'type{item.id}') for item in data]
+        *[InlineKeyboardButton(
+            text=f'{item.name} - {item.amount} cred/day - {item.price} $/month', callback_data=f'type-{item.id}-{lang}'
+        ) for item in data]
     )
     return keyboard_markup

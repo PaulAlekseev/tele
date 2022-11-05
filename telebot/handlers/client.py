@@ -1,4 +1,5 @@
 import datetime
+import re
 
 from aiogram import types, Dispatcher
 import emoji
@@ -119,8 +120,16 @@ async def get_activation_type_tariffs(message: types.Message):
         async with session.begin():
             activation_type_repo = AIOActivationTypeRepo(session)
             activation_types = await activation_type_repo.get(ActivationTypeActiveSpecification())
-            keyboard = form_activation_type_tariffs(data=activation_types)
-            await bot.send_message(message.from_user.id, reply_markup=keyboard, text=f"Choose between available tariffs")
+            keyboard = form_activation_type_tariffs(
+                data=activation_types,
+                lang='rus' if message.text == ':key: Активировать' else 'eng'
+            )
+            await bot.send_message(
+                message.from_user.id, reply_markup=keyboard, text=f"Choose between available tariffs")
+
+
+async def choose_payment_coin(callback_query: types.CallbackQuery):
+    await bot.send_message(callback_query.from_user.id, callback_query.data)
 
 
 def register_handlers_client(dp: Dispatcher):
@@ -138,5 +147,12 @@ def register_handlers_client(dp: Dispatcher):
     ))
     dp.register_message_handler(start, commands=['start', ])
     dp.register_message_handler(main_menu, lambda message: emoji.demojize(message.text) in main_menu_text)
-    dp.register_message_handler(get_activation_type_tariffs, lambda message: emoji.demojize(message.text) in [':key: Активировать', ':key: Activate'])
+    dp.register_message_handler(
+        get_activation_type_tariffs,
+        lambda message: emoji.demojize(message.text) in [':key: Активировать', ':key: Activate']
+    )
     dp.register_callback_query_handler(create_activation, lambda c: c.data in activation_text)
+    dp.register_callback_query_handler(
+        choose_payment_coin,
+        lambda c: re.match(r"^type-\d+(rus|eng)", c)
+    )
