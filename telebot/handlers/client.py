@@ -120,7 +120,7 @@ async def get_activation_type_tariffs(message: types.Message):
             activation_type_repo = AIOActivationTypeRepo(session)
             activation_types = await activation_type_repo.get(ActivationTypeActiveSpecification())
             keyboard = form_activation_type_tariffs(data=activation_types)
-            await bot.send_message(message.from_user.id, reply_markup=keyboard)
+            await bot.send_message(message.from_user.id, reply_markup=keyboard, text=f"Choose between available tariffs")
 
 
 def register_handlers_client(dp: Dispatcher):
