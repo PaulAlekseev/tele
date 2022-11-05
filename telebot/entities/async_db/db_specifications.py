@@ -27,8 +27,8 @@ class ActivationUserIdSpecification(ActivationSpecification):
 
 
 class ActivationTypeIdSpecification(ActivationTypeSpecification):
-    def __init__(self, id):
-        self._id = id
+    def __init__(self, _id: int):
+        self._id = _id
 
     def is_satisfied(self):
         return self.model.id.__eq__(self._id),
@@ -36,9 +36,9 @@ class ActivationTypeIdSpecification(ActivationTypeSpecification):
 
 class ActivationTypeActiveSpecification(ActivationTypeSpecification):
     def is_satisfied(self):
-        return self.model.active.is_(True)
+        return self.model.active.is_(True),
 
 
 class ActivationTypeAllSpecification(ActivationTypeSpecification):
     def is_satisfied(self):
-        return self.model.id >= 0
+        return self.model.id >= 0,

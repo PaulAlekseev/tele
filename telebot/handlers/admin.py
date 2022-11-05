@@ -103,7 +103,7 @@ async def deactivate_type(message: types.Message, regexp):
         async with session.begin():
             activation_type_repo = AIOActivationTypeRepo(session)
             activation_types = await activation_type_repo.get(ActivationTypeIdSpecification(
-                regexp.group(1)
+                int(regexp.group(1))
             ))
             activation_type = activation_types[0]
             activation_type.active = False
