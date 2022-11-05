@@ -75,3 +75,13 @@ def form_activation_type_tariffs(data: List[ActivationType], lang: str):
         ) for item in data]
     )
     return keyboard_markup
+
+
+def form_payment_markup(data: List[str], activation_type_id: str, lang: str) -> InlineKeyboardMarkup:
+    keyboard_markup = InlineKeyboardMarkup(row_width=1)
+    keyboard_markup.add(
+        *[InlineKeyboardButton(
+            text=f'{item}', callback_data=f'final_pay-{item}-{activation_type_id}-{lang}'
+        ) for item in data]
+    )
+    return keyboard_markup

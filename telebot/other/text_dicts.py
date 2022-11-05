@@ -81,3 +81,30 @@ profile_text = {
         }
     }
 }
+
+
+activation_tariffs_text = {
+    ':key: Активировать': {
+        'lang': 'rus',
+        'text': 'Выберите из доступных тарифов'
+    },
+    ':key: Activate': {
+        'lang': 'eng',
+        'text': 'Choose between available tariffs',
+    }
+}
+
+
+crypto_payment_choice = {
+    'eng': {
+        'text': 'Choose between available payment methods'
+    },
+    'rus': {
+        'text': 'Выберите между доступных методов оплаты'
+    }
+}
+
+available_crypto = [
+    'BTC',
+    'TCN'
+]

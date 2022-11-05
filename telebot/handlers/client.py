@@ -9,9 +9,10 @@ from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOActivationRepo, AIOUserRepo, AIOActivationTypeRepo
 from entities.async_db.db_specifications import ActivationTypeActiveSpecification
-from other.functions import create_reply_markup, form_activation_type_tariffs
+from other.functions import create_reply_markup, form_activation_type_tariffs, form_payment_markup
 from other.markups import language_markup
-from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text
+from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text, activation_tariffs_text, \
+    available_crypto, crypto_payment_choice
 from tasks import validate
 
 
@@ -118,18 +119,36 @@ async def create_activation(callback_query: types.CallbackQuery):
 async def get_activation_type_tariffs(message: types.Message):
     async with async_session() as session:
         async with session.begin():
+            active_text = activation_tariffs_text[emoji.demojize(message.text)]
             activation_type_repo = AIOActivationTypeRepo(session)
             activation_types = await activation_type_repo.get(ActivationTypeActiveSpecification())
             keyboard = form_activation_type_tariffs(
                 data=activation_types,
-                lang='rus' if message.text == ':key: Активировать' else 'eng'
+                lang=active_text['lang']
             )
             await bot.send_message(
                 message.from_user.id, reply_markup=keyboard, text=f"Choose between available tariffs")
 
 
 async def choose_payment_coin(callback_query: types.CallbackQuery, regexp):
-    await bot.send_message(callback_query.from_user.id, callback_query.data)
+    await callback_query.message.delete()
+    crypto_choice = crypto_payment_choice[regexp.group(2)]
+    await bot.send_message(
+        callback_query.from_user.id,
+        reply_markup=form_payment_markup(
+            data=available_crypto,
+            activation_type_id=regexp.group(1),
+            lang=regexp.group(2)
+        ),
+        text=crypto_choice['text']
+    )
+
+
+async def payment_start(callback_query: types.CallbackQuery, regexp):
+    await bot.send_message(
+        chat_id=callback_query.from_user.id,
+        text=f'{regexp.group(1)} - active_id {regexp.group(2)} - lang: {regexp.group(3)}'
+    )
 
 
 def register_handlers_client(dp: Dispatcher):
@@ -154,5 +173,9 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_callback_query_handler(create_activation, lambda c: c.data in activation_text)
     dp.register_callback_query_handler(
         choose_payment_coin,
-        regexp=r"^type-\d+-(rus|eng)"
+        regexp=r"^type-(\d+)-(rus|eng)"
+    )
+    dp.register_callback_query_handler(
+        payment_start,
+        regexp=r"^final_pay-(\w+)-(\d+)-(\w{3})"
     )
