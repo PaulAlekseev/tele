@@ -73,8 +73,8 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
         return 0
     else:
         amount_remaining = activation_amount - file_result['amount']
-        if amount_remaining < 0:
-            amount_to_scan = activation_amount + 1
+        if amount_remaining <= 0:
+            amount_to_scan = activation_amount
             file_result['credentials'] = file_result['credentials'][0:amount_to_scan]
             amount_remaining = 0
         result = file_result['credentials']

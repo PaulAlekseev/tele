@@ -26,7 +26,7 @@ main_menu_text = {
 scan_text = {
     'Скан': {
         'text': {
-            'good': 'Ваш файл был добавлен в очередь сканирования, у вас осталось {0} сканирований на сегодня',
+            'good': 'Ваш файл был добавлен в очередь сканирования, у вас {0} сканирований на сегодня',
             'bad': 'Для сканирования требуется активация аккаунта'
         },
         'button': {
@@ -49,7 +49,7 @@ scan_text = {
         },
         'start': 'Start scanning',
         'no_activation': 'Activate account',
-        'scan': 'We successfully scanned your file, you have {0} scans left for today',
+        'scan': 'We successfully scanned your file, you have {0} scans for today',
         'activation_failure': "Sorry, but you're out of the checks for today"
     }
 }

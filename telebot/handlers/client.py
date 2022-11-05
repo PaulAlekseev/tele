@@ -73,7 +73,7 @@ async def file_handler(message: types.Message):
         return 0
     text_markup = scan_text[message.caption]
 
-    # Getting lates activation
+    # Getting latest activation
     async with async_session() as session:
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
