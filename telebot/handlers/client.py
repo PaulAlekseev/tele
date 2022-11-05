@@ -86,7 +86,7 @@ async def file_handler(message: types.Message):
         if latest_activation.expires >= datetime.date.today():
             checked_activation = check_and_update_activation(latest_activation)
             if not checked_activation['result']:
-                bot.send_message(message.from_user.id, text_markup['activation_failure'])
+                await bot.send_message(message.from_user.id, text_markup['activation_failure'])
                 return 0
             all_good = True
             text = text_markup['text']['good'].format(str(checked_activation['amount']), )

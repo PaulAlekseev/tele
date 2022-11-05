@@ -78,6 +78,7 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
             file_result['credentials'] = file_result['credentials'][0:amount_to_scan]
             amount_remaining = 0
         result = file_result['credentials']
+        print(len(file_result['credentials']))
 
     # Scanning for data
     new_result = [
