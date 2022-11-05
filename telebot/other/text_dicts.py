@@ -124,10 +124,10 @@ support_text = {
 }
 
 rules_text = {
-    ':SOS_button: Rules': {
+    ':brain: Rules': {
         'text': 'Some rules',
     },
-    ':SOS_button: Правила': {
+    ':brain: Правила': {
         'text': 'Какие-то правила',
     }
 }
