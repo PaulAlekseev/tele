@@ -127,7 +127,7 @@ async def activate_activation_type(message: types.Message, regexp):
 
 
 async def deactivate_activation_type(message: types.Message, regexp):
-    await change_activation_type_active(message, regexp, False, text='activated')
+    await change_activation_type_active(message, regexp, False, text='deactivated')
 
 
 def register_handlers_admin(dp: Dispatcher):
@@ -150,10 +150,10 @@ def register_handlers_admin(dp: Dispatcher):
     )
     dp.register_message_handler(
         deactivate_activation_type,
-        regexp=r'^\/activate\s([\d]+)'
+        regexp=r'^\/deactivate\s([\d]+)'
     )
     dp.register_message_handler(
         activate_activation_type,
-        regexp=r'^\/deactivate\s([\d]+)'
+        regexp=r'^\/activate\s([\d]+)'
     )
     dp.register_message_handler(get_statistics, commands=['statistics', ])
