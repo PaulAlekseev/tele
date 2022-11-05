@@ -6,8 +6,9 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOActivationRepo, AIOUserRepo
-from other.functions import create_reply_markup
+from entities.async_db.db_repos import AIOActivationRepo, AIOUserRepo, AIOActivationTypeRepo
+from entities.async_db.db_specifications import ActivationTypeActiveSpecification
+from other.functions import create_reply_markup, form_activation_type_tariffs
 from other.markups import language_markup
 from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text
 from tasks import validate
@@ -23,8 +24,8 @@ async def start(message: types.Message):
             await user_repo.create(str(message.from_user.id))
     await message.delete()
     await message.answer('Choose your language / Выберите язык', reply_markup=language_markup)
-    
-    
+
+
 async def main_menu(message: types.Message):
     """
     Shows Main menu
@@ -54,7 +55,7 @@ async def profile(message: types.Message):
             activation_exist = True if latest_activation else False
             active = True if activation_exist and latest_activation.expires >= datetime.date.today() else False
             text_dict = profile_text[emoji.demojize(message.text)]
-            bot_message = await bot.send_message(
+            await bot.send_message(
                 message.from_user.id,
                 emoji.emojize(text_dict['text'].format(
                     message.from_user.id,
@@ -62,7 +63,6 @@ async def profile(message: types.Message):
                     latest_activation.expires if active else '-',
                 ))
             )
-            await bot_message.delete()
 
 
 async def file_handler(message: types.Message):
@@ -81,10 +81,12 @@ async def file_handler(message: types.Message):
             text = text_markup['text']['good']
             await start_scan(message, message.caption)
         else:
-            inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
+            inline_keyboard.add(
+                InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
             text = text_markup['text']['bad']
     else:
-        inline_keyboard.add(InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
+        inline_keyboard.add(
+            InlineKeyboardButton(text_markup['no_activation'], callback_data=text_markup['button']['bad']))
         text = text_markup['text']['bad']
     await message.reply(text=text, reply_markup=inline_keyboard if not all_good else None)
 
@@ -112,6 +114,15 @@ async def create_activation(callback_query: types.CallbackQuery):
             await bot.send_message(callback_query.from_user.id, text=activation_text[callback_query.data])
 
 
+async def get_activation_type_tariffs(message: types.Message):
+    async with async_session() as session:
+        async with session.begin():
+            activation_type_repo = AIOActivationTypeRepo(session)
+            activation_types = await activation_type_repo.get(ActivationTypeActiveSpecification())
+            keyboard = form_activation_type_tariffs(data=activation_types)
+            await bot.send_message(message.from_user.id, reply_markup=keyboard)
+
+
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(
         file_handler,
@@ -122,8 +133,8 @@ def register_handlers_client(dp: Dispatcher):
         lambda message: emoji.demojize(message.text) in profile_text
     )
     dp.register_message_handler(start, lambda message: emoji.demojize(message.text) in (
-            ':reverse_button: Back to languages',
-            ':reverse_button: Назад к выбору языка',
+        ':reverse_button: Back to languages',
+        ':reverse_button: Назад к выбору языка',
     ))
     dp.register_message_handler(start, commands=['start', ])
     dp.register_message_handler(main_menu, lambda message: emoji.demojize(message.text) in main_menu_text)
