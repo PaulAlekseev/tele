@@ -98,10 +98,6 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
             message='Sorry there is no available proxies right now, please contact our support for more info.'
         )
         return 0
-    sync_send_message(
-        chat_id=user_id,
-        message=f'{str(proxy_data["proxy"])}'
-    )
 
     # Getting data from document
     validator = AsyncApiValidator(proxy_data['proxy'])
