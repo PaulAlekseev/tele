@@ -1,5 +1,5 @@
 from aiogram.dispatcher.webhook import DEFAULT_ROUTE_NAME
-from aiogram.utils.executor import set_webhook, start_webhook
+from aiogram.utils.executor import set_webhook, start_webhook, start_polling
 
 from bot import dp, WEBHOOK_PATH, WEBAPP_HOST, WEBAPP_PORT, bot, WEBHOOK_URL
 from entities.db.db_engine import engine
@@ -40,12 +40,13 @@ async def on_shutdown(dp):
 #                        )
 # executor.run_app(host=WEBAPP_HOST, port=WEBAPP_PORT)
 
-start_webhook(
-    dispatcher=dp,
-    webhook_path=WEBHOOK_PATH,
-    on_startup=on_startup,
-    on_shutdown=on_shutdown,
-    skip_updates=True,
-    host=WEBAPP_HOST,
-    port=WEBAPP_PORT,
-)
+# start_webhook(
+#     dispatcher=dp,
+#     webhook_path=WEBHOOK_PATH,
+#     on_startup=on_startup,
+#     on_shutdown=on_shutdown,
+#     skip_updates=True,
+#     host=WEBAPP_HOST,
+#     port=WEBAPP_PORT,
+# )
+start_polling(dispatcher=dp, skip_updates=True)
