@@ -89,7 +89,6 @@ async def rules(message: types.Message):
     await bot.send_message(message.from_user.id, text=text['text'])
 
 
-
 async def file_handler(message: types.Message):
     if message.caption not in scan_text:
         return 0
@@ -150,7 +149,7 @@ async def create_activation(callback_query: types.CallbackQuery):
             activation = await activation_repo.create(
                 expiration_date=datetime.date.today() + datetime.timedelta(days=30),
                 user_tele_id=callback_query.from_user.id,
-                amount=100
+                amount=10000000
             )
             await bot.send_message(callback_query.from_user.id, text=activation_text[callback_query.data])
 
