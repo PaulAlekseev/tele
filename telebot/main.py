@@ -1,7 +1,7 @@
 from aiogram.dispatcher.webhook import DEFAULT_ROUTE_NAME
 from aiogram.utils.executor import set_webhook
 
-from bot import dp, WEBHOOK_PATH, WEBAPP_HOST, WEBAPP_PORT
+from bot import dp, WEBHOOK_PATH, WEBAPP_HOST, WEBAPP_PORT, bot, WEBHOOK_URL
 from entities.db.db_engine import engine
 from handlers.admin import register_handlers_admin
 from handlers.client import register_handlers_client
@@ -14,12 +14,28 @@ register_handlers_client(dp)
 register_handlers_admin(dp)
 
 
+async def on_startup(dp):
+    await bot.set_webhook(WEBHOOK_URL)
+    # insert code here to run it after start
+
+
+async def on_shutdown(dp):
+    # Remove webhook (not acceptable in some cases)
+    await bot.delete_webhook()
+
+    # Close DB connection (if used)
+    await dp.storage.close()
+    await dp.storage.wait_closed()
+
+
 if __name__ == '__main__':
     executor = set_webhook(dispatcher=dp,
                            webhook_path=WEBHOOK_PATH,
                            loop=None,
                            skip_updates=None,
                            check_ip=False,
+                           on_startup=on_startup,
+                           on_shutdown=on_shutdown,
                            retry_after=None,
                            route_name=DEFAULT_ROUTE_NAME,
                            )
