@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime
+from typing import List
 
 import aiohttp
 import os
@@ -9,7 +10,7 @@ from aiogram.types import InputFile
 from bot import bot
 from celery_app import app
 from entities.async_validator import AsyncValidator, AsyncApiValidator
-from entities.constants import FILE_API_URL
+from entities.constants import FILE_API_URL, proxies
 from entities.db.db_repos import CredentialsRepository, UserRepo, ActivationRepo
 from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
@@ -61,10 +62,49 @@ async def validate_credentials(data: list, validator: AsyncValidator):
     return new_result
 
 
+async def validate_proxy(proxy: str, session: aiohttp.ClientSession):
+    try:
+        async with session.get("https://google.com",
+                               proxy=proxy,
+                               ) as resp:
+            status = resp.status
+            return {'result': True if status == 200 else False, 'proxy': proxy}
+    except Exception:
+        return {'result': False, 'proxy': proxy}
+
+
+async def validate_proxies(data: List[str]):
+    connector = aiohttp.TCPConnector(limit=int(os.getenv('CONNECTIONS')))
+    tasks = []
+    async with aiohttp.ClientSession(connector=connector) as session:
+        for proxy in data:
+            task = asyncio.ensure_future(validate_proxy(proxy, session))
+            tasks.append(task)
+        result = asyncio.gather(*tasks)
+        new_result = await result
+        for proxy_result in new_result:
+            if proxy_result['result'] is True:
+                return proxy_result
+        return {'result': False}
+
+
 @app.task
 def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, activation_amount: int, activation_id: int):
+    # Validating proxies
+    proxy_data = asyncio.run(validate_proxies(proxies))
+    if not proxy_data['result']:
+        sync_send_message(
+            chat_id=user_id,
+            message='Sorry there is no available proxies right now, please contact our support for more info.'
+        )
+        return 0
+    sync_send_message(
+        chat_id=user_id,
+        message=f'{str(proxy_data["proxy"])}'
+    )
+
     # Getting data from document
-    validator = AsyncApiValidator()
+    validator = AsyncApiValidator(proxy_data['proxy'])
     user_repo = UserRepo()
     activation_repo = ActivationRepo()
     file_result = get_file_credentials(file_path=scan_file_path, file_id=scan_file_id)

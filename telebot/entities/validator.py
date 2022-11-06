@@ -13,13 +13,14 @@ from entities.user import User
 
 
 class Validator(ABC):
-    def __init__(self):
+    def __init__(self, proxy: str):
         self._header = Header()
         self._url_handler = UrlHandler()
         self._timeout = TIMEOUT
         self._check_ports_on_error = CHECK_PORTS_ERROR
         self._check_ports_on_wrong_credentials = CHECK_PORTS_WRONG_CREDENTIALS
         self._validate_domain_data = VALIDATE_DOMAIN_DATA
+        self._proxy = proxy
 
     @abstractmethod
     def validate_credentials(self, user: User) -> dict:
@@ -42,7 +43,8 @@ class APIValidator(Validator):
                     url=url,
                     data=data['credentials'],
                     headers=self._header.get_header(),
-                    timeout=self._timeout
+                    timeout=self._timeout,
+                    proxy=self._proxy
                 )
             except Exception:
                 if self._check_ports_on_error:
@@ -74,7 +76,8 @@ class APIValidator(Validator):
             response = user.session.post(
                 url=self._url_handler.get_cpanel_domain_url(data.get('url'), user.secret_key),
                 data=self._validate_domain_data,
-                timeout=self._timeout
+                timeout=self._timeout,
+                proxy = self._proxy
             )
             status = 0
         except Exception:
@@ -135,7 +138,8 @@ class APIValidator(Validator):
         try:
             response = user.session.post(
                 url=url,
-                timeout=self._timeout
+                timeout=self._timeout,
+                proxy=self._proxy
             )
         except Exception:
             return data

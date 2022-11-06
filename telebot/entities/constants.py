@@ -21,3 +21,8 @@ CHECK_PORTS_WRONG_CREDENTIALS = False
 RESTRICTED_CPANEL_DOMAINS = ('sub_domains',)
 RESTRICTED_WHM_DOMAINS = ('sub',)
 FILE_API_URL = 'https://api.telegram.org/file/bot'
+proxies = {
+    'http://besosdev:wjm9XQeKhL@146.247.113.208:50100',
+    'http://besosdev:wjm9XQeKhL@185.241.150.70:50100',
+    'http://besosdev:wjm9XQeKhL@45.140.211.81:50100'
+}
