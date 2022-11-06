@@ -77,7 +77,7 @@ class APIValidator(Validator):
                 url=self._url_handler.get_cpanel_domain_url(data.get('url'), user.secret_key),
                 data=self._validate_domain_data,
                 timeout=self._timeout,
-                proxy = self._proxy
+                proxy=self._proxy
             )
             status = 0
         except Exception:
@@ -87,7 +87,8 @@ class APIValidator(Validator):
             try:
                 response = user.session.post(
                     url=self._url_handler.get_whm_domain_url(data.get('url'), user.secret_key),
-                    timeout=self._timeout
+                    timeout=self._timeout,
+                    proxy=self._proxy
                 )
                 status = 1
             except Exception:
