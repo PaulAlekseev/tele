@@ -1,3 +1,4 @@
+from aiogram.dispatcher.webhook import DEFAULT_ROUTE_NAME
 from aiogram.utils.executor import set_webhook, start_webhook, start_polling
 
 from bot import dp, WEBHOOK_PATH, WEBAPP_HOST, WEBAPP_PORT, bot, WEBHOOK_URL
