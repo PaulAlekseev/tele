@@ -28,17 +28,17 @@ async def on_shutdown(dp):
     await dp.storage.wait_closed()
 
 
-executor = set_webhook(dispatcher=dp,
-                       webhook_path=WEBHOOK_PATH,
-                       loop=None,
-                       skip_updates=None,
-                       check_ip=False,
-                       on_startup=on_startup,
-                       on_shutdown=on_shutdown,
-                       retry_after=None,
-                       route_name=DEFAULT_ROUTE_NAME,
-                       )
-executor.run_app(host=WEBAPP_HOST, port=WEBAPP_PORT)
+# executor = set_webhook(dispatcher=dp,
+#                        webhook_path=WEBHOOK_PATH,
+#                        loop=None,
+#                        skip_updates=None,
+#                        check_ip=False,
+#                        on_startup=on_startup,
+#                        on_shutdown=on_shutdown,
+#                        retry_after=None,
+#                        route_name=DEFAULT_ROUTE_NAME,
+#                        )
+# executor.run_app(host=WEBAPP_HOST, port=WEBAPP_PORT)
 
 # start_webhook(
 #     dispatcher=dp,
@@ -49,4 +49,4 @@ executor.run_app(host=WEBAPP_HOST, port=WEBAPP_PORT)
 #     host=WEBAPP_HOST,
 #     port=WEBAPP_PORT,
 # )
-# start_polling(dispatcher=dp, skip_updates=True)
+start_polling(dispatcher=dp, skip_updates=True)
