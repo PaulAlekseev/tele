@@ -217,10 +217,6 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
                 chat_id=callback_query.from_user.id,
                 text=await invoice.get_url()
             )
-            await bot.send_message(
-                chat_id=callback_query.from_user.id,
-                text=os.getenv('TCN_KEY')
-            )
 
 
 def register_handlers_client(dp: Dispatcher):

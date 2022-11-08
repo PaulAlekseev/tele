@@ -43,4 +43,4 @@ class Invoice:
         return self._response['data']['address']
 
     async def get_url(self):
-        return self._response
+        return self._response['data']['url']
