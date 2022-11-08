@@ -1,5 +1,6 @@
 import datetime
 
+import aiohttp
 from aiogram import types, Dispatcher
 import emoji
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -200,16 +201,17 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
                 return 0
             activation_type = activation_types[0]
             crypto_credentials = available_crypto[regexp.group(1)]
-            invoice = Invoice(
-                amount=str(activation_type.amount),
-                api_key=crypto_credentials['API-key'],
-                password=crypto_credentials['password'],
-                session=session,
-                tele_id=callback_query.from_user.id,
-                token_name=regexp.group(3),
-                custom_data=str(activation_type.id)
-                )
-            await invoice.create_invoice()
+            async with aiohttp.ClientSession() as client_session:
+                invoice = Invoice(
+                    amount=str(activation_type.amount),
+                    api_key=crypto_credentials['API-key'],
+                    password=crypto_credentials['password'],
+                    session=client_session,
+                    tele_id=callback_query.from_user.id,
+                    token_name=regexp.group(3),
+                    custom_data=str(activation_type.id)
+                    )
+                await invoice.create_invoice()
             await bot.send_message(
                 chat_id=callback_query.from_user.id,
                 text=invoice.get_url()
