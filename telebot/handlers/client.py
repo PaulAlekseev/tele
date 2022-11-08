@@ -1,4 +1,5 @@
 import datetime
+import os
 
 import aiohttp
 from aiogram import types, Dispatcher
@@ -215,6 +216,10 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
             await bot.send_message(
                 chat_id=callback_query.from_user.id,
                 text=await invoice.get_url()
+            )
+            await bot.send_message(
+                chat_id=callback_query.from_user.id,
+                text=os.getenv('TCN_KEY')
             )
 
 
