@@ -29,10 +29,9 @@ async def handle_notify(request: BaseRequest):
                     activation_type = activation_types[0]
                     activation = await activation_repo.create(
                         expiration_date=datetime.date.today() + datetime.timedelta(days=30),
-                        user_tele_id=callback_query.from_user.id,
+                        user_tele_id=int(tele_id),
                         amount=activation_type.amount
                     )
-        await bot.send_message(callback_query.from_user.id, text=activation_text[callback_query.data])
         if invoice_status:
             await bot.send_message(tele_id, f'''Your invoice status has been updated:
     {invoice_status}''')
