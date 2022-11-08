@@ -194,13 +194,13 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
             activation_types = await activation_type_repo.get(
                 ActivationTypeIdSpecification(int(regexp.group(2)))
             )
-            if len(activation_types) == 0:
+            activation_type = activation_types[0]
+            if not activation_type.active:
                 await bot.send_message(
                     chat_id=callback_query.from_user.id,
                     text=text['fail_text']
                 )
                 return 0
-            activation_type = activation_types[0]
             crypto_credentials = available_crypto[regexp.group(1)]
             async with aiohttp.ClientSession() as client_session:
                 invoice = Invoice(
