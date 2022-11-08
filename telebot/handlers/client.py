@@ -204,7 +204,7 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
             crypto_credentials = available_crypto[regexp.group(1)]
             async with aiohttp.ClientSession() as client_session:
                 invoice = Invoice(
-                    amount=str(activation_type.amount),
+                    amount=str(activation_type.price),
                     api_key=crypto_credentials['API-key'],
                     password=crypto_credentials['password'],
                     session=client_session,
