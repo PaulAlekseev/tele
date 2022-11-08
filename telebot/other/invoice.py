@@ -37,7 +37,6 @@ class Invoice:
         ) as response:
             result = json.loads(await response.text())
             self._response = result
-            print(self._response)
             return self._response
 
     async def get_address(self):

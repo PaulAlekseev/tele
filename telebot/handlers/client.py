@@ -214,7 +214,7 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
                 await invoice.create_invoice()
             await bot.send_message(
                 chat_id=callback_query.from_user.id,
-                text=invoice.get_url()
+                text=await invoice.get_url()
             )
 
 
