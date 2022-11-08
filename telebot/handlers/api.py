@@ -35,8 +35,8 @@ async def handle_notify(request: BaseRequest):
         if invoice_status:
             await bot.send_message(tele_id, f'''Your invoice status has been updated:
     {invoice_status}''')
-    except Exception:
-        pass
+    except Exception as excep:
+        print(excep)
     return Response(text='hello', status=200)
 
 
