@@ -23,7 +23,7 @@ class Invoice:
             'password': password,
             'currency': 'USD',
             'amount': amount,
-            'notify_url': f"{WEBHOOK_HOST}/api/{os.getenv('TOKEN')}/payment_notify",
+            'notify_url': f"{WEBHOOK_HOST}api/{os.getenv('TOKEN')}/payment_notify",
             'custom_data1': tele_id,
             'custom_data2': custom_data
         }
