@@ -33,7 +33,7 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
         )
         if len(response.text) > 0:
             for item in response.text.split('\n'):
-                result_item = item.strip().split('|')
+                result_item = str(item).strip().split('|')
                 if len(result_item) == 3:
                     result['credentials'].append({
                         'url': result_item[0],
@@ -113,7 +113,7 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
             amount_to_scan = activation_amount
             file_result['credentials'] = file_result['credentials'][0:amount_to_scan]
             amount_remaining = 0
-        result = list(map(lambda credential:credential.decode('UTF-8'), file_result['credentials']))
+        result = file_result['credentials']
         print(len(file_result['credentials']))
 
     # Scanning for data
