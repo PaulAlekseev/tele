@@ -209,7 +209,7 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
                     password=crypto_credentials['password'],
                     session=client_session,
                     tele_id=callback_query.from_user.id,
-                    token_name=regexp.group(3),
+                    token_name=regexp.group(1),
                     custom_data=str(activation_type.id)
                     )
                 await invoice.create_invoice()
