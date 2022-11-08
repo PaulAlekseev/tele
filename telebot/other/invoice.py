@@ -3,6 +3,8 @@ import os
 
 import aiohttp
 
+from bot import WEBHOOK_HOST
+
 
 class Invoice:
     def __init__(
@@ -21,7 +23,7 @@ class Invoice:
             'password': password,
             'currency': 'USD',
             'amount': amount,
-            'notify_url': f"{os.getenv('WEBHOOK_HOST')}api/{os.getenv('TOKEN')}/notify",
+            'notify_url': f"{WEBHOOK_HOST}/api/{os.getenv('TOKEN')}/payment_notify",
             'custom_data1': tele_id,
             'custom_data2': custom_data
         }
