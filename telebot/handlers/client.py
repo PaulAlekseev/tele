@@ -10,9 +10,10 @@ from entities.async_db.db_repos import AIOActivationRepo, AIOUserRepo, AIOActiva
 from entities.async_db.db_specifications import ActivationTypeActiveSpecification, ActivationTypeIdSpecification
 from other.functions import create_reply_markup, form_activation_type_tariffs, form_payment_markup, \
     check_and_update_activation
+from other.invoice import Invoice
 from other.markups import language_markup
 from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text, activation_tariffs_text, \
-    available_crypto, crypto_payment_choice, support_text, rules_text
+    available_crypto, crypto_payment_choice, support_text, rules_text, crypto_payment_start_choice
 from tasks import validate
 
 
@@ -186,14 +187,32 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
     await callback_query.message.delete()
     async with async_session() as session:
         async with session.begin():
+            text = crypto_payment_start_choice[regexp.group(3)]
             activation_type_repo = AIOActivationTypeRepo(session)
             activation_types = await activation_type_repo.get(
                 ActivationTypeIdSpecification(int(regexp.group(2)))
             )
+            if len(activation_types) == 0:
+                await bot.send_message(
+                    chat_id=callback_query.from_user.id,
+                    text=text['fail_text']
+                )
+                return 0
             activation_type = activation_types[0]
+            crypto_credentials = available_crypto[regexp.group(1)]
+            invoice = Invoice(
+                amount=str(activation_type.amount),
+                api_key=crypto_credentials['API-key'],
+                password=crypto_credentials['password'],
+                session=session,
+                tele_id=callback_query.from_user.id,
+                token_name=regexp.group(3),
+                custom_data=str(activation_type.id)
+                )
+            await invoice.create_invoice()
             await bot.send_message(
                 chat_id=callback_query.from_user.id,
-                text=f'{activation_type.id} - {activation_type.active} - {activation_type.name} - {activation_type.price}'
+                text=invoice.get_url()
             )
 
 
@@ -223,7 +242,7 @@ def register_handlers_client(dp: Dispatcher):
     )
     dp.register_callback_query_handler(
         payment_start,
-        regexp=r"^final_pay-(\w+)-(\d+)-(\w{3})"
+        regexp=r"^final_pay-(\w+)-(\d+)-(rus|eng)"
     )
     dp.register_message_handler(rules, lambda message: emoji.demojize(message.text) in rules_text)
     dp.register_message_handler(support, lambda message: emoji.demojize(message.text) in support_text)

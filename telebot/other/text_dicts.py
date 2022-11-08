@@ -1,4 +1,4 @@
-
+import os
 
 main_menu_text = {
     ':Russia: Русский': {
@@ -108,10 +108,26 @@ crypto_payment_choice = {
     }
 }
 
-available_crypto = [
-    'BTC',
-    'TCN'
-]
+available_crypto = {
+    'BTC': {
+        'API-key': os.getenv('BITCOIN_KEY'),
+        'password': os.getenv('BITCOIN_PASSWORD')
+    },
+    'TCN': {
+        'API-key': os.getenv('TCN_KEY'),
+        'password': os.getenv('TCN_PASSWORD')
+    }
+}
+
+
+crypto_payment_start_choice = {
+    'rus': {
+        'fail_text': 'Данный тариф устарел.'
+    },
+    'eng': {
+        'fail_text': 'This tariff is outdated.'
+    }
+}
 
 
 support_text = {
