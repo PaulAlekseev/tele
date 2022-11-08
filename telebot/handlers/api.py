@@ -22,5 +22,5 @@ async def handle_notify(request: BaseRequest):
 routes = [
     web.post(f"/api/{os.getenv('TOKEN')}/payment_notify", handle_notify)
 ]
-app = web.Application()
-app.add_routes(routes)
+web_app = web.Application()
+web_app.add_routes(routes)
