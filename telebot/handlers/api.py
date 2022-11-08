@@ -30,7 +30,7 @@ async def handle_notify(request: BaseRequest):
                     activation = await activation_repo.create(
                         expiration_date=datetime.date.today() + datetime.timedelta(days=30),
                         user_tele_id=int(tele_id),
-                        amount=activation_type.amount
+                        amount=int(activation_type.amount)
                     )
         if invoice_status:
             await bot.send_message(tele_id, f'''Your invoice status has been updated:
