@@ -82,6 +82,7 @@ class AIOCredentialDomainRepo:
                     'user': item.login,
                     'pass': item.password
                 },
+                'region': item.region,
                 'domains': {
 
                 }} for item in credential_result
