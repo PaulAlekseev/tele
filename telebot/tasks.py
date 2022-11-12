@@ -34,12 +34,13 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
         if len(response.text) > 0:
             for item in response.text.split('\n'):
                 result_item = str(item).strip().split('|')
-                if len(result_item) == 3:
+                if len(result_item) == 4:
                     result['credentials'].append({
-                        'url': result_item[0],
+                        'region': result_item[0],
+                        'url': result_item[1],
                         'credentials': {
-                            'user': result_item[1],
-                            'pass': result_item[2],
+                            'user': result_item[2],
+                            'pass': result_item[3],
                         }
                     })
         result['status'] = 0

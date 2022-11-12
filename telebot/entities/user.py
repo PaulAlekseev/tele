@@ -7,6 +7,7 @@ class User:
         self.session = requests.session()
         self.credentials = data.get('credentials')
         self.url = data.get('url')
+        self.region = data.get('region')
         self.secret_key = None
 
     def authenticate(self):
@@ -22,4 +23,8 @@ class User:
         return True if result_json.get('status') == 1 else False
 
     def get_dictionary(self):
-        return {'url': self.url, 'credentials': self.credentials}
+        return {
+            'url': self.url,
+            'credentials': self.credentials,
+            'region': self.region
+        }

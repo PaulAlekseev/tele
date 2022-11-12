@@ -13,19 +13,21 @@ class CredentialsRepository:
         session.add(obj)
         session.commit()
 
-    def add(self, url, login, password):
+    def add(self, url, login, password, region):
         with Session(bind=engine) as session:
             try:
                 credentials = session.query(self.model).filter(
                     self.model.url == url,
                     self.model.login == login,
                     self.model.password == password,
+                    self.model.region == region
                 ).one()
             except sqlalchemy.orm.exc.NoResultFound:
                 credentials = self.model(
                     url=url,
                     login=login,
                     password=password,
+                    region=region
                 )
                 self._save_object(session, credentials)
                 session.refresh(credentials)
@@ -103,6 +105,7 @@ class CredentialDomainRepository:
             ).all()
         result = {
             str(item.id): {
+                'region': item.region,
                 'url': item.url,
                 'credentials': {
                     'user': item.login,
@@ -137,6 +140,7 @@ class CredentialDomainRepository:
             ).all()
         result = {
             str(item.id): {
+                'region': item.region,
                 'url': item.url,
                 'credentials': {
                     'user': item.login,

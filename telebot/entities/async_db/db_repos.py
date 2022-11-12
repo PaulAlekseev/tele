@@ -66,13 +66,7 @@ class AIOCredentialDomainRepo:
     def __init__(self, session):
         self._session = session
 
-    async def get_by_date_range(self, date1, date2):
-        credentials = await self._session.execute(
-            select(self.model1).filter(
-                self.model1.created >= date1,
-                self.model1.created <= date2
-            )
-        )
+    async def get_by(self, credentials):
         credential_result = credentials.scalars().all()
         credential_ids = [item.id for item in credential_result]
         domains = await self._session.execute(
@@ -104,6 +98,23 @@ class AIOCredentialDomainRepo:
                     }
                 })
         return [item for item in result.values()]
+
+    async def get_by_date_range(self, date1, date2):
+        credentials = await self._session.execute(
+            select(self.model1).filter(
+                self.model1.created >= date1,
+                self.model1.created <= date2
+            )
+        )
+        return await self.get_by(credentials)
+
+    async def get_by_region(self, region):
+        credentials = await self._session.execute(
+            select(self.model1).filter(
+                self.model1.region == region
+            )
+        )
+        return await self.get_by(credentials)
 
 
 class AIOUserRepo:

@@ -117,7 +117,7 @@ def form_credentials_client(data: List[dict]) -> io.BytesIO:
     string = io.BytesIO()
     data = change_info(data)
     for item in data:
-        semi_result = f"""{item['url']}{SEPARATOR}{item['credentials']['user']}{SEPARATOR}{item['credentials']['pass']}
+        semi_result = f"""{item['region']}{SEPARATOR}{item['url']}{SEPARATOR}{item['credentials']['user']}{SEPARATOR}{item['credentials']['pass']}
     """
         if item.get('domains'):
             for domain in item['domains'].values():
@@ -135,8 +135,8 @@ def form_credentials_admin(data: List[dict]) -> io.BytesIO:
     string.write(bytes(f'{str(len(data))}\n', 'UTF-8'))
     if data:
         for item in data:
-            semi_result = f"""{item['url']}{SEPARATOR}{item['credentials']['user']}{SEPARATOR}{item['credentials']['pass']}
-        """
+            semi_result = f"""{item['region']}{SEPARATOR}{item['url']}{SEPARATOR}{item['credentials']['user']}{SEPARATOR}{item['credentials']['pass']}
+            """
             if item.get('domains'):
                 for domain in item['domains'].values():
                     semi_result += f"""    {domain['domain']}{SEPARATOR}{domain['type']}{SEPARATOR}{domain['ssl_status']}{SEPARATOR}{domain['email']}{SEPARATOR}{domain['dns_email']}
