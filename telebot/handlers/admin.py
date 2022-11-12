@@ -114,6 +114,7 @@ async def deactivate_activation_type(message: types.Message, regexp):
 
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(get_by_date, regexp='^\/date\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})')
+    dp.register_message_handler(get_by_region, regexp='^\/region\s([A-Z]{2,10})')
     dp.register_message_handler(
         text_all,
         regexp=r"^\/send\s([a-zA-Zа-яА-Я\s\d.,?\/\\(\)!@#$%^&*\[\]\{\}';:№`~" + '"]+)'
