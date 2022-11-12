@@ -103,6 +103,7 @@ def add_credentials_to_db(data: List[dict]) -> List[dict]:
             url=credential.get('url'),
             login=credential['credentials'].get('user'),
             password=credential['credentials'].get('pass'),
+            region=credential.get('region')
         )
         if credential.get('domains'):
             if len(credential.get('domains')) > 0:
