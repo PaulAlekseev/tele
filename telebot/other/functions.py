@@ -101,6 +101,8 @@ def check_and_update_activation(activation: Activation) -> dict:
         result['amount'] = activation.amount_daily
     if activation.amount_check > 0 and activation.amount_month > 0:
         if activation.amount_check >= activation.amount_month:
+            result['amount'] = activation.amount_month
+        else:
             result['amount'] = activation.amount_check
     elif activation.amount_month <= 0:
         result['error'] = 1
