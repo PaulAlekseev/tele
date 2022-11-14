@@ -37,7 +37,7 @@ class AIOActivationRepo:
         new_activation = self.model(
             expires=expiration_date,
             user_tele_id=user_tele_id,
-            amount=amount_daily,
+            amount_daily=amount_daily,
             amount_check=amount_daily,
             amount_month=amount_month,
             amount_once=amount_once
