@@ -110,7 +110,7 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
         sync_send_message(message="Sorry, we couldn't find your file", chat_id=user_id)
         return 0
     else:
-        if file_result['amount'] <= activation.amount_once:
+        if file_result['amount'] >= activation.amount_once:
             file_result['amount'] = int(activation.amount_once)
             file_result['credentials'] = file_result['credentials'][0:int(activation.amount_once)]
         amount_remaining = activation_amount - file_result['amount']
