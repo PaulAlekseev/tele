@@ -239,7 +239,7 @@ def register_handlers_client(dp: Dispatcher):
         get_activation_type_tariffs,
         lambda message: emoji.demojize(message.text) in [':key: Активировать', ':key: Activate']
     )
-    dp.register_callback_query_handler(create_activation, lambda c: c.data in activation_text)
+    # dp.register_callback_query_handler(create_activation, lambda c: c.data in activation_text)
     dp.register_callback_query_handler(
         choose_payment_coin,
         regexp=r"^type-(\d+)-(rus|eng)"
