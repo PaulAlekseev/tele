@@ -38,7 +38,8 @@ scan_text = {
         'start': 'Начать сканирование',
         'no_activation': 'Активировать аккаунт',
         'scan': 'Ваш файл успешно прошел сканирование, в итоге у вас осталось {0} сканирований на сегодня',
-        'activation_failure': "К сожалению лимит сканирования на сегодня для вас закончился"
+        'activation_failure': ["К сожалению лимит сканирования на сегодня для вас закончился",
+                               "К сожалению лимит сканирования в этом месяце для вас закончился"]
 },
     'Scan': {
         'text': {
@@ -52,7 +53,8 @@ scan_text = {
         'start': 'Start scanning',
         'no_activation': 'Activate account',
         'scan': 'We successfully scanned your file, you have {0} scans for today',
-        'activation_failure': "Sorry, but you're out of the checks for today"
+        'activation_failure': ["Sorry, but you're out of scans for today",
+                               "Sorry, but you're out of scans for this month"]
     }
 }
 

@@ -104,6 +104,7 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
     validator = AsyncApiValidator(proxy_data['proxy'])
     user_repo = UserRepo()
     activation_repo = ActivationRepo()
+    activation = activation_repo.get(activation_id)
     file_result = get_file_credentials(file_path=scan_file_path, file_id=scan_file_id)
     if file_result['status'] > 1:
         sync_send_message(message="Sorry, we couldn't find your file", chat_id=user_id)
@@ -114,8 +115,9 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
             amount_to_scan = activation_amount
             file_result['credentials'] = file_result['credentials'][0:amount_to_scan]
             amount_remaining = 0
+        if len(file_result['credentials']) > int(activation.amount_once):
+            file_result['credentials'] = file_result['credentials'][0:int(activation.amount_once)]
         result = file_result['credentials']
-        print(len(file_result['credentials']))
 
     # Scanning for data
     new_result = [
@@ -128,8 +130,8 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
     result = form_credentials_admin(valid_credentials)
 
     # Updating activation
-    activation = activation_repo.get(activation_id)
     activation.amount_check = amount_remaining
+    activation.amount_month = activation.amount_month - len(file_result['credentials'])
     activation_repo.update(activation)
 
     # Messaging user

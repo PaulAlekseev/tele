@@ -83,16 +83,22 @@ async def create_activation_type(message: types.Message, regexp):
         async with session.begin():
             activation_type_repo = AIOActivationTypeRepo(session)
             name = ' '.join(regexp.group(1).split('_'))
-            amount = regexp.group(2)
-            price = regexp.group(3)
+            price = regexp.group(2)
+            amount_once = regexp.group(3)
+            amount_daily = regexp.group(4)
+            amount_month = regexp.group(5)
             activation_type = await activation_type_repo.create(
                 name=name,
-                amount=amount,
-                price=price
+                price=price,
+                amount_once=amount_once,
+                amount_daily=amount_daily,
+                amount_month=amount_month,
             )
             await bot.send_message(message.from_user.id, f"""Activation type {activation_type.name} has been successfully created
 price: {activation_type.price}$/month
-amount: {activation_type.amount} credentials/day
+amount once: {activation_type.amount_once} credentials
+amount daily: {activation_type.amount_daily} credentials/day
+amount monthly: {activation_type.amount_month} credentials/month
 """)
 
 
@@ -121,7 +127,7 @@ def register_handlers_admin(dp: Dispatcher):
     )
     dp.register_message_handler(
         create_activation_type,
-        regexp=r'^\/create_type\s([\w]+)\s([\d]+)\s([\d]+)'
+        regexp=r'^\/create_type\s([\w]+)\s([\d]+)\s([\d]+)\s([\d]+)\s([\d]+)'
     )
     dp.register_message_handler(
         get_active_activation_types,

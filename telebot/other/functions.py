@@ -37,9 +37,11 @@ async def get_activation_types(message: types.Message, activation_type_specifica
         async with session.begin():
             activation_type_repo = AIOActivationTypeRepo(session)
             activation_types = await activation_type_repo.get(activation_type_specification)
-            text_header = f"id - name - amount - price:\n"
+            text_header = f"id - name - price - amount: once - daily - monthly\n"
             text_content = '\n'.join([
-                ' - '.join((str(_type.id), _type.name, _type.amount, _type.price,))
+                ' - '.join(
+                    (str(_type.id), _type.name, _type.price, _type.amount_once, _type.amount_daily, _type.amount_month)
+                )
                 for _type in activation_types
             ])
             text_result = text_header + text_content
@@ -72,7 +74,7 @@ def form_activation_type_tariffs(data: List[ActivationType], lang: str):
     keyboard_markup = InlineKeyboardMarkup(row_width=1)
     keyboard_markup.add(
         *[InlineKeyboardButton(
-            text=f'{item.name} - {item.amount} cred/day - {item.price} $/month', callback_data=f'type-{item.id}-{lang}'
+            text=f'{item.name} - price: {item.price} - amount: once: {item.amount_once} - daily: {item.amount_daily} - monthly: {item.amount_month}', callback_data=f'type-{item.id}-{lang}'
         ) for item in data]
     )
     return keyboard_markup
@@ -90,16 +92,21 @@ def form_payment_markup(data: List[str], activation_type_id: str, lang: str) -> 
 
 def check_and_update_activation(activation: Activation) -> dict:
     result = {
-        'result': True,
-        'amount': 0
+        'amount': 0,
+        'error': None
     }
     if activation.date_check < datetime.date.today():
-        activation.amount_check = activation.amount
+        activation.amount_check = activation.amount_daily
         activation.date_check = datetime.date.today()
-        result['amount'] = activation.amount
-    if activation.amount_check > 0:
-        result['amount'] = activation.amount_check
+        result['amount'] = activation.amount_daily
+    if activation.amount_check > 0 and activation.amount_month > 0:
+        if activation.amount_check >= activation.amount_month:
+            result['amount'] = activation.amount_check
+        else:
+            result['amount'] = activation.amount_month
+    elif activation.amount_month <= 0:
+        result['error'] = 1
     else:
-        result['result'] = False
+        result['error'] = 0
     result['activation'] = activation
     return result

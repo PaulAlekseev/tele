@@ -33,7 +33,10 @@ class Activation(Base):
     created = Column(Date, default=date.today)
     expires = Column(Date, nullable=False)
     user_tele_id = Column(Integer, nullable=False)
-    amount = Column(Integer, nullable=False)
+    # Amount check is editable and amount daily is not
+    amount_daily = Column(Integer, nullable=False)
+    amount_month = Column(Integer, nullable=False)
+    amount_once = Column(Integer, nullable=False)
     date_check = Column(Date, default=date.today)
     amount_check = Column(Integer, nullable=False)
 
@@ -49,6 +52,8 @@ class ActivationType(Base):
     __tablename__ = 'activation_type'
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=False)
-    amount = Column(String(50), nullable=False)
+    amount_once = Column(String(50), nullable=False)
+    amount_daily = Column(String(50), nullable=False)
+    amount_month = Column(String(50), nullable=False)
     price = Column(String(30), nullable=False)
     active = Column(Boolean, nullable=False)

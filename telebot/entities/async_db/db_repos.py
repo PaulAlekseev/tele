@@ -26,12 +26,21 @@ class AIOActivationRepo:
     def __init__(self, db_session):
         self.db_session = db_session
 
-    async def create(self, expiration_date, user_tele_id: int, amount: int):
+    async def create(
+            self,
+            expiration_date,
+            user_tele_id: int,
+            amount_daily: int,
+            amount_month: int,
+            amount_once: int,
+    ):
         new_activation = self.model(
             expires=expiration_date,
             user_tele_id=user_tele_id,
-            amount=amount,
-            amount_check=amount
+            amount=amount_daily,
+            amount_check=amount_daily,
+            amount_month=amount_month,
+            amount_once=amount_once
         )
         self.db_session.add(new_activation)
         await self.db_session.flush()
@@ -157,10 +166,19 @@ class AIOActivationTypeRepo:
     def __init__(self, session):
         self.db_session = session
 
-    async def create(self, name: str, amount: str, price: str):
+    async def create(
+            self,
+            name: str,
+            amount_once: str,
+            amount_daily: str,
+            amount_month: str,
+            price: str,
+    ):
         new_activation_type = self.model(
             name=name,
-            amount=amount,
+            amount_once=amount_once,
+            amount_month=amount_month,
+            amount_daily=amount_daily,
             active=True,
             price=price
         )
