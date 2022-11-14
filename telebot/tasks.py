@@ -114,9 +114,11 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
         if amount_remaining <= 0:
             amount_to_scan = activation_amount
             file_result['credentials'] = file_result['credentials'][0:amount_to_scan]
+            print('First' + str(len(file_result['credentials'])))
             amount_remaining = 0
         if len(file_result['credentials']) > int(activation.amount_once):
             file_result['credentials'] = file_result['credentials'][0:int(activation.amount_once)]
+            print('Second' + str(len(file_result['credentials'])))
         result = file_result['credentials']
 
     # Scanning for data
