@@ -186,5 +186,5 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(get_statistics, commands=['statistics', ])
     dp.register_message_handler(
         give_activation,
-        regexp=r'\/activate\s(\d+)\s(\d+)\s(\d+)\s(\d+)'
+        regexp=r'\/activate_user\s(\d+)\s(\d+)\s(\d+)\s(\d+)'
     )
