@@ -152,7 +152,7 @@ async def give_activation(message: types.Message, regexp):
                 amount_daily=int(regexp.group(3)),
                 amount_month=int(regexp.group(4)),
             )
-            await bot.send_message(message.from_user.id, text=f'You successfully gifted user {regexp.group(2)} activation')
+            await bot.send_message(message.from_user.id, text=f'You successfully gifted user {regexp.group(1)} activation')
 
 
 def register_handlers_admin(dp: Dispatcher):
