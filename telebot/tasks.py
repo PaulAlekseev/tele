@@ -129,7 +129,7 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
     # Getting data for message
     result = form_credentials_admin(valid_credentials)
 
-    print(len(activation.amount_once))
+    print(activation.amount_once)
     print(len(file_result['credentials']))
 
     # Updating activation
