@@ -146,16 +146,16 @@ async def start_scan(message: types.Message, lang: str, amount: int, activation_
             )
 
 
-async def create_activation(callback_query: types.CallbackQuery):
-    async with async_session() as session:
-        async with session.begin():
-            activation_repo = AIOActivationRepo(session)
-            activation = await activation_repo.create(
-                expiration_date=datetime.date.today() + datetime.timedelta(days=30),
-                user_tele_id=callback_query.from_user.id,
-                amount=1
-            )
-            await bot.send_message(callback_query.from_user.id, text=activation_text[callback_query.data])
+# async def create_activation(callback_query: types.CallbackQuery):
+#     async with async_session() as session:
+#         async with session.begin():
+#             activation_repo = AIOActivationRepo(session)
+#             activation = await activation_repo.create(
+#                 expiration_date=datetime.date.today() + datetime.timedelta(days=30),
+#                 user_tele_id=callback_query.from_user.id,
+#                 amount_once=
+#             )
+#             await bot.send_message(callback_query.from_user.id, text=activation_text[callback_query.data])
 
 
 async def get_activation_type_tariffs(message: types.Message):

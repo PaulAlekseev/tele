@@ -1,3 +1,4 @@
+import datetime
 from datetime import datetime, date
 
 from aiogram import types, Dispatcher
@@ -5,13 +6,16 @@ from aiogram.types import InputFile, Message
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOCredentialDomainRepo, AIOUserRepo, AIOActivationTypeRepo
+from entities.async_db.db_repos import AIOCredentialDomainRepo, AIOUserRepo, AIOActivationTypeRepo, AIOActivationRepo
 from entities.async_db.db_specifications import ActivationTypeAllSpecification, ActivationTypeActiveSpecification
 from entities.functions import form_credentials_admin, form_user_statistics
+from other.constants import IDS
 from other.functions import get_activation_types, change_activation_type_active
 
 
 async def get_by(credential_result, message):
+    if message.from_user.id not in IDS:
+        return 0
     if len(credential_result) == 0:
         await bot.send_message(message.from_user.id, 'No credentials')
         return 0
@@ -27,6 +31,8 @@ async def get_by(credential_result, message):
 
 
 async def get_by_date(message: Message, regexp):
+    if message.from_user.id not in IDS:
+        return 0
     try:
         date1 = datetime.strptime(regexp.group(1), '%d.%m.%Y').date()
         date2 = datetime.strptime(regexp.group(2), '%d.%m.%Y').date()
@@ -41,6 +47,8 @@ async def get_by_date(message: Message, regexp):
 
 
 async def get_by_region(message: Message, regexp):
+    if message.from_user.id not in IDS:
+        return 0
     region = str(regexp.group(1)).upper()
     if len(region) > 10:
         await bot.send_message(message.from_user.id, 'No such region')
@@ -53,6 +61,8 @@ async def get_by_region(message: Message, regexp):
 
 
 async def get_statistics(message: types.Message):
+    if message.from_user.id not in IDS:
+        return 0
     async with async_session() as session:
         async with session.begin():
             user_repo = AIOUserRepo(session)
@@ -70,6 +80,8 @@ async def get_statistics(message: types.Message):
 
 
 async def text_all(message: types.Message, regexp):
+    if message.from_user.id not in IDS:
+        return 0
     async with async_session() as session:
         async with session.begin():
             user_repo = AIOUserRepo(session)
@@ -79,6 +91,8 @@ async def text_all(message: types.Message, regexp):
 
 
 async def create_activation_type(message: types.Message, regexp):
+    if message.from_user.id not in IDS:
+        return 0
     async with async_session() as session:
         async with session.begin():
             activation_type_repo = AIOActivationTypeRepo(session)
@@ -103,19 +117,43 @@ amount monthly: {activation_type.amount_month} credentials/month
 
 
 async def get_all_activation_types(message: types.Message):
+    if message.from_user.id not in IDS:
+        return 0
     await get_activation_types(message, activation_type_specification=ActivationTypeAllSpecification())
 
 
 async def get_active_activation_types(message: types.Message):
+    if message.from_user.id not in IDS:
+        return 0
     await get_activation_types(message, activation_type_specification=ActivationTypeActiveSpecification())
 
 
 async def activate_activation_type(message: types.Message, regexp):
+    if message.from_user.id not in IDS:
+        return 0
     await change_activation_type_active(message, regexp, True, text='activated')
 
 
 async def deactivate_activation_type(message: types.Message, regexp):
+    if message.from_user.id not in IDS:
+        return 0
     await change_activation_type_active(message, regexp, False, text='deactivated')
+
+
+async def give_activation(message: types.Message, regexp):
+    if message.from_user.id not in IDS:
+        return 0
+    async with async_session() as session:
+        async with session.begin():
+            activation_repo = AIOActivationRepo(session)
+            activation = await activation_repo.create(
+                expiration_date=datetime.date.today() + datetime.timedelta(days=30),
+                user_tele_id=regexp.group(1),
+                amount_once=regexp.group(2),
+                amount_daily=regexp.group(3),
+                amount_month=regexp.group(4),
+            )
+            await bot.send_message(message.from_user.id, text=f'You successfully gifted user {regexp.group(2)} activation')
 
 
 def register_handlers_admin(dp: Dispatcher):
@@ -146,3 +184,7 @@ def register_handlers_admin(dp: Dispatcher):
         regexp=r'^\/activate\s([\d]+)'
     )
     dp.register_message_handler(get_statistics, commands=['statistics', ])
+    dp.register_message_handler(
+        give_activation,
+        regexp=r'\/activate\s(\d+)\s(\d+)\s(\d+)\s(\d+)'
+    )
