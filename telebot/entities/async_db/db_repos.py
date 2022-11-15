@@ -91,7 +91,7 @@ class AIOCredentialDomainRepo:
                     'user': item.login,
                     'pass': item.password
                 },
-                'region': item.region,
+                'path': item.path,
                 'domains': {
 
                 }} for item in credential_result
@@ -118,15 +118,15 @@ class AIOCredentialDomainRepo:
         )
         return await self.get_by(credentials)
 
-    async def get_by_region(self, region):
-        credentials = await self._session.execute(
-            select(self.model1).filter(
-                self.model1.region == region
-            )
-        )
-        return await self.get_by(credentials)
-
-
+    # async def get_by_region(self, region):
+    #     credentials = await self._session.execute(
+    #         select(self.model1).filter(
+    #             self.model1.region == region
+    #         )
+    #     )
+    #     return await self.get_by(credentials)
+    #
+    #
 class AIOUserRepo:
     model = User
 

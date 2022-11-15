@@ -45,20 +45,20 @@ async def get_by_date(message: Message, regexp):
             return await get_by(credential_result, message)
 
 
-async def get_by_region(message: Message, regexp):
-    if message.from_user.id not in IDS:
-        return 0
-    region = str(regexp.group(1)).upper()
-    if len(region) > 10:
-        await bot.send_message(message.from_user.id, 'No such region')
-        return 0
-    async with async_session() as session:
-        async with session.begin():
-            credential_repo = AIOCredentialDomainRepo(session)
-            credential_result = await credential_repo.get_by_region(region)
-            return await get_by(credential_result, message)
-
-
+# async def get_by_region(message: Message, regexp):
+#     if message.from_user.id not in IDS:
+#         return 0
+#     region = str(regexp.group(1)).upper()
+#     if len(region) > 10:
+#         await bot.send_message(message.from_user.id, 'No such region')
+#         return 0
+#     async with async_session() as session:
+#         async with session.begin():
+#             credential_repo = AIOCredentialDomainRepo(session)
+#             credential_result = await credential_repo.get_by_region(region)
+#             return await get_by(credential_result, message)
+#
+#
 async def get_statistics(message: types.Message):
     if message.from_user.id not in IDS:
         return 0
