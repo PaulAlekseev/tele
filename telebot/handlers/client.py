@@ -56,12 +56,12 @@ async def profile(message: types.Message):
     """
     async with async_session() as session:
         async with session.begin():
-            activation_repo = AIOActivationRepo(session)
-            latest_activation = await activation_repo.get_latest(message.from_user.id)
-            activation_exist = True if latest_activation else False
-            active = True if activation_exist and latest_activation.expires >= datetime.date.today() else False
-            text_dict = profile_text[emoji.demojize(message.text)]
             try:
+                activation_repo = AIOActivationRepo(session)
+                latest_activation = await activation_repo.get_latest(message.from_user.id)
+                activation_exist = True if latest_activation else False
+                active = True if activation_exist and latest_activation.expires >= datetime.date.today() else False
+                text_dict = profile_text[emoji.demojize(message.text)]
                 await bot.send_message(
                     message.from_user.id,
                     emoji.emojize(text_dict['text'].format(

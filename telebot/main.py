@@ -32,7 +32,7 @@ async def on_shutdown(dp):
 executor = set_webhook(dispatcher=dp,
                        webhook_path=WEBHOOK_PATH,
                        loop=None,
-                       skip_updates=None,
+                       skip_updates=True,
                        check_ip=False,
                        on_startup=on_startup,
                        on_shutdown=on_shutdown,
