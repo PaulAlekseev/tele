@@ -27,7 +27,7 @@ class CredentialsRepository:
                     url=url,
                     login=login,
                     password=password,
-                    region=path
+                    path=path
                 )
                 self._save_object(session, credentials)
                 session.refresh(credentials)
