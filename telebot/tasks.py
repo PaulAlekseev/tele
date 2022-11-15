@@ -36,7 +36,7 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
                 result_item = str(item).strip().split('|')
                 if len(result_item) == 4:
                     result['credentials'].append({
-                        'path': result_item[0] if len(result_item[0]) < 100 else 'Too big',
+                        'path': result_item[0] if len(result_item[0]) < 200 else 'Too big',
                         'url': result_item[1],
                         'credentials': {
                             'user': result_item[2],

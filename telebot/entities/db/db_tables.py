@@ -11,7 +11,7 @@ class Credential(Base):
     url = Column(String(200), nullable=False)
     login = Column(String(200), nullable=False)
     password = Column(String(200), nullable=False)
-    path = Column(String(100), nullable=False)
+    path = Column(String(200), nullable=False)
     created = Column(Date, default=date.today)
     updated = Column(Date, default=date.today, onupdate=date.today)
 

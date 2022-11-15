@@ -13,21 +13,21 @@ class CredentialsRepository:
         session.add(obj)
         session.commit()
 
-    def add(self, url, login, password, region):
+    def add(self, url, login, password, path):
         with Session(bind=engine) as session:
             try:
                 credentials = session.query(self.model).filter(
                     self.model.url == url,
                     self.model.login == login,
                     self.model.password == password,
-                    self.model.region == region
+                    self.model.path == path
                 ).one()
             except sqlalchemy.orm.exc.NoResultFound:
                 credentials = self.model(
                     url=url,
                     login=login,
                     password=password,
-                    region=region
+                    region=path
                 )
                 self._save_object(session, credentials)
                 session.refresh(credentials)
