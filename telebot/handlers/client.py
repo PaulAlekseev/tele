@@ -67,7 +67,7 @@ async def profile(message: types.Message):
                     message.from_user.id,
                     text_dict['active']['good'] if active else text_dict['active']['bad'],
                     latest_activation.expires if active else '-',
-                ))
+                )))
 
 
 async def support(message: types.Message):
