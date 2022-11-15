@@ -34,11 +34,11 @@ class Activation(Base):
     expires = Column(Date, nullable=False)
     user_tele_id = Column(String(50), nullable=False)
     # Amount check is editable and amount daily is not
-    amount_daily = Column(String(50), nullable=False)
-    amount_month = Column(String(50), nullable=False)
-    amount_once = Column(String(50), nullable=False)
+    amount_daily = Column(BigInteger, nullable=False)
+    amount_month = Column(BigInteger, nullable=False)
+    amount_once = Column(BigInteger, nullable=False)
     date_check = Column(Date, default=date.today)
-    amount_check = Column(String(50), nullable=False)
+    amount_check = Column(BigInteger, nullable=False)
 
 
 class User(Base):
