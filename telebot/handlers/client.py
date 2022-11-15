@@ -56,22 +56,18 @@ async def profile(message: types.Message):
     """
     async with async_session() as session:
         async with session.begin():
-            try:
-                activation_repo = AIOActivationRepo(session)
-                latest_activation = await activation_repo.get_latest(message.from_user.id)
-                activation_exist = True if latest_activation else False
-                active = True if activation_exist and latest_activation.expires >= datetime.date.today() else False
-                text_dict = profile_text[emoji.demojize(message.text)]
-                await bot.send_message(
+            activation_repo = AIOActivationRepo(session)
+            latest_activation = await activation_repo.get_latest(message.from_user.id)
+            activation_exist = True if latest_activation else False
+            active = True if activation_exist and latest_activation.expires >= datetime.date.today() else False
+            text_dict = profile_text[emoji.demojize(message.text)]
+            await bot.send_message(
+                message.from_user.id,
+                emoji.emojize(text_dict['text'].format(
                     message.from_user.id,
-                    emoji.emojize(text_dict['text'].format(
-                        message.from_user.id,
-                        text_dict['active']['good'] if active else text_dict['active']['bad'],
-                        latest_activation.expires if active else '-',
-                    ))
-                )
-            except Exception:
-                pass
+                    text_dict['active']['good'] if active else text_dict['active']['bad'],
+                    latest_activation.expires if active else '-',
+                ))
 
 
 async def support(message: types.Message):
@@ -99,7 +95,7 @@ async def file_handler(message: types.Message):
     async with async_session() as session:
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
-            latest_activation = await activation_repo.get_latest(user_tele_id=message.from_user.id)
+            latest_activation = await activation_repo.get_latest(user_tele_id=str(message.from_user.id))
 
     # Checking if scan is allowed
     inline_keyboard = InlineKeyboardMarkup(row_width=1)

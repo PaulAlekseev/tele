@@ -29,10 +29,10 @@ class AIOActivationRepo:
     async def create(
             self,
             expiration_date,
-            user_tele_id: int,
-            amount_daily: int,
-            amount_month: int,
-            amount_once: int,
+            user_tele_id: str,
+            amount_daily: str,
+            amount_month: str,
+            amount_once: str,
     ):
         new_activation = self.model(
             expires=expiration_date,
