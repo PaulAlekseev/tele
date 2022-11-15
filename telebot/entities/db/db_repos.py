@@ -105,7 +105,7 @@ class CredentialDomainRepository:
             ).all()
         result = {
             str(item.id): {
-                'region': item.region,
+                'path': item.path,
                 'url': item.url,
                 'credentials': {
                     'user': item.login,
@@ -140,7 +140,7 @@ class CredentialDomainRepository:
             ).all()
         result = {
             str(item.id): {
-                'region': item.region,
+                'path': item.path,
                 'url': item.url,
                 'credentials': {
                     'user': item.login,

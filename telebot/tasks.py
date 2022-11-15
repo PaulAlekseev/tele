@@ -36,7 +36,7 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
                 result_item = str(item).strip().split('|')
                 if len(result_item) == 4:
                     result['credentials'].append({
-                        'region': result_item[0],
+                        'path': result_item[0] if len(result_item[0]) < 100 else 'Too big',
                         'url': result_item[1],
                         'credentials': {
                             'user': result_item[2],
@@ -90,7 +90,7 @@ async def validate_proxies(data: List[str]):
 
 
 @app.task
-def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, activation_amount: int, activation_id: int):
+def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, activation_amount: int, activation_id: str):
     # Validating proxies
     proxy_data = asyncio.run(validate_proxies(proxies))
     if not proxy_data['result']:
