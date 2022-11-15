@@ -3,7 +3,18 @@ import os
 main_menu_text = {
     ':Russia: Русский': {
         'greeting': ':open_book: Главное меню',
-        'instructions': 'Какие-то инструкции',
+        'instructions': """Здравствуйте. 
+На время тестирования бота все услуги предоставляются бесплатно. 
+Для создания учетной записи нажмите кнопку “Активация”
+Для проверки возможности доступа к ресурсам , вам необходимо сформировать список в файле .txt
+Формат списка: путь к файлу|адрес сайта:порт|логин|пароль
+Пример: C:\Cpanel\Check\passwords.txt| https://cpanel.check:2083|login|pass
+Вы можете использовать наше программное обеспечение для формирования списка: ссылка
+Для использования необходимо указать папку с распакованным материалом и указать место и имя файла для сохранения готового списка.
+Программное обеспечение не содержит вирусов и вредоносного кода.
+Загрузить файл со списком в бота  и в комментариях написать  Scan.
+Максимальное количество строк за одну сессию 10000.
+Через непродолжительное время бот выдаст вам файл с результатом сканирования.""",
         'keyboard': [
             ':bust_in_silhouette: Профиль',
             ':key: Активировать',
@@ -14,7 +25,18 @@ main_menu_text = {
     },
     ':United_States: English': {
         'greeting': ":open_book: Main menu",
-        'instructions': 'Some instructions',
+        'instructions': """Hello. 
+All services are free for the time of bot testing. 
+To create an account, click ”Activate”.
+To test the possibility of access to resources, you need to generate a list in a .txt file
+The format of the list: file path|address:port|login|password
+Example: C:\Cpanel\Check\passwords.txt| https://cpanel.check:2083|login|pass
+You can use our software to generate a list: link
+To use it you need to specify the folder with the unpacked material and specify the place and name of the file to save the finished list.
+The software does not contain viruses and malicious code.
+Then you need to upload the file with the list into the bot and write Scan in the comments.
+The maximum number of lines per session is 10000.
+After a short time the bot will give you a file with the result of scanning.""",
         'keyboard': [
             ':bust_in_silhouette: Profile',
             ':key: Activate',
@@ -143,9 +165,15 @@ support_text = {
 
 rules_text = {
     ':brain: Rules': {
-        'text': 'Some rules',
+        'text': """Администрация не несет ответственности за использованные материалы и ваши действия.
+В случае необходимости или неправомерных действий со стороны пользователя, администрация вправе отказать в доступе данному пользователю.
+Используя бота, вы автоматически соглашаетесь с правилами использования.
+Администрация всегда готова помочь вам в любом вопросе.""",
     },
     ':brain: Правила': {
-        'text': 'Какие-то правила',
+        'text': """The administration is not responsible for the materials used and your actions.
+In case of necessity or wrongful actions on the part of the user, the administration has the right to deny access to this user.
+By using the bot, you automatically agree to the rules of use.
+Administration is always ready to help you in any matter.""",
     }
 }
