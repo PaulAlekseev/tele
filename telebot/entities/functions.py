@@ -99,6 +99,7 @@ def add_credentials_to_db(data: List[dict]) -> List[dict]:
     credentials_repo = CredentialsRepository()
     domain_repo = DomainRepository()
     for credential in data:
+        print(credential)
         credential_db_entity = credentials_repo.add(
             url=credential.get('url'),
             login=credential['credentials'].get('user'),
