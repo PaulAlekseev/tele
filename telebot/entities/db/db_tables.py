@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, Column, Date, ForeignKey, Boolean
+from sqlalchemy import String, Integer, Column, Date, ForeignKey, Boolean, BigInteger
 from sqlalchemy.orm import declarative_base
 from datetime import date
 
@@ -32,12 +32,13 @@ class Activation(Base):
     id = Column(Integer, primary_key=True)
     created = Column(Date, default=date.today)
     expires = Column(Date, nullable=False)
-    user_tele_id = Column(Integer, nullable=False)
-    amount_daily = Column(Integer, nullable=False)
-    amount_month = Column(Integer, nullable=False)
-    amount_once = Column(Integer, nullable=False)
+    user_tele_id = Column(BigInteger, nullable=False)
+    # Amount check is editable and amount daily is not
+    amount_daily = Column(BigInteger, nullable=False)
+    amount_month = Column(BigInteger, nullable=False)
+    amount_once = Column(BigInteger, nullable=False)
     date_check = Column(Date, default=date.today)
-    amount_check = Column(Integer, nullable=False)
+    amount_check = Column(BigInteger, nullable=False)
 
 
 class User(Base):
