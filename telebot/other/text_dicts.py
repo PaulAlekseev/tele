@@ -165,15 +165,15 @@ support_text = {
 
 rules_text = {
     ':brain: Rules': {
+        'text': """The administration is not responsible for the materials used and your actions.
+    In case of necessity or wrongful actions on the part of the user, the administration has the right to deny access to this user.
+    By using the bot, you automatically agree to the rules of use.
+    Administration is always ready to help you in any matter.""",
+    },
+    ':brain: Правила': {
         'text': """Администрация не несет ответственности за использованные материалы и ваши действия.
 В случае необходимости или неправомерных действий со стороны пользователя, администрация вправе отказать в доступе данному пользователю.
 Используя бота, вы автоматически соглашаетесь с правилами использования.
 Администрация всегда готова помочь вам в любом вопросе.""",
-    },
-    ':brain: Правила': {
-        'text': """The administration is not responsible for the materials used and your actions.
-In case of necessity or wrongful actions on the part of the user, the administration has the right to deny access to this user.
-By using the bot, you automatically agree to the rules of use.
-Administration is always ready to help you in any matter.""",
     }
 }

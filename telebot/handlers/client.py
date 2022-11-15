@@ -34,7 +34,6 @@ async def main_menu(message: types.Message):
     """
     Shows Main menu
     """
-    await message.delete()
     text_dict = main_menu_text[emoji.demojize(message.text)]
     await bot.send_message(
         message.from_user.id,
@@ -55,7 +54,6 @@ async def profile(message: types.Message):
     """
     Shows Profile
     """
-    await message.delete()
     async with async_session() as session:
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
@@ -63,21 +61,23 @@ async def profile(message: types.Message):
             activation_exist = True if latest_activation else False
             active = True if activation_exist and latest_activation.expires >= datetime.date.today() else False
             text_dict = profile_text[emoji.demojize(message.text)]
-            await bot.send_message(
-                message.from_user.id,
-                emoji.emojize(text_dict['text'].format(
+            try:
+                await bot.send_message(
                     message.from_user.id,
-                    text_dict['active']['good'] if active else text_dict['active']['bad'],
-                    latest_activation.expires if active else '-',
-                ))
-            )
+                    emoji.emojize(text_dict['text'].format(
+                        message.from_user.id,
+                        text_dict['active']['good'] if active else text_dict['active']['bad'],
+                        latest_activation.expires if active else '-',
+                    ))
+                )
+            except Exception:
+                pass
 
 
 async def support(message: types.Message):
     """
     Shows support
     """
-    await message.delete()
     text = support_text[emoji.demojize(message.text)]
     await bot.send_message(message.from_user.id, text=text['text'])
 
@@ -86,7 +86,6 @@ async def rules(message: types.Message):
     """
     Shows rules
     """
-    await message.delete()
     text = rules_text[emoji.demojize(message.text)]
     await bot.send_message(message.from_user.id, text=text['text'])
 
