@@ -30,9 +30,9 @@ class AIOActivationRepo:
             self,
             expiration_date,
             user_tele_id: str,
-            amount_daily: str,
-            amount_month: str,
-            amount_once: str,
+            amount_daily: int,
+            amount_month: int,
+            amount_once: int,
     ):
         new_activation = self.model(
             expires=expiration_date,
@@ -54,7 +54,7 @@ class AIOActivationRepo:
         )
         return activation.scalars().all()
 
-    async def get_latest(self, user_tele_id) -> Activation:
+    async def get_latest(self, user_tele_id: str) -> Activation:
         activation = await self.db_session.execute(
             select(self.model).filter(
                 self.model.user_tele_id == user_tele_id

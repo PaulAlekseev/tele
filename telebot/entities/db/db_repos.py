@@ -180,7 +180,7 @@ class UserRepo:
 class ActivationRepo:
     model = Activation
 
-    def get(self, id) -> Activation:
+    def get(self, id: str) -> Activation:
         with Session(bind=engine) as session:
             activation = session.query(self.model).filter(
                 self.model.id == id,
