@@ -148,9 +148,9 @@ async def give_activation(message: types.Message, regexp):
             activation = await activation_repo.create(
                 expiration_date=datetime.date.today() + datetime.timedelta(days=30),
                 user_tele_id=regexp.group(1),
-                amount_once=regexp.group(2),
-                amount_daily=regexp.group(3),
-                amount_month=regexp.group(4),
+                amount_once=int(regexp.group(2)),
+                amount_daily=int(regexp.group(3)),
+                amount_month=int(regexp.group(4)),
             )
             await bot.send_message(message.from_user.id, text=f'You successfully gifted user {regexp.group(1)} activation')
 
