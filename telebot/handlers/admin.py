@@ -10,6 +10,7 @@ from entities.async_db.db_specifications import ActivationTypeAllSpecification, 
 from entities.functions import form_credentials_admin, form_user_statistics
 from other.constants import IDS
 from other.functions import get_activation_types, change_activation_type_active
+from other.text_dicts import admin_help_text
 
 
 async def get_by(credential_result, message):
@@ -155,6 +156,15 @@ async def give_activation(message: types.Message, regexp):
             await bot.send_message(message.from_user.id, text=f'You successfully gifted user {regexp.group(1)} activation')
 
 
+async def admin_help(message: types.Message):
+    if message.from_user.id not in IDS:
+        return 0
+    await bot.send_message(
+        message.from_user.id,
+        text=admin_help_text['text']
+    )
+
+
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(get_by_date, regexp='^\/date\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})')
     # dp.register_message_handler(get_by_region, regexp='^\/region\s([A-Z]{2,10})')
@@ -186,4 +196,8 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(
         give_activation,
         regexp=r'\/activate_user\s(\d+)\s(\d+)\s(\d+)\s(\d+)'
+    )
+    dp.register_message_handler(
+        admin_help,
+        commands=['admin_help']
     )
