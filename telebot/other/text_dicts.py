@@ -156,10 +156,10 @@ crypto_payment_start_choice = {
 
 support_text = {
     ':SOS_button: Support': {
-        'text': 'Some support @some_support',
+        'text': 'Support @SMTPGod',
     },
     ':SOS_button: Поддержка': {
-        'text': 'Саппорт @some_support',
+        'text': 'Саппорт @SMTPGod',
     }
 }
 
