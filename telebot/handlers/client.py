@@ -26,7 +26,6 @@ async def start(message: types.Message):
         async with session.begin():
             user_repo = AIOUserRepo(session)
             await user_repo.create(str(message.from_user.id))
-    await message.delete()
     await message.answer('Choose your language / Выберите язык', reply_markup=language_markup)
 
 
@@ -96,6 +95,8 @@ async def file_handler(message: types.Message):
         async with session.begin():
             activation_repo = AIOActivationRepo(session)
             latest_activation = await activation_repo.get_latest(user_tele_id=str(message.from_user.id))
+            user_repo = AIOUserRepo(session)
+            await user_repo.create(str(message.from_user.id))
 
     # Checking if scan is allowed
     inline_keyboard = InlineKeyboardMarkup(row_width=1)
