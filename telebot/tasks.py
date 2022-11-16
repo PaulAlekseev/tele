@@ -126,6 +126,7 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
         if item.get('result') == 0
     ]
     valid_credentials = add_credentials_to_db(data=new_result)
+    print(len(result))
 
     # Getting data for message
     result = form_credentials_admin(valid_credentials)
