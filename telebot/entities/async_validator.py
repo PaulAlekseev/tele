@@ -115,9 +115,7 @@ class AsyncApiValidator(AsyncValidator):
             return data
         result = gather_cpanel_domains(content) if status == 0 else gather_whm_domains(content)
         if result is None:
-            data.update({
-                'result': 2
-            })
+            data['domains'] = None
             return data
         data['domains'] = {
             item[0]: {'domain': item[0], 'type': item[1], 'ssl_status': 'No info'} for item in result
