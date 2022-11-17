@@ -73,6 +73,7 @@ class AsyncApiValidator(AsyncValidator):
                 if status == 1:
                     data['url'] = '/'.join(url.split('/')[0:-2])
                     data['result'] = 0
+                    print('good')
                     break
                 else:
                     data['result'] = 2
