@@ -53,13 +53,13 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
 async def validate_credentials(data: list, validator: AsyncValidator):
     connector = aiohttp.TCPConnector(limit=int(os.getenv('CONNECTIONS')))
     tasks = []
-    async with aiohttp.ClientSession(connector=connector) as session:
-        for item in data:
+    for item in data:
+        async with aiohttp.ClientSession(connector=connector) as session:
             user = User(item)
             task = asyncio.ensure_future(validator.get_deliverability(session=session, user=user))
             tasks.append(task)
-        result = asyncio.gather(*tasks)
-        new_result = await result
+    result = asyncio.gather(*tasks)
+    new_result = await result
     return new_result
 
 
