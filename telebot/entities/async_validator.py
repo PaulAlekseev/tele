@@ -47,6 +47,7 @@ class AsyncValidator(ABC):
 class AsyncApiValidator(AsyncValidator):
     async def validate_credentials(self, user: User, session) -> dict:
         data = user.get_dictionary()
+        print(user.url)
         data['result'] = 2
         for url in self._url_handler.get_allowed_urls(data['url']):
             try:
@@ -73,7 +74,6 @@ class AsyncApiValidator(AsyncValidator):
                 if status == 1:
                     data['url'] = '/'.join(url.split('/')[0:-2])
                     data['result'] = 0
-                    print('good')
                     break
                 else:
                     data['result'] = 2
