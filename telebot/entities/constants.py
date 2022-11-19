@@ -26,3 +26,4 @@ proxies = {
     'socks5://besosdev:wjm9XQeKhL@45.140.211.81:50100'
     'socks5://besosdev:wjm9XQeKhL@146.247.113.208:50100',
 }
+CHUNK_SIZE = 1000

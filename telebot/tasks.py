@@ -9,8 +9,9 @@ from aiogram.types import InputFile
 
 from bot import bot
 from celery_app import app
+from entities.db.db_tables import Credential
 from entities.async_validator import AsyncValidator, AsyncApiValidator
-from entities.constants import FILE_API_URL, proxies
+from entities.constants import FILE_API_URL, proxies, CHUNK_SIZE
 from entities.db.db_repos import CredentialsRepository, UserRepo, ActivationRepo
 from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
@@ -89,6 +90,19 @@ async def validate_proxies(data: List[str]):
         return {'result': False}
 
 
+def to_list_of_lists(credentials: List[Credential], chunk_size: int) -> List[List[Credential]]:
+    result = []
+    while len(credentials) > 0:
+        if len(credentials) > chunk_size:
+            chunk = credentials[0:chunk_size]
+            result.append(chunk)
+            credentials = credentials[chunk_size:]
+        else:
+            result.append(credentials)
+            break
+    return result
+
+
 @app.task
 def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, activation_amount: int, activation_id: str):
     # Validating proxies
@@ -118,12 +132,14 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
             amount_to_scan = activation_amount
             file_result['credentials'] = file_result['credentials'][0:amount_to_scan]
             amount_remaining = 0
-        result = file_result['credentials']
+        result = to_list_of_lists(file_result['credentials'], CHUNK_SIZE)
 
     # Scanning for data
+    semy_result = [
+        asyncio.run(validate_credentials(item, validator)) for item in result
+    ]
     new_result = [
-        validator.get_ssl(item) for item in asyncio.run(validate_credentials(result, validator))
-        if item.get('result') == 0
+        validator.get_ssl(item) for item in semy_result if item.get('result') == 0
     ]
     valid_credentials = add_credentials_to_db(data=new_result)
     print(len(result))

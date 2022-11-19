@@ -60,14 +60,12 @@ class AsyncApiValidator(AsyncValidator):
                 ) as response:
                     result_content = await response.text()
             except Exception as e:
-                print(e)
                 if self._check_ports_on_error:
                     continue
                 break
             try:
                 content = json.loads(result_content)
             except Exception as e:
-                print(e)
                 data['result'] = 1
                 break
             user.secret_key = content.get('security_token')
@@ -84,7 +82,6 @@ class AsyncApiValidator(AsyncValidator):
         return data
 
     async def get_domains(self, user: User, session):
-        print(user.url)
         data = await self.validate_credentials(user, session)
         if data.get('result') > 0:
             return data

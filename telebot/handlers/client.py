@@ -103,7 +103,7 @@ async def file_handler(message: types.Message):
     all_good = False
     if latest_activation:
         if latest_activation.expires >= datetime.date.today():
-            checked_activation = check_and_update_activation(latest_activation)
+            checked_activation = await check_and_update_activation(latest_activation)
             if checked_activation['error']:
                 await bot.send_message(
                     message.from_user.id, text_markup['activation_failure'][checked_activation['error']]

@@ -8,7 +8,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeybo
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOActivationTypeRepo
+from entities.async_db.db_repos import AIOActivationTypeRepo, AIOActivationRepo
 from entities.async_db.db_specifications import ActivationTypeSpecification, ActivationTypeIdSpecification
 from entities.async_db.db_tables import ActivationType, Activation
 
@@ -90,14 +90,18 @@ def form_payment_markup(data: List[str], activation_type_id: str, lang: str) -> 
     return keyboard_markup
 
 
-def check_and_update_activation(activation: Activation) -> dict:
+async def check_and_update_activation(activation: Activation) -> dict:
     result = {
         'amount': 0,
         'error': None
     }
     if activation.date_check < datetime.date.today():
-        activation.amount_check = activation.amount_daily
-        activation.date_check = datetime.date.today()
+        async with async_session() as session:
+            async with session.begin():
+                activation_repo = AIOActivationRepo(session)
+                activation.amount_check = activation.amount_daily
+                activation.date_check = datetime.date.today()
+                activation = await activation_repo.update(activation)
         result['amount'] = activation.amount_daily
     if activation.amount_check > 0 and activation.amount_month > 0:
         if activation.amount_check >= activation.amount_month:
