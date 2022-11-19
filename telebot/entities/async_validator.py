@@ -12,10 +12,10 @@ from entities.user import User
 
 
 class AsyncValidator(ABC):
-    def __init__(self, proxy: str):
+    def __init__(self, proxy: str, timeout: int):
         self._header = Header()
         self._url_handler = UrlHandler()
-        self._timeout = TIMEOUT
+        self._timeout = timeout
         self._check_ports_on_error = CHECK_PORTS_ERROR
         self._check_ports_on_wrong_credentials = CHECK_PORTS_WRONG_CREDENTIALS
         self._validate_domain_data = VALIDATE_DOMAIN_DATA
