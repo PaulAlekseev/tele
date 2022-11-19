@@ -13,7 +13,7 @@ DELIVERABILITY_STRING = '/execute/Batch/strict'
 VALIDATE_DOMAIN_DATA = {
     'return_https_redirect_status': 1
 }
-TIMEOUT = 10
+TIMEOUT = 100
 SEPARATOR = "|"
 CHECK_PORTS_ERROR = False
 VALIDATOR = 'API'

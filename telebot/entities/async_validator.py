@@ -47,25 +47,27 @@ class AsyncValidator(ABC):
 class AsyncApiValidator(AsyncValidator):
     async def validate_credentials(self, user: User, session) -> dict:
         data = user.get_dictionary()
-        print(user.url)
         data['result'] = 2
         for url in self._url_handler.get_allowed_urls(data['url']):
             try:
                 async with session.post(
                     url=url,
                     data=data['credentials'],
-                    headers=self._header.get_header(),
                     timeout=self._timeout,
-                    proxy=self._proxy
+                    proxy=self._proxy,
+                    headers=self._header.get_header(),
+                    ssl=False
                 ) as response:
                     result_content = await response.text()
-            except Exception:
+            except Exception as e:
+                print(e)
                 if self._check_ports_on_error:
                     continue
                 break
             try:
                 content = json.loads(result_content)
-            except Exception:
+            except Exception as e:
+                print(e)
                 data['result'] = 1
                 break
             user.secret_key = content.get('security_token')
@@ -82,6 +84,7 @@ class AsyncApiValidator(AsyncValidator):
         return data
 
     async def get_domains(self, user: User, session):
+        print(user.url)
         data = await self.validate_credentials(user, session)
         if data.get('result') > 0:
             return data
@@ -90,7 +93,9 @@ class AsyncApiValidator(AsyncValidator):
                 url=self._url_handler.get_cpanel_domain_url(data.get('url'), user.secret_key),
                 data=self._validate_domain_data,
                 timeout=self._timeout,
-                proxy=self._proxy
+                proxy=self._proxy,
+                headers=self._header.get_header(),
+                ssl=False
             ) as response:
                 status = 0
                 result = await response.text()
@@ -102,7 +107,10 @@ class AsyncApiValidator(AsyncValidator):
             try:
                 async with session.post(
                     url=self._url_handler.get_whm_domain_url(data.get('url'), user.secret_key),
-                    timeout=self._timeout
+                    timeout=self._timeout,
+                    proxy=self._proxy,
+                    headers=self._header.get_header(),
+                    ssl=False
                 ) as response:
                     result = await response
                     status = 1
@@ -152,7 +160,9 @@ class AsyncApiValidator(AsyncValidator):
             async with session.post(
                 url=url,
                 timeout=self._timeout,
-                proxy=self._proxy
+                proxy=self._proxy,
+                headers=self._header.get_header(),
+                ssl=False
             ) as response:
                 result = await response.text()
         except Exception:
