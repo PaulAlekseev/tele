@@ -32,6 +32,7 @@ def get_file_credentials(file_path: str, file_id: str) -> dict:
             url=f"{FILE_API_URL}{os.getenv('BOT_TOKEN')}/{file_path}",
             data=data
         )
+        response.encoding = 'UTF-8'
         if len(response.text) > 0:
             for item in response.text.split('\n'):
                 result_item = str(item).strip().split('|')
