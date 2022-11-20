@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import time
 
 import aiohttp
 
@@ -58,7 +59,7 @@ class QiwiInvoice:
             comment: str,
             session: aiohttp.ClientSession
     ):
-        self.url = f'https://api.qiwi.com/partner/bill/v1/bills/{user_tele_id}'
+        self.url = f'https://api.qiwi.com/partner/bill/v1/bills/{time.time()}'
         self.session = session
         self.headers = {
             'content-type': 'application/json',
