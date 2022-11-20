@@ -43,17 +43,17 @@ async def handle_notify(request: BaseRequest):
 
 async def handle_qiwi_notify(request: BaseRequest):
     try:
-        print(await request.text())
+        print(await request.text(), flush=True)
     except Exception as e:
-        print(e)
+        print(e, flush=True)
     try:
-        print(request.text())
+        print(request.text(), flush=True)
     except Exception as e:
-        print(e)
+        print(e, flush=True)
     try:
-        print(json.loads(await request.text()))
+        print(json.loads(await request.text()), flush=True)
     except Exception as e:
-        print(e)
+        print(e, flush=True)
 
 
 routes = [
