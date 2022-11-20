@@ -54,7 +54,7 @@ class QiwiInvoice:
             self,
             user_tele_id: int,
             price: int,
-            expirationDate: datetime.datetime,
+            expiration_hours: int,
             comment: str,
             session: aiohttp.ClientSession
     ):
@@ -65,14 +65,15 @@ class QiwiInvoice:
             'accept': 'application/json',
             'Authorization': f'Bearer {os.getenv("QIWI_KEY")}'
         }
-        expirationDate += datetime.timedelta(hours=1)
+        date_today = datetime.datetime.today()
+        date_today += datetime.timedelta(hours=expiration_hours)
         self.data = {
             'amount': {
                 'currency': 'RUB',
                 'value': str(price)
             },
             'comment': comment,
-            'expirationDateTime': str(expirationDate.date()) + 'T' + str(str(expirationDate.time()).split('.')[0] + '+03:00')
+            'expirationDateTime': str(date_today.date()) + 'T' + str(str(date_today.time()).split('.')[0] + '+03:00')
         }
 
     async def create_invoice(self):

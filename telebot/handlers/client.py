@@ -221,7 +221,7 @@ async def create_qiwi_invoice(message: types.Message):
         invoice = QiwiInvoice(
             user_tele_id=message.from_user.id,
             price=1,
-            expirationDate=datetime.datetime.today(),
+            expiration_hours=1,
             comment="hello",
             session=session,
         )
