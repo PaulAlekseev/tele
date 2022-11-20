@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 
@@ -33,7 +34,7 @@ class Invoice:
         self._session = session
         self._response = None
 
-    async def create_invoice(self, ):
+    async def create_invoice(self):
         async with self._session.post(
                 url=self._url, data=self._body, headers=self._headers
         ) as response:
@@ -46,3 +47,39 @@ class Invoice:
 
     async def get_url(self):
         return self._response['data']['url']
+
+
+class QiwiInvoice:
+    def __init__(
+            self,
+            user_tele_id: int,
+            price: int,
+            expirationDate: datetime.datetime,
+            comment: str,
+            session: aiohttp.ClientSession
+    ):
+        self.url = f'https://api.qiwi.com/partner/bill/v1/bills/{user_tele_id}'
+        self.session = session
+        self.headers = {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+            'Authorization': f'Bearer {os.getenv("QIWI_KEY")}'
+        }
+        expirationDate += datetime.timedelta(hours=1)
+        self.data = {
+            'amount': {
+                'currency': 'RUB',
+                'value': str(price)
+            },
+            'comment': comment,
+            'expirationDateTime': str(expirationDate.date()) + 'T' + str(str(expirationDate.time()).split('.')[0] + '+03:00')
+        }
+
+    async def create_invoice(self):
+        async with self.session.put(
+            url=self.url,
+            json=self.data,
+            headers=self.headers
+        ) as response:
+            result = json.loads(await response.text())
+            return result

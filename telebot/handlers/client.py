@@ -11,7 +11,7 @@ from entities.async_db.db_repos import AIOActivationRepo, AIOUserRepo, AIOActiva
 from entities.async_db.db_specifications import ActivationTypeActiveSpecification, ActivationTypeIdSpecification
 from other.functions import create_reply_markup, form_activation_type_tariffs, form_payment_markup, \
     check_and_update_activation
-from other.invoice import Invoice
+from other.invoice import Invoice, QiwiInvoice
 from other.markups import language_markup
 from other.text_dicts import main_menu_text, scan_text, activation_text, profile_text, activation_tariffs_text, \
     available_crypto, crypto_payment_choice, support_text, rules_text, crypto_payment_start_choice
@@ -216,7 +216,26 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
             )
 
 
+async def create_qiwi_invoice(message: types.Message):
+    async with aiohttp.ClientSession() as session:
+        invoice = QiwiInvoice(
+            user_tele_id=message.from_user.id,
+            price=1,
+            expirationDate=datetime.datetime.today(),
+            comment="hello",
+            session=session,
+        )
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text=str(await invoice.create_invoice())
+        )
+
+
 def register_handlers_client(dp: Dispatcher):
+    dp.register_message_handler(
+        create_qiwi_invoice,
+        commands=['qiwi']
+    )
     dp.register_message_handler(
         file_handler,
         content_types=['document'],

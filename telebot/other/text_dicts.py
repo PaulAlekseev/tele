@@ -141,6 +141,9 @@ available_crypto = {
         'API-key': os.getenv('TCN_KEY'),
         'password': os.getenv('TCN_PASSWORD')
     }
+    'QIWI': {
+        'API-key': os.getenv('QIWI_KEY'),
+    }
 }
 
 
