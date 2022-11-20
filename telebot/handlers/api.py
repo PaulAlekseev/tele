@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 
 from aiogram.types import callback_query
@@ -38,6 +39,21 @@ async def handle_notify(request: BaseRequest):
     except Exception as excep:
         print(excep)
     return Response(text='hello', status=200)
+
+
+async def handle_qiwi_notify(request: BaseRequest):
+    try:
+        print(await request.text())
+    except Exception as e:
+        print(e)
+    try:
+        print(request.text())
+    except Exception as e:
+        print(e)
+    try:
+        print(json.loads(await request.text()))
+    except Exception as e:
+        print(e)
 
 
 routes = [

@@ -218,11 +218,10 @@ async def payment_start(callback_query: types.CallbackQuery, regexp):
 
 async def create_qiwi_invoice(message: types.Message, regexp):
     async with aiohttp.ClientSession() as session:
-        expiration_date = datetime.datetime.today() + datetime.timedelta(hours=int(regexp.group(1)))
         invoice = QiwiInvoice(
             user_tele_id=message.from_user.id,
             price=1,
-            expiration_date=expiration_date,
+            time_expiration_hours=regexp.group(1),
             comment="hello",
             session=session,
         )
