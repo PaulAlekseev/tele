@@ -235,7 +235,7 @@ async def create_qiwi_invoice(message: types.Message, regexp):
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(
         create_qiwi_invoice,
-        regexp=r'\/qiwi\s[\d+]'
+        regexp=r'\/qiwi\s(\d+)'
     )
     dp.register_message_handler(
         file_handler,
