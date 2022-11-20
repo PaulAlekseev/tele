@@ -58,7 +58,8 @@ async def handle_qiwi_notify(request: BaseRequest):
 
 routes = [
     web.post(f"/api/{os.getenv('TOKEN')}/payment_notify", handle_notify),
-    web.post(f'/api/{os.getenv("TOKEN")}/qiwi_payment', handle_qiwi_notify),
+    web.get(f'/api/{os.getenv("TOKEN")}/qiwi_payment', handle_qiwi_notify),
+    web.put(f'/api/{os.getenv("TOKEN")}/qiwi_payment', handle_qiwi_notify),
 ]
 web_app = web.Application()
 web_app.add_routes(routes)
