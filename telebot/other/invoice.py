@@ -65,7 +65,7 @@ class QiwiInvoice:
             'accept': 'application/json',
             'Authorization': f'Bearer {os.getenv("QIWI_KEY")}'
         }
-        date_today = datetime.datetime.today() + datetime.time(hour=expiration_hours)
+        date_today = datetime.datetime.today() + datetime.timedelta(hours=expiration_hours)
         self.data = {
             'amount': {
                 'currency': 'RUB',
