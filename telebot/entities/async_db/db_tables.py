@@ -57,3 +57,13 @@ class ActivationType(Base):
     amount_month = Column(String(50), nullable=False)
     price = Column(String(30), nullable=False)
     active = Column(Boolean, nullable=False)
+
+
+class Invoice(Base):
+    __tablename__ = 'invoice'
+    id = Column(Integer, primary_key=True)
+    unique_id = Column(Integer, nullable=False, unique=True)
+    type = Column(String(15), nullable=False)
+    amount = Column(String(20), nullable=False)
+    user_tele_id = Column(String(50), nullable=False)
+    date = Column(Date, default=date.today)

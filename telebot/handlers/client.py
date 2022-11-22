@@ -110,7 +110,7 @@ async def file_handler(message: types.Message):
                 )
                 return 0
             all_good = True
-            text = text_markup['text']['good'].format(str(checked_activation['amount']), )
+            text = text_markup['text']['good'].format(str(latest_activation.amount_check), )
             await start_scan(
                 message=message,
                 lang=message.caption,
@@ -225,10 +225,14 @@ async def create_qiwi_invoice(message: types.Message, regexp):
             comment="hello",
             session=session,
         )
-        await bot.send_message(
-            chat_id=message.from_user.id,
-            text=str(await invoice.create_invoice())
-        )
+        try:
+            invoice_result = await invoice.create_invoice()
+            await bot.send_message(
+                chat_id=message.from_user.id,
+                text=f"Your invoice has been successfully created {invoice_result['payUrl']}"
+            )
+        except Exception:
+            return 0
 
 
 def register_handlers_client(dp: Dispatcher):

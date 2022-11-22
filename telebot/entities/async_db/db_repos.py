@@ -2,11 +2,12 @@ from typing import List
 
 import sqlalchemy
 from sqlalchemy import desc
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from entities.async_db.db_specifications import ActivationSpecification, UserSpecification, ActivationTypeSpecification
-from entities.async_db.db_tables import Credential, Activation, Domain, User, ActivationType
+from entities.async_db.db_tables import Credential, Activation, Domain, User, ActivationType, Invoice
 
 
 class AIOCredentialRepo:
@@ -198,3 +199,22 @@ class AIOActivationTypeRepo:
         self.db_session.add(activation_type)
         await self.db_session.flush()
         return activation_type
+
+
+class AIOInvoiceRepo:
+    model = Invoice
+
+    def __init__(self, session: AsyncSession):
+        self._db_session = session
+
+    async def create(self, invoice: Invoice) -> Invoice:
+        try:
+            new_invoice = await self._db_session.execute(select(self.model).filter(
+                self.model.unique_id == invoice.unique_id,
+            ))
+            new_invoice = new_invoice.one()
+        except sqlalchemy.orm.exc.NoResultFound:
+            new_invoice = invoice
+            self._db_session.add(new_invoice)
+            await self._db_session.flush()
+        return new_invoice
