@@ -28,6 +28,7 @@ class CredentialsRepository:
                     password=password,
                     path=path,
                     # panel_type=panel_type
+                    loaded=False
                 )
                 self._save_object(session, credentials)
                 session.refresh(credentials)
