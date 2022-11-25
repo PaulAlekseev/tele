@@ -144,6 +144,10 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
         proxy_data['proxy'],
         timeout=decide_timeout(len(file_result['credentials']))
     )
+    # Updating activation
+    activation.amount_check = amount_remaining
+    activation.amount_month = activation.amount_month - len(file_result['credentials'])
+    activation_repo.update(activation)
 
     # Scanning for data
     semy_result = [
@@ -162,12 +166,8 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
     # Getting data for message
     result = form_credentials_admin(valid_credentials)
 
-    # Updating activation
-    activation.amount_check = amount_remaining
-    activation.amount_month = activation.amount_month - len(file_result['credentials'])
-    activation_repo.update(activation)
-
     # Messaging user
+    activation = activation_repo.get(activation_id)
     message = scan_text[lang]['scan'].format(str(activation.amount_check), )
     text_file = InputFile(path_or_bytesio=result, filename=f'{datetime.now()}-{user_id}.txt')
     sync_send_document(
