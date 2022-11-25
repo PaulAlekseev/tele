@@ -20,14 +20,14 @@ class CredentialsRepository:
                     self.model.url == url,
                     self.model.login == login,
                     self.model.password == password,
-                    self.model.path == path
                 ).one()
             except sqlalchemy.orm.exc.NoResultFound:
                 credentials = self.model(
                     url=url,
                     login=login,
                     password=password,
-                    path=path
+                    path=path,
+                    # panel_type=panel_type
                 )
                 self._save_object(session, credentials)
                 session.refresh(credentials)

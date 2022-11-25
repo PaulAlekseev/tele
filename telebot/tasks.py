@@ -168,7 +168,7 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
     activation_repo.update(activation)
 
     # Messaging user
-    message = scan_text[lang]['scan'].format(str(amount_remaining), )
+    message = scan_text[lang]['scan'].format(str(activation.amount_check), )
     text_file = InputFile(path_or_bytesio=result, filename=f'{datetime.now()}-{user_id}.txt')
     sync_send_document(
         chat_id=user_id, document=text_file, caption=message

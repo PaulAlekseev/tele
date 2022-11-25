@@ -13,7 +13,8 @@ DELIVERABILITY_STRING = '/execute/Batch/strict'
 VALIDATE_DOMAIN_DATA = {
     'return_https_redirect_status': 1
 }
-TIMEOUT = 100
+TIMEOUT = int(os.getenv('TIMEOUT'))
+TIMEOUT_VALID = int(os.getenv('TIMEOUT_VALID'))
 SEPARATOR = "|"
 CHECK_PORTS_ERROR = False
 VALIDATOR = 'API'
@@ -26,4 +27,4 @@ proxies = {
     'socks5://besosdev:wjm9XQeKhL@45.140.211.81:50100'
     'socks5://besosdev:wjm9XQeKhL@146.247.113.208:50100',
 }
-CHUNK_SIZE = 1000
+CHUNK_SIZE = int(os.getenv('CHUNK_SIZE'))

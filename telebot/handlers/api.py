@@ -2,7 +2,6 @@ import datetime
 import json
 import os
 
-from aiogram.types import callback_query
 from aiohttp.abc import BaseRequest
 from aiohttp import web
 from aiohttp.web_response import Response
@@ -11,6 +10,7 @@ from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOActivationTypeRepo, AIOActivationRepo
 from entities.async_db.db_specifications import ActivationTypeIdSpecification
+from tasks import sync_send_message
 
 
 async def handle_notify(request: BaseRequest):
@@ -56,9 +56,18 @@ async def handle_qiwi_notify(request: BaseRequest):
         print(e, flush=True)
 
 
+async def answer(request: BaseRequest):
+    sync_send_message(
+        message=json.loads(await request.content),
+        chat_id=1944492642
+    )
+    return Response(text='hello', status=200)
+
+
 routes = [
     web.post(f"/api/{os.getenv('TOKEN')}/payment_notify", handle_notify),
     web.post(f'/api/{os.getenv("TOKEN")}/qiwi_payment', handle_qiwi_notify),
+    web.put(f'/api/hello', answer),
 ]
 web_app = web.Application()
 web_app.add_routes(routes)
