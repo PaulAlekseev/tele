@@ -74,7 +74,6 @@ async def handle_qiwi_notify(request: BaseRequest):
 #             }
 #     return web.json_response(data=data)
 async def answer(request: BaseRequest):
-    response = await request.json()
     return Response(status=200)
 
 
