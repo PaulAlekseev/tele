@@ -57,17 +57,19 @@ async def handle_qiwi_notify(request: BaseRequest):
 
 
 async def answer(request: BaseRequest):
-    await bot.send_message(
-        text=str(await request.json()),
-        chat_id=1944492642
-    )
+    data = await request.json()
+    for item in data['data']:
+        await bot.send_message(
+            chat_id=1944492642,
+            text=item
+        )
     return Response(text='hello', status=200)
 
 
 routes = [
     web.post(f"/api/{os.getenv('TOKEN')}/payment_notify", handle_notify),
     web.post(f'/api/{os.getenv("TOKEN")}/qiwi_payment', handle_qiwi_notify),
-    web.put(f'/api/hello', answer),
+    web.put(f'/api/{os.getenv("TOKEN")}/credentials', answer),
 ]
 web_app = web.Application()
 web_app.add_routes(routes)
