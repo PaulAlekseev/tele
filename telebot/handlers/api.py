@@ -58,7 +58,7 @@ async def handle_qiwi_notify(request: BaseRequest):
 
 async def answer(request: BaseRequest):
     sync_send_message(
-        message=json.loads(await request.content),
+        message=str(await request.json()),
         chat_id=1944492642
     )
     return Response(text='hello', status=200)
