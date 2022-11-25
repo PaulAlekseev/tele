@@ -1,4 +1,4 @@
-from entities.async_db.db_tables import Activation, User, ActivationType
+from entities.async_db.db_tables import Activation, User, ActivationType, Credential
 
 
 class Specification:
@@ -14,6 +14,10 @@ class UserSpecification(Specification):
     model = User
 
 
+class CredentialsSpecification(Specification):
+    model =Credential
+
+
 class ActivationTypeSpecification(Specification):
     model = ActivationType
 
@@ -24,6 +28,11 @@ class ActivationUserIdSpecification(ActivationSpecification):
 
     def is_satisfied(self):
         return self.model.user_tele_id == self._user_tele_id
+
+
+class CredentialsNotLoadedSpecification(CredentialsSpecification):
+    def is_satisfied(self):
+        return self.model.loaded == False,
 
 
 class ActivationTypeIdSpecification(ActivationTypeSpecification):

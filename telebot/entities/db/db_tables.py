@@ -12,8 +12,8 @@ class Credential(Base):
     login = Column(String(200), nullable=False)
     password = Column(String(200), nullable=False)
     path = Column(String(200), nullable=False)
-    # loaded = Column(Boolean, nullable=False, defaulf=False)
-    # panel_type = Column(String(50), nullable=False)
+    loaded = Column(Boolean, nullable=False, defaulf=False)
+    panel_type = Column(String(50), nullable=False)
     created = Column(Date, default=date.today)
     updated = Column(Date, default=date.today, onupdate=date.today)
 

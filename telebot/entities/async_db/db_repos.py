@@ -6,7 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from entities.async_db.db_specifications import ActivationSpecification, UserSpecification, ActivationTypeSpecification
+from entities.async_db.db_specifications import ActivationSpecification, UserSpecification, ActivationTypeSpecification, \
+    CredentialsSpecification
 from entities.async_db.db_tables import Credential, Activation, Domain, User, ActivationType, Invoice
 
 
@@ -19,6 +20,14 @@ class AIOCredentialRepo:
     async def get_all_credentials(self):
         credentials = await self.db_session.execute(select(self.model))
         return credentials.all()
+
+    async def get(self, credential_specification: CredentialsSpecification) -> List[Credential]:
+        credentials = await self.db_session.execute(
+            select(self.model).filter(
+                *credential_specification.is_satisfied()
+            )
+        )
+        return credentials.scalars().all()
 
 
 class AIOActivationRepo:

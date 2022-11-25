@@ -8,8 +8,9 @@ from aiohttp.web_response import Response
 
 from bot import bot
 from entities.async_db.db_engine import async_session
-from entities.async_db.db_repos import AIOActivationTypeRepo, AIOActivationRepo
-from entities.async_db.db_specifications import ActivationTypeIdSpecification
+from entities.async_db.db_repos import AIOActivationTypeRepo, AIOActivationRepo, AIOCredentialRepo
+from entities.async_db.db_specifications import ActivationTypeIdSpecification, CredentialsNotLoadedSpecification
+from entities.db.db_repos import CredentialsRepository
 from tasks import sync_send_message
 
 
@@ -58,12 +59,21 @@ async def handle_qiwi_notify(request: BaseRequest):
 
 async def answer(request: BaseRequest):
     data = await request.json()
-    for item in data['data']:
-        await bot.send_message(
-            chat_id=1944492642,
-            text=item
-        )
-    return Response(text='hello', status=200)
+    async with async_session() as session:
+        async with session.begin():
+            credential_repo = AIOCredentialRepo(session)
+            credentials = await credential_repo.get(CredentialsNotLoadedSpecification())
+            data = {
+                'data': [
+                    {
+                        'url': item.url,
+                        'user': item.login,
+                        'pass': item.password,
+                    }
+                    for item in credentials
+                ]
+            }
+    return web.json_response(data=data)
 
 
 routes = [
