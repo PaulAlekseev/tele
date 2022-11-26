@@ -31,7 +31,7 @@ class AIOCredentialRepo:
 
     async def update(self, credentials: Credential) -> Credential:
         self.db_session.add(credentials)
-        self.db_session.commit()
+        await self.db_session.commit()
         return credentials
 
 

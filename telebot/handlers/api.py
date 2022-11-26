@@ -88,7 +88,6 @@ async def update_credentials(request: BaseRequest):
             result = await credentials_repo.get(
                 CredentialsIdsInSpecification(response['ids'])
             )
-    print(result, flush=True)
     for item in result:
         try:
             async with async_session() as session:
@@ -97,7 +96,7 @@ async def update_credentials(request: BaseRequest):
                     item.loaded = True
                     await credentials_repo.update(item)
         except Exception as e:
-            print(e, flush=True)
+            pass
 
 
 routes = [
