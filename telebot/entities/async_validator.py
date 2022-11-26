@@ -146,7 +146,6 @@ class AsyncApiValidator(AsyncValidator):
                 data['domains'][domain].update({
                     'ssl_status': 'Not Valid'
                 })
-        print('hello', flush=True)
         return data
 
     async def get_deliverability(self, user: User, session):

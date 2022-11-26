@@ -2,6 +2,7 @@ import io
 import os
 from _socket import SocketType
 from datetime import datetime
+from ssl import SSLSocket
 from typing import List
 
 from OpenSSL import SSL
@@ -34,15 +35,13 @@ def get_issuer(cert):
 
 def get_cert(domain):
     try:
-        print("start")
         hostname_idna = idna.encode(domain)
-        sock = SocketType()
+        sock = SSLSocket()
 
         sock.settimeout(float(os.getenv('SSL_SOCKET_TIMEOUT')))
         sock.connect((domain, 443))
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         ctx.set_timeout(int(os.getenv('SSL_TIMEOUT')))
-        print('context', ctx.get_timeout(), flush=True)
         ctx.check_hostname = False
         ctx.verify_mode = SSL.VERIFY_NONE
 
@@ -55,7 +54,6 @@ def get_cert(domain):
         sock_ssl.close()
         sock.close()
     except Exception as e:
-        print(e, flush=True)
         crypto_cert = None
     return crypto_cert
 
