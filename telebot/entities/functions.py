@@ -1,5 +1,6 @@
 import io
 import os
+from _socket import SocketType
 from datetime import datetime
 from typing import List
 
@@ -35,13 +36,13 @@ def get_cert(domain):
     try:
         print("start")
         hostname_idna = idna.encode(domain)
-        sock = socket()
+        sock = SocketType()
 
-        sock.settimeout(__value=float(os.getenv('SSL_SOCKET_TIMEOUT')))
+        sock.settimeout(float(os.getenv('SSL_SOCKET_TIMEOUT')))
         sock.connect((domain, 443))
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         ctx.set_timeout(int(os.getenv('SSL_TIMEOUT')))
-        print(ctx.get_timeout(), flush=True)
+        print('context', ctx.get_timeout(), flush=True)
         ctx.check_hostname = False
         ctx.verify_mode = SSL.VERIFY_NONE
 
