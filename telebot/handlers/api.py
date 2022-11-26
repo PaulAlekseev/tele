@@ -86,7 +86,7 @@ async def update_credentials(request: BaseRequest):
         async with session.begin():
             credentials_repo = AIOCredentialRepo(session)
             result = await credentials_repo.get(
-                CredentialsIdsInSpecification([int(item) for item in response['ids']])
+                CredentialsIdsInSpecification(response['ids'])
             )
     print(result, flush=True)
     for item in result:

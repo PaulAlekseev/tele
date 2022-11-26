@@ -17,7 +17,7 @@ class UserSpecification(Specification):
 
 
 class CredentialsSpecification(Specification):
-    model =Credential
+    model = Credential
 
 
 class ActivationTypeSpecification(Specification):
@@ -25,11 +25,11 @@ class ActivationTypeSpecification(Specification):
 
 
 class CredentialsIdsInSpecification(CredentialsSpecification):
-    def __init__(self, ids:List[int]):
+    def __init__(self, ids: List[int]):
         self._ids = ids
 
     def is_satisfied(self):
-        return self.model.id in self._ids,
+        return self.model.id.in_(self._ids),
 
 
 class ActivationUserIdSpecification(ActivationSpecification):
