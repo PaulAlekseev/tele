@@ -13,7 +13,7 @@ class CredentialsRepository:
         session.add(obj)
         session.commit()
 
-    def add(self, url, login, password, path):
+    def add(self, url, login, password, path, panel_type):
         with Session(bind=engine) as session:
             try:
                 credentials = session.query(self.model).filter(
@@ -27,7 +27,7 @@ class CredentialsRepository:
                     login=login,
                     password=password,
                     path=path,
-                    # panel_type=panel_type
+                    panel_type=panel_type,
                     loaded=False
                 )
                 self._save_object(session, credentials)

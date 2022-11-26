@@ -119,6 +119,7 @@ class AsyncApiValidator(AsyncValidator):
         except Exception:
             data['domains'] = None
             return data
+        data['panel_type'] = 'cpanel' if status == 0 else 'whm'
         result = gather_cpanel_domains(content) if status == 0 else gather_whm_domains(content)
         if result is None:
             data['domains'] = None

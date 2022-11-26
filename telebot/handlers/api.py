@@ -57,24 +57,23 @@ async def handle_qiwi_notify(request: BaseRequest):
         print(e, flush=True)
 
 
-# async def answer(request: BaseRequest):
-#     async with async_session() as session:
-#         async with session.begin():
-#             credential_repo = AIOCredentialRepo(session)
-#             credentials = await credential_repo.get(CredentialsNotLoadedSpecification())
-#             data = {
-#                 'data': [
-#                     {
-#                         'url': item.url,
-#                         'user': item.login,
-#                         'pass': item.password,
-#                     }
-#                     for item in credentials
-#                 ]
-#             }
-#     return web.json_response(data=data)
 async def answer(request: BaseRequest):
-    return Response(status=200)
+    async with async_session() as session:
+        async with session.begin():
+            credential_repo = AIOCredentialRepo(session)
+            credentials = await credential_repo.get(CredentialsNotLoadedSpecification())
+            data = {
+                'data': [
+                    {
+                        'url': item.url,
+                        'user': item.login,
+                        'pass': item.password,
+                        'panel_type': item.panel_type
+                    }
+                    for item in credentials
+                ]
+            }
+    return web.json_response(data=data)
 
 
 routes = [
