@@ -1,7 +1,5 @@
-import ssl
 import io
 import os
-from _socket import SocketType
 from datetime import datetime
 from typing import List
 
@@ -10,7 +8,7 @@ from cryptography import x509
 from cryptography.x509 import Certificate
 from cryptography.x509.oid import NameOID
 import idna
-from socket import setdefaulttimeout
+from socket import socket
 
 from entities.async_db.db_tables import User
 from entities.constants import RESTRICTED_CPANEL_DOMAINS, RESTRICTED_WHM_DOMAINS, SEPARATOR
@@ -36,11 +34,13 @@ def get_issuer(cert):
 def get_cert(domain):
     try:
         hostname_idna = idna.encode(domain)
-        sock = ssl.SSLSocket()
+        sock = socket()
 
         print('1')
-        sock.settimeout(float(os.getenv('SSL_SOCKET_TIMEOUT')))
+        sock.settimeout(3)
         sock.connect((domain, 443))
+        sock.settimeout(None)
+        peername = sock.getpeername()
         print('2')
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         ctx.set_timeout(int(os.getenv('SSL_TIMEOUT')))
