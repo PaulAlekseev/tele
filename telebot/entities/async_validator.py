@@ -84,6 +84,7 @@ class AsyncApiValidator(AsyncValidator):
 
     async def get_domains(self, user: User, session):
         data = await self.validate_credentials(user, session)
+        data['panel_type'] = 'cpanel'
         if data.get('result') > 0:
             return data
         try:

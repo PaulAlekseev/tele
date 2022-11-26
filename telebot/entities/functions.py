@@ -36,7 +36,7 @@ def get_cert(domain):
         hostname_idna = idna.encode(domain)
         sock = socket()
 
-        sock.settimeout(int(os.getenv('SSL_TIMEOUT')))
+        sock.settimeout(float(os.getenv('SSL_SOCKET_TIMEOUT')))
         sock.connect((domain, 443))
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         ctx.set_timeout(int(os.getenv('SSL_TIMEOUT')))
