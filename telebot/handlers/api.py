@@ -12,7 +12,7 @@ from entities.async_db.db_repos import AIOActivationTypeRepo, AIOActivationRepo,
 from entities.async_db.db_specifications import ActivationTypeIdSpecification, CredentialsNotLoadedSpecification, \
     CredentialsIdsInSpecification
 from entities.db.db_repos import CredentialsRepository
-from tasks import sync_send_message
+from tasks import sync_send_message, validate_remote_credentials
 
 
 async def handle_notify(request: BaseRequest):
@@ -99,11 +99,20 @@ async def update_credentials(request: BaseRequest):
             pass
 
 
+async def validate_remote(request: BaseRequest):
+    response = await request.json()
+    validate_remote_credentials.delay(
+        credentials=response['credentials'],
+        order_id=response['order_id'],
+    )
+
+
 routes = [
     web.post(f"/api/{os.getenv('TOKEN')}/payment_notify", handle_notify),
     web.post(f'/api/{os.getenv("TOKEN")}/qiwi_payment', handle_qiwi_notify),
     web.put(f'/api/{os.getenv("TOKEN")}/credentials', answer),
     web.put(f'/api/{os.getenv("TOKEN")}/update_credentials', update_credentials),
+    web.put(f'/api/{os.getenv("TOKEN")}/validate_remote', validate_remote),
 ]
 web_app = web.Application()
 web_app.add_routes(routes)

@@ -36,29 +36,23 @@ def get_cert(domain):
         hostname_idna = idna.encode(domain)
         sock = socket()
 
-        print('1')
-        sock.settimeout(3)
+        sock.settimeout(int(os.getenv('SSL_TIMEOUT')))
         sock.connect((domain, 443))
         sock.settimeout(None)
-        print('2')
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         ctx.set_timeout(int(os.getenv('SSL_TIMEOUT')))
         ctx.check_hostname = False
         ctx.verify_mode = SSL.VERIFY_NONE
-        print('3')
 
         sock_ssl = SSL.Connection(ctx, sock)
         sock_ssl.set_connect_state()
         sock_ssl.set_tlsext_host_name(hostname_idna)
         sock_ssl.do_handshake()
-        print('4')
         cert = sock_ssl.get_peer_certificate()
         crypto_cert = cert.to_cryptography()
         sock_ssl.close()
         sock.close()
-        print('5')
     except Exception as e:
-        print(e, flush=True)
         crypto_cert = None
     return crypto_cert
 

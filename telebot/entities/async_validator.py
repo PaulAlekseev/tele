@@ -23,7 +23,7 @@ class AsyncValidator(ABC):
         self._proxy = proxy
 
     @abstractmethod
-    def validate_credentials(self, user: User, session) -> dict:
+    def validate_credentials(self, user: User, session):
         """
         Returns data with additional key: result
         0 - Valid credentials
