@@ -108,7 +108,7 @@ def decide_timeout(credentials_amount: int):
     result = TIMEOUT
     if credentials_amount < CHUNK_SIZE:
         result = credentials_amount * 0.1
-    return int(result) if len(result) >= 100 else 10
+    return int(result) if result >= 100 else 10
 
 
 @app.task
