@@ -37,9 +37,11 @@ def get_cert(domain):
         sock = socket()
 
         sock.settimeout(__value=float(os.getenv('SSL_SOCKET_TIMEOUT')))
+        print('socket', sock.gettimeout(), flush=True)
         sock.connect((domain, 443))
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         ctx.set_timeout(int(os.getenv('SSL_TIMEOUT')))
+        print(ctx.get_timeout(), flush=True)
         ctx.check_hostname = False
         ctx.verify_mode = SSL.VERIFY_NONE
 
