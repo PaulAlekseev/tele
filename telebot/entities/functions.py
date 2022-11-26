@@ -1,4 +1,5 @@
 import io
+import os
 from datetime import datetime
 from typing import List
 
@@ -37,6 +38,7 @@ def get_cert(domain):
 
         sock.connect((domain, 443))
         ctx = SSL.Context(SSL.SSLv23_METHOD)
+        ctx.set_timeout(int(os.getenv('SSL_TIMEOUT')))
         ctx.check_hostname = False
         ctx.verify_mode = SSL.VERIFY_NONE
 
