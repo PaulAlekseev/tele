@@ -11,7 +11,7 @@ from bot import bot
 from celery_app import app
 from entities.db.db_tables import Credential
 from entities.async_validator import AsyncValidator, AsyncApiValidator
-from entities.constants import FILE_API_URL, proxies, CHUNK_SIZE, TIMEOUT
+from entities.constants import FILE_API_URL, proxies, CHUNK_SIZE, TIMEOUT, TIMEOUT_VALID
 from entities.db.db_repos import CredentialsRepository, UserRepo, ActivationRepo
 from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
@@ -108,7 +108,7 @@ def decide_timeout(credentials_amount: int):
     result = TIMEOUT
     if credentials_amount < CHUNK_SIZE:
         result = credentials_amount * 0.1
-    return int(result) if result >= 10 else 10
+    return int(result) if len(result) >= 100 else 10
 
 
 @app.task
@@ -142,7 +142,8 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
         result = to_list_of_lists(file_result['credentials'], CHUNK_SIZE)
     validator = AsyncApiValidator(
         proxy_data['proxy'],
-        timeout=decide_timeout(len(file_result['credentials']))
+        timeout=decide_timeout(len(file_result['credentials'])),
+        valid_timeout=TIMEOUT_VALID,
     )
     # Updating activation
     activation.amount_check = amount_remaining

@@ -1,7 +1,7 @@
 import json
 from abc import ABC, abstractmethod
 
-from entities.constants import DELIVERABILITY_STRING, TIMEOUT, CHECK_PORTS_ERROR, CHECK_PORTS_WRONG_CREDENTIALS, \
+from entities.constants import DELIVERABILITY_STRING, CHECK_PORTS_ERROR, CHECK_PORTS_WRONG_CREDENTIALS, \
     VALIDATE_DOMAIN_DATA
 from entities.deliverability_checker import DeliverabilityChecker
 from entities.form_former import FormFormer
@@ -12,10 +12,11 @@ from entities.user import User
 
 
 class AsyncValidator(ABC):
-    def __init__(self, proxy: str, timeout: int):
+    def __init__(self, proxy: str, timeout: int, valid_timeout):
         self._header = Header()
         self._url_handler = UrlHandler()
         self._timeout = timeout
+        self._valid_timeout = valid_timeout
         self._check_ports_on_error = CHECK_PORTS_ERROR
         self._check_ports_on_wrong_credentials = CHECK_PORTS_WRONG_CREDENTIALS
         self._validate_domain_data = VALIDATE_DOMAIN_DATA
@@ -89,7 +90,7 @@ class AsyncApiValidator(AsyncValidator):
             async with session.post(
                 url=self._url_handler.get_cpanel_domain_url(data.get('url'), user.secret_key),
                 data=self._validate_domain_data,
-                timeout=self._timeout,
+                timeout=self._valid_timeout,
                 proxy=self._proxy,
                 headers=self._header.get_header(),
                 ssl=False
@@ -104,7 +105,7 @@ class AsyncApiValidator(AsyncValidator):
             try:
                 async with session.post(
                     url=self._url_handler.get_whm_domain_url(data.get('url'), user.secret_key),
-                    timeout=self._timeout,
+                    timeout=self._valid_timeout,
                     proxy=self._proxy,
                     headers=self._header.get_header(),
                     ssl=False
@@ -144,6 +145,7 @@ class AsyncApiValidator(AsyncValidator):
                 data['domains'][domain].update({
                     'ssl_status': 'Not Valid'
                 })
+        print('hello', flush=True)
         return data
 
     async def get_deliverability(self, user: User, session):
@@ -157,7 +159,7 @@ class AsyncApiValidator(AsyncValidator):
         try:
             async with session.post(
                 url=url,
-                timeout=self._timeout,
+                timeout=self._valid_timeout,
                 proxy=self._proxy,
                 headers=self._header.get_header(),
                 ssl=False

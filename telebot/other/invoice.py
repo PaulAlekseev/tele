@@ -24,6 +24,7 @@ class Invoice:
             'api_key': api_key,
             'password': password,
             'currency': 'USD',
+            'expire_time': '60',
             'amount': amount,
             'notify_url': f"{WEBHOOK_HOST}api/{os.getenv('TOKEN')}/payment_notify",
             'custom_data1': tele_id,
