@@ -9,7 +9,8 @@ from aiohttp.web_response import Response
 from bot import bot
 from entities.async_db.db_engine import async_session
 from entities.async_db.db_repos import AIOActivationTypeRepo, AIOActivationRepo, AIOCredentialRepo
-from entities.async_db.db_specifications import ActivationTypeIdSpecification, CredentialsNotLoadedSpecification
+from entities.async_db.db_specifications import ActivationTypeIdSpecification, CredentialsNotLoadedSpecification, \
+    CredentialsIdsInSpecification
 from entities.db.db_repos import CredentialsRepository
 from tasks import sync_send_message
 
@@ -71,15 +72,35 @@ async def answer(request: BaseRequest):
                         'panel_type': item.panel_type
                     }
                     for item in credentials
+                ],
+                'ids': [
+                    item.id for item in credentials
                 ]
             }
     return web.json_response(data=data)
+
+
+async def update_credentials(request: BaseRequest):
+    response = await request.json()
+    async with async_session() as session:
+        async with session.begin():
+            credentials_repo = AIOCredentialRepo(session)
+            result = await credentials_repo.get(
+                CredentialsIdsInSpecification([int(item) for item in response['ids']])
+            )
+    for item in result:
+        async with async_session() as session:
+            async with session.begin():
+                credentials_repo = AIOCredentialRepo(session)
+                item.loaded = True
+                await credentials_repo.update(item)
 
 
 routes = [
     web.post(f"/api/{os.getenv('TOKEN')}/payment_notify", handle_notify),
     web.post(f'/api/{os.getenv("TOKEN")}/qiwi_payment', handle_qiwi_notify),
     web.put(f'/api/{os.getenv("TOKEN")}/credentials', answer),
+    web.put(f'/api/{os.getenv("TOKEN")}/update_credentials', update_credentials),
 ]
 web_app = web.Application()
 web_app.add_routes(routes)

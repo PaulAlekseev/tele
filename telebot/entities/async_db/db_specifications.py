@@ -1,3 +1,5 @@
+from typing import List
+
 from entities.async_db.db_tables import Activation, User, ActivationType, Credential
 
 
@@ -20,6 +22,14 @@ class CredentialsSpecification(Specification):
 
 class ActivationTypeSpecification(Specification):
     model = ActivationType
+
+
+class CredentialsIdsInSpecification(CredentialsSpecification):
+    def __init__(self, ids:List[int]):
+        self._ids = ids
+
+    def is_satisfied(self):
+        return self.model.id in self._ids,
 
 
 class ActivationUserIdSpecification(ActivationSpecification):

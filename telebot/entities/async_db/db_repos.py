@@ -29,6 +29,11 @@ class AIOCredentialRepo:
         )
         return credentials.scalars().all()
 
+    async def update(self, credentials: Credential) -> Credential:
+        self.db_session.add(credentials)
+        self.db_session.commit()
+        return credentials
+
 
 class AIOActivationRepo:
     model = Activation
