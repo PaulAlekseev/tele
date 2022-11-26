@@ -100,11 +100,14 @@ async def update_credentials(request: BaseRequest):
 
 
 async def validate_remote(request: BaseRequest):
-    response = await request.json()
-    validate_remote_credentials.delay(
-        credentials=response['credentials'],
-        order_id=response['order_id'],
-    )
+    try:
+        response = await request.json()
+        validate_remote_credentials.delay(
+            credentials=response['credentials'],
+            order_id=response['order_id'],
+        )
+    except Exception as e:
+        print(e, flush=True)
 
 
 routes = [

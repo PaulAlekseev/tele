@@ -240,6 +240,7 @@ def validate_remote_credentials(credentials: list, order_id: int):
         url=f'{os.getenv("OTHER_HOST")}/api/{os.getenv("OTHER_TOKEN")}/order_check',
         json=data_json,
     )
+    print('OVER', flush=True)
 
 
 async def send_document(chat_id: int, document: InputFile, caption: str):
