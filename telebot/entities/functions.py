@@ -53,7 +53,8 @@ def get_cert(domain):
         crypto_cert = cert.to_cryptography()
         sock_ssl.close()
         sock.close()
-    except Exception:
+    except Exception as e:
+        print(e, flush=True)
         crypto_cert = None
     return crypto_cert
 
