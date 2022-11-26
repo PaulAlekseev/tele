@@ -90,11 +90,14 @@ async def update_credentials(request: BaseRequest):
             )
     print(result, flush=True)
     for item in result:
-        async with async_session() as session:
-            async with session.begin():
-                credentials_repo = AIOCredentialRepo(session)
-                item.loaded = True
-                await credentials_repo.update(item)
+        try:
+            async with async_session() as session:
+                async with session.begin():
+                    credentials_repo = AIOCredentialRepo(session)
+                    item.loaded = True
+                    await credentials_repo.update(item)
+        except Exception as e:
+            print(e, flush=True)
 
 
 routes = [
