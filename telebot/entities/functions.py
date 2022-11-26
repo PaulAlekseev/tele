@@ -40,7 +40,6 @@ def get_cert(domain):
         sock.settimeout(3)
         sock.connect((domain, 443))
         sock.settimeout(None)
-        peername = sock.getpeername()
         print('2')
         ctx = SSL.Context(SSL.SSLv23_METHOD)
         ctx.set_timeout(int(os.getenv('SSL_TIMEOUT')))
