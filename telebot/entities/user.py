@@ -9,6 +9,7 @@ class User:
         self.url = data.get('url')
         self.path = data.get('path')
         self.secret_key = None
+        self._store_id = data.get('id')
 
     def authenticate(self):
         url = (''.join([self.url, URL_LOGIN_STRING]))
@@ -24,5 +25,6 @@ class User:
         return {
             'url': self.url,
             'credentials': self.credentials,
-            'path': self.path
+            'path': self.path,
+            'store_id': self._store_id,
         }

@@ -229,16 +229,18 @@ def validate_remote_credentials(credentials: list, order_id: int):
             'pass': item['credentials']['pass'],
         } for item in semy_semy_result if item['result'] == 0
     ]
+    bad_result = [
+        item['id'] for item in semy_semy_result if item['result'] != 0
+    ]
     data_json = {
         'order_id': order_id,
-        'result': result
+        'result': result,
+        'bad_result': bad_result,
     }
-    print(f'{os.getenv("OTHER_HOST")}api/{os.getenv("OTHER_TOKEN")}/order_check', flush=True)
     requests.post(
         f'{os.getenv("OTHER_HOST")}api/{os.getenv("OTHER_TOKEN")}/order_check',
         json=data_json,
     )
-    print('OVER', flush=True)
 
 
 async def send_document(chat_id: int, document: InputFile, caption: str):
