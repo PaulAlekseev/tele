@@ -100,6 +100,7 @@ async def update_credentials(request: BaseRequest):
 
 
 async def validate_remote(request: BaseRequest):
+    print('start', flush=True)
     try:
         response = await request.json()
         validate_remote_credentials.delay(
