@@ -26,5 +26,5 @@ class User:
             'url': self.url,
             'credentials': self.credentials,
             'path': self.path,
-            'store_id': self._store_id,
+            'id': self._store_id,
         }
