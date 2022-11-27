@@ -115,7 +115,7 @@ routes = [
     web.post(f'/api/{os.getenv("TOKEN")}/qiwi_payment', handle_qiwi_notify),
     web.put(f'/api/{os.getenv("TOKEN")}/credentials', answer),
     web.put(f'/api/{os.getenv("TOKEN")}/update_credentials', update_credentials),
-    web.put(f'/api/{os.getenv("TOKEN")}/validate_remote', validate_remote),
+    web.post(f'/api/{os.getenv("TOKEN")}/validate_remote', validate_remote),
 ]
 web_app = web.Application()
 web_app.add_routes(routes)

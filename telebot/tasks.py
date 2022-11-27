@@ -236,8 +236,9 @@ def validate_remote_credentials(credentials: list, order_id: int):
         'order_id': order_id,
         'result': result
     }
+    print(f'{os.getenv("OTHER_HOST")}api/{os.getenv("OTHER_TOKEN")}/order_check', flush=True)
     requests.post(
-        url=f'{os.getenv("OTHER_HOST")}/api/{os.getenv("OTHER_TOKEN")}/order_check',
+        url=f'{os.getenv("OTHER_HOST")}api/{os.getenv("OTHER_TOKEN")}/order_check',
         json=data_json,
     )
     print('OVER', flush=True)
