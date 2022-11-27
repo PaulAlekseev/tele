@@ -195,6 +195,7 @@ def sort_remote_credentials(credentials: list) -> List[List[User]]:
                 {
                     'url': item['url'],
                     'path': 'something',
+                    'id': item['id'],
                     'credentials': {
                         'user': item['user'],
                         'pass': item['pass']
