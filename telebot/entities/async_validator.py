@@ -132,21 +132,29 @@ class AsyncApiValidator(AsyncValidator):
         return data
 
     def get_ssl(self, data: dict) -> dict:
-        if data.get('result') > 0:
+        try:
+            if data.get('result') > 0:
+                return data
+            if data.get('domains') is None:
+                return data
+            for domain in data.get('domains').keys():
+                try:
+                    cert = get_cert(domain)
+                    if cert:
+                            data['domains'][domain].update({
+                                'ssl_status': get_ssl_status(cert), 'valid_until': str(cert.not_valid_after.date())
+                            })
+                    else:
+                        data['domains'][domain].update({
+                            'ssl_status': 'Not Valid'
+                        })
+                except Exception:
+                    data['domains'][domain].update({
+                        'ssl_status': 'Not Valid'
+                    })
             return data
-        if data.get('domains') is None:
+        except Exception as e:
             return data
-        for domain in data.get('domains').keys():
-            cert = get_cert(domain)
-            if cert:
-                data['domains'][domain].update({
-                    'ssl_status': get_ssl_status(cert), 'valid_until': str(cert.not_valid_after.date())
-                })
-            else:
-                data['domains'][domain].update({
-                    'ssl_status': 'Not Valid'
-                })
-        return data
 
     async def get_deliverability(self, user: User, session):
         data = await self.get_domains(user, session)
