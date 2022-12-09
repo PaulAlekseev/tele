@@ -269,13 +269,8 @@ def sync_send_message(message, chat_id):
     asyncio.run(send_message(chat_id=chat_id, message=message))
 
 
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(60, check.s(), expires=15)
-
-
 @app.task
-def check():
+def check_other():
     try:
         result = requests.get(os.getenv('OTHER_HOST') + 'api/check')
         if result.status_code == 200:

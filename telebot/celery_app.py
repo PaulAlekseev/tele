@@ -1,9 +1,5 @@
-import os
-
-import requests
-
 from celery import Celery
-from other.constants import IDS
+from tasks import check_other
 
 app = Celery(
     'tele',
@@ -12,3 +8,6 @@ app = Celery(
 )
 
 
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(60, check_other.s(), expires=15)
