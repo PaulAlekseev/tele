@@ -267,19 +267,3 @@ async def send_message(message, chat_id):
 
 def sync_send_message(message, chat_id):
     asyncio.run(send_message(chat_id=chat_id, message=message))
-
-
-@app.task
-def check_other():
-    try:
-        result = requests.get(os.getenv('OTHER_HOST') + 'api/check')
-        if result.status_code == 200:
-            return 0
-        else:
-            raise Exception
-    except Exception:
-        for id_ in IDS:
-            sync_send_message(
-                "Store not working",
-                id_,
-            )
