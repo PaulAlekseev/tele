@@ -82,8 +82,14 @@ scan_text = {
 
 
 activation_text = {
-    'activation_en': 'Your account has been successfully activated for 30 days',
-    'activation_ru': 'Ваш профиль был активирован на 30 дней',
+    'activation_en': {
+        'good': 'Your account has been successfully activated',
+        'bad': 'Your account is already activated',
+    },
+    'activation_ru': {
+        'good': 'Ваш профиль был активирован на дней',
+        'bad': 'Ваш аккаунт уже активирован',
+    },
     ':check_mark_button: Активировать аккаунт': None,
     ':check_mark_button: Activate account': None
 }
@@ -241,4 +247,10 @@ admin_help_text = {
 Пример записи:
 /activate_user 123456789 10 100 10000
     """
+}
+
+
+activate_text_dict = {
+    ':key: Активировать': 'activation_ru',
+    ':key: Activate': 'activation_en',
 }

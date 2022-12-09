@@ -157,8 +157,3 @@ class APIValidator(Validator):
                     'dns_email': True if new_value['local_authority'] == 1 else False
                 })
         return data
-
-
-validators = {
-    'API': APIValidator()
-}

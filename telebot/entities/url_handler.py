@@ -1,4 +1,3 @@
-from entities.cfg_handler import ConfigHandler
 from entities.constants import URL_LOGIN_STRING, URL_DOMAIN_STRING, WHM_DOMAIN_STRING, ALLOWED_PORTS
 
 

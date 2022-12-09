@@ -1,18 +1,16 @@
 import asyncio
 from datetime import datetime
-from typing import List, Dict
+from typing import List
 
 import aiohttp
-import os
 import requests
 from aiogram.types import InputFile
 
 from bot import bot
 from celery_app import app
-from entities.db.db_tables import Credential
 from entities.async_validator import AsyncValidator, AsyncApiValidator
 from entities.constants import FILE_API_URL, proxies, CHUNK_SIZE, TIMEOUT, TIMEOUT_VALID
-from entities.db.db_repos import CredentialsRepository, UserRepo, ActivationRepo
+from entities.db.db_repos import UserRepo, ActivationRepo
 from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
 from other.text_dicts import scan_text
@@ -173,8 +171,6 @@ def validate(scan_file_id: str, scan_file_path: str, user_id: id, lang: str, act
         validator.get_ssl(item) for item in semy_semy_result if item.get('result') == 0
     ]
     valid_credentials = add_credentials_to_db(data=new_result)
-    print(len(result))
-    print(len(new_result))
 
     # Getting data for message
     result = form_credentials_admin(valid_credentials)
