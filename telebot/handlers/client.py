@@ -322,10 +322,10 @@ def register_handlers_client(dp: Dispatcher):
     ))
     dp.register_message_handler(start, commands=['start', ])
     dp.register_message_handler(main_menu, lambda message: emoji.demojize(message.text) in main_menu_text)
-    dp.register_message_handler(
-        get_activation_type_tariffs,
-        lambda message: emoji.demojize(message.text) in [':key: Активировать', ':key: Activate']
-    )
+    # dp.register_message_handler(
+    #     get_activation_type_tariffs,
+    #     lambda message: emoji.demojize(message.text) in [':key: Активировать', ':key: Activate']
+    # )
     dp.register_callback_query_handler(create_activation_from_callback, lambda c: c.data in activation_text)
     dp.register_callback_query_handler(
         choose_payment_coin,
