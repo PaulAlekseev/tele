@@ -4,6 +4,7 @@ from typing import List
 
 import aiohttp
 import requests
+import os
 from aiogram.types import InputFile
 
 from bot import bot
@@ -13,6 +14,7 @@ from entities.constants import FILE_API_URL, proxies, CHUNK_SIZE, TIMEOUT, TIMEO
 from entities.db.db_repos import UserRepo, ActivationRepo
 from entities.functions import add_credentials_to_db, form_credentials_admin
 from entities.user import User
+from other.constants import IDS
 from other.text_dicts import scan_text
 
 
@@ -265,3 +267,24 @@ async def send_message(message, chat_id):
 
 def sync_send_message(message, chat_id):
     asyncio.run(send_message(chat_id=chat_id, message=message))
+
+
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(60, check.s(), expires=15)
+
+
+@app.task
+def check():
+    try:
+        result = requests.get(os.getenv('OTHER_HOST') + 'api/check')
+        if result.status_code == 200:
+            return 0
+        else:
+            raise Exception
+    except Exception:
+        for id_ in IDS:
+            sync_send_message(
+                "Store not working",
+                id_,
+            )
