@@ -17,9 +17,9 @@ app = Celery(
 app.conf.timezone = 'Europe/London'
 
 
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(60, check_other.s(), expires=15)
+# @app.on_after_configure.connect
+# def setup_periodic_tasks(sender, **kwargs):
+#     sender.add_periodic_task(60, check_other.s(), expires=15)
 
 
 async def send_message(message, chat_id):
