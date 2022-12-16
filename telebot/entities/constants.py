@@ -23,6 +23,6 @@ RESTRICTED_CPANEL_DOMAINS = ('sub_domains',)
 RESTRICTED_WHM_DOMAINS = ('sub',)
 FILE_API_URL = 'https://api.telegram.org/file/bot'
 proxies = {
-    'socks5://user98426:3fbyk8@191.101.73.206:13269',
+    'http://user98426:3fbyk8@191.101.73.206:3269',
 }
 CHUNK_SIZE = int(os.getenv('CHUNK_SIZE'))
