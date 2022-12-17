@@ -14,7 +14,7 @@ app = Celery(
 )
 
 
-app.conf.timezone = 'Europe/London'
+# app.conf.timezone = 'Europe/London'
 
 
 # @app.on_after_configure.connect
